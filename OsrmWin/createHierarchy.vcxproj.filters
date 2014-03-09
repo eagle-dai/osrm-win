@@ -30,7 +30,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\createHierarchy.cpp">
+    <ClCompile Include="..\prepare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

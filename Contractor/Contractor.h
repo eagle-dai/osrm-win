@@ -364,7 +364,7 @@ public:
             }
             _NodePartitionor functor;
             const std::vector < _RemainingNodeData >::const_iterator first = stable_partition( remainingNodes.begin(), remainingNodes.end(), functor );
-            const int firstIndependent = first - remainingNodes.begin();
+            const int firstIndependent = (int)(first - remainingNodes.begin());
             //contract independent nodes
 #pragma omp parallel
             {
@@ -580,7 +580,7 @@ private:
         // Result will contain the priority
         float result;
         if ( 0 == (stats.edgesDeleted*stats.originalEdgesDeleted) )
-            result = 1 * nodeData->depth;
+            result = (float)(1 * nodeData->depth);
         else
             result =  2 * ((( float ) stats.edgesAdded ) / stats.edgesDeleted ) + 4 * ((( float ) stats.originalEdgesAdded ) / stats.originalEdgesDeleted ) + 1 * nodeData->depth;
         assert( result >= 0 );
