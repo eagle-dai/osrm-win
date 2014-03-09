@@ -41,8 +41,9 @@ public:
 		const FixedPointCoordinate & current_coordinate
 	) {
 		unsigned location[2];
-		location[0] = current_coordinate.lat+( 90*COORDINATE_PRECISION);
-		location[1] = current_coordinate.lon+(180*COORDINATE_PRECISION);
+        // OSRM_WIN modified
+		location[0] = (unsigned int)(0.5 + current_coordinate.lat+( 90*COORDINATE_PRECISION));
+		location[1] = (unsigned int)(0.5 + current_coordinate.lon+(180*COORDINATE_PRECISION));
 
 		TransposeCoordinate(location);
 		const uint64_t result = BitInterleaving(location[0], location[1]);

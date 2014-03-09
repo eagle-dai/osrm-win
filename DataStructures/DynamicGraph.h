@@ -83,7 +83,7 @@ class DynamicGraph {
                 position += m_nodes[node].edges;
             }
             m_nodes.back().firstEdge = position;
-            m_edges.reserve( position * 1.1 );
+            m_edges.reserve( (size_t)(position * 1.1) ); // OSRM_WIN change
             m_edges.resize( position );
             edge = 0;
             for ( NodeIterator node = 0; node < m_numNodes; ++node ) {
@@ -143,11 +143,11 @@ class DynamicGraph {
                     m_edges[node.firstEdge] = m_edges[node.firstEdge + node.edges];
                 } else {
                     EdgeIterator newFirstEdge = ( EdgeIterator ) m_edges.size();
-                    uint32_t newSize = node.edges * 1.1 + 2;
-                    EdgeIterator requiredCapacity = newSize + m_edges.size();
-                    EdgeIterator oldCapacity = m_edges.capacity();
+                    uint32_t newSize = (uint32_t)(0.5 + node.edges * 1.1 + 2); // OSRM_WIN
+                    EdgeIterator requiredCapacity = (EdgeIterator)(newSize + m_edges.size()); // OSRM_WIN
+                    EdgeIterator oldCapacity = (EdgeIterator)m_edges.capacity(); // OSRM_WIN
                     if ( requiredCapacity >= oldCapacity ) {
-                        m_edges.reserve( requiredCapacity * 1.1 );
+                        m_edges.reserve( (size_t)(requiredCapacity * 1.1) ); // OSRM_WIN
                     }
                     m_edges.resize( m_edges.size() + newSize );
                     for ( EdgeIterator i = 0; i < node.edges; ++i ) {

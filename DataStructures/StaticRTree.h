@@ -33,7 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "HilbertValue.h"
 #include "MercatorUtil.h"
 #include "PhantomNodes.h"
+#ifndef OSRM_WIN
 #include "SharedMemoryFactory.h"
+#endif
 #include "SharedMemoryVectorWrapper.h"
 
 #include "../Util/OSRMException.h"
@@ -309,12 +311,13 @@ public:
 
         //generate auxiliary vector of hilbert-values
 #pragma omp parallel for schedule(guided)
-        for(uint64_t element_counter = 0; element_counter < m_element_count; ++element_counter) {
-            input_wrapper_vector[element_counter].m_array_index = element_counter;
+        // OSRM_WIN change
+        for(int64_t element_counter = 0; element_counter < (int64_t)m_element_count; ++element_counter) {
+            input_wrapper_vector[element_counter].m_array_index = (uint32_t)element_counter; // OSRM_WIN change
             //Get Hilbert-Value for centroid in mercartor projection
             DataT & current_element = input_data_vector[element_counter];
             FixedPointCoordinate current_centroid = current_element.Centroid();
-            current_centroid.lat = COORDINATE_PRECISION*lat2y(current_centroid.lat/COORDINATE_PRECISION);
+            current_centroid.lat = (int)(COORDINATE_PRECISION*lat2y(current_centroid.lat/COORDINATE_PRECISION) + 0.5); // OSRM_WIN change
 
             uint64_t current_hilbert_value = HilbertCode::GetHilbertNumberForCoordinate(current_centroid);
             input_wrapper_vector[element_counter].m_hilbert_value = current_hilbert_value;
@@ -345,7 +348,7 @@ public:
             //generate tree node that resemble the objects in leaf and store it for next level
             current_node.minimum_bounding_rectangle.InitializeMBRectangle(current_leaf.objects, current_leaf.object_count);
             current_node.child_is_on_disk = true;
-            current_node.children[0] = tree_nodes_in_level.size();
+            current_node.children[0] = (uint32_t)tree_nodes_in_level.size(); // OSRM_WIN change
             tree_nodes_in_level.push_back(current_node);
 
             //write leaf_node to leaf node file
@@ -371,7 +374,7 @@ public:
                     if(processed_tree_nodes_in_level < tree_nodes_in_level.size()) {
                         TreeNode & current_child_node = tree_nodes_in_level[processed_tree_nodes_in_level];
                         //add tree node to parent entry
-                        parent_node.children[current_child_node_index] = m_search_tree.size();
+                        parent_node.children[current_child_node_index] = (uint32_t)m_search_tree.size(); // OSRM_WIN change
                         m_search_tree.push_back(current_child_node);
                         //augment MBR of parent
                         parent_node.minimum_bounding_rectangle.AugmentMBRectangle(current_child_node.minimum_bounding_rectangle);
@@ -392,11 +395,12 @@ public:
         //reverse and renumber tree to have root at index 0
         std::reverse(m_search_tree.begin(), m_search_tree.end());
 #pragma omp parallel for schedule(guided)
-        for(uint32_t i = 0; i < m_search_tree.size(); ++i) {
+        // OSRM_WIN change
+        for(int32_t i = 0; i < m_search_tree.size(); ++i) {
             TreeNode & current_tree_node = m_search_tree[i];
             for(uint32_t j = 0; j < current_tree_node.child_count; ++j) {
                 const uint32_t old_id = current_tree_node.children[j];
-                const uint32_t new_id = m_search_tree.size() - old_id - 1;
+                const uint32_t new_id = (uint32_t)m_search_tree.size() - old_id - 1; // OSRM_WIN change
                 current_tree_node.children[j] = new_id;
             }
         }
@@ -407,7 +411,7 @@ public:
             std::ios::binary
         );
 
-        uint32_t size_of_tree = m_search_tree.size();
+        uint32_t size_of_tree = (uint32_t)m_search_tree.size(); // OSRM_WIN change
         BOOST_ASSERT_MSG(0 < size_of_tree, "tree empty");
         tree_node_file.write((char *)&size_of_tree, sizeof(uint32_t));
         tree_node_file.write((char *)&m_search_tree[0], sizeof(TreeNode)*size_of_tree);

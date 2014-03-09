@@ -137,7 +137,11 @@ int main (int argc, char *argv[]) {
         }
 
         if(!option_variables.count("restrictions")) {
+#ifndef OSRM_WIN
             restrictions_path = std::string( input_path.c_str()) + ".restrictions";
+#else
+            restrictions_path = input_path.string() + ".restrictions";
+#endif
         }
 
         if(!option_variables.count("input")) {
@@ -159,7 +163,11 @@ int main (int argc, char *argv[]) {
         LogPolicy::GetInstance().Unmute();
         std::ifstream restrictionsInstream( restrictions_path.c_str(), std::ios::binary);
         TurnRestriction restriction;
+#ifndef OSRM_WIN
         UUID uuid_loaded, uuid_orig;
+#else
+        osrm::UUID uuid_loaded, uuid_orig;
+#endif
         unsigned usableRestrictionsCounter(0);
         restrictionsInstream.read((char*)&uuid_loaded, sizeof(UUID));
         if( !uuid_loaded.TestPrepare(uuid_orig) ) {
@@ -182,11 +190,12 @@ int main (int argc, char *argv[]) {
         std::ifstream in;
         in.open (input_path.c_str(), std::ifstream::in | std::ifstream::binary);
 
-        std::string nodeOut(input_path.c_str());		nodeOut += ".nodes";
-        std::string edgeOut(input_path.c_str());		edgeOut += ".edges";
-        std::string graphOut(input_path.c_str());		graphOut += ".hsgr";
-        std::string rtree_nodes_path(input_path.c_str());  rtree_nodes_path += ".ramIndex";
-        std::string rtree_leafs_path(input_path.c_str());  rtree_leafs_path += ".fileIndex";
+        // OSMR_WIN changes
+        std::string nodeOut(input_path.string());		nodeOut += ".nodes";
+        std::string edgeOut(input_path.string());		edgeOut += ".edges";
+        std::string graphOut(input_path.string());		graphOut += ".hsgr";
+        std::string rtree_nodes_path(input_path.string());  rtree_nodes_path += ".ramIndex";
+        std::string rtree_leafs_path(input_path.string());  rtree_leafs_path += ".fileIndex";
 
         /*** Setup Scripting Environment ***/
 
@@ -200,10 +209,12 @@ int main (int argc, char *argv[]) {
         luaL_openlibs(myLuaState);
 
         //adjust lua load path
-        luaAddScriptFolderToLoadPath( myLuaState, profile_path.c_str() );
+        // OSRM_WIN change
+        luaAddScriptFolderToLoadPath( myLuaState, profile_path.string().c_str() );
 
         // Now call our function in a lua script
-        if(0 != luaL_dofile(myLuaState, profile_path.c_str() )) {
+        // OSRM_WIN change
+        if(0 != luaL_dofile(myLuaState, profile_path.string().c_str() )) {
             std::cerr <<
                 lua_tostring(myLuaState,-1)   <<
                 " occured in scripting block" <<
@@ -219,7 +230,7 @@ int main (int argc, char *argv[]) {
                 std::endl;
                 return -1;
         }
-        speedProfile.trafficSignalPenalty = 10*lua_tointeger(myLuaState, -1);
+        speedProfile.trafficSignalPenalty = (int)(10*lua_tointeger(myLuaState, -1));
 
         if(0 != luaL_dostring( myLuaState, "return u_turn_penalty\n")) {
             std::cerr <<
@@ -228,7 +239,7 @@ int main (int argc, char *argv[]) {
                 std::endl;
             return -1;
         }
-        speedProfile.uTurnPenalty = 10*lua_tointeger(myLuaState, -1);
+        speedProfile.uTurnPenalty = (int)(10*lua_tointeger(myLuaState, -1));
 
         speedProfile.has_turn_penalty_function = lua_function_exists( myLuaState, "turn_function" );
 
@@ -270,7 +281,7 @@ int main (int argc, char *argv[]) {
 
         SimpleLogger().Write() << "writing node map ...";
         std::ofstream mapOutFile(nodeOut.c_str(), std::ios::binary);
-        const unsigned size_of_mapping = internalToExternalNodeMapping.size();
+        const unsigned size_of_mapping = (unsigned)internalToExternalNodeMapping.size();
         mapOutFile.write((char *)&size_of_mapping, sizeof(unsigned));
         mapOutFile.write(
             (char *)&(internalToExternalNodeMapping[0]),
@@ -323,7 +334,7 @@ int main (int argc, char *argv[]) {
         SimpleLogger().Write() << "Building Node Array";
         std::sort(contractedEdgeList.begin(), contractedEdgeList.end());
         unsigned numberOfNodes = 0;
-        unsigned numberOfEdges = contractedEdgeList.size();
+        unsigned numberOfEdges = (unsigned)contractedEdgeList.size();
         SimpleLogger().Write() <<
             "Serializing compacted graph of " <<
             numberOfEdges <<
@@ -412,7 +423,7 @@ int main (int argc, char *argv[]) {
         //cleanedEdgeList.clear();
         _nodes.clear();
         SimpleLogger().Write() << "finished preprocessing";
-    } catch(boost::program_options::too_many_positional_options_error& e) {
+    } catch(boost::program_options::too_many_positional_options_error& /*e*/) {
         SimpleLogger().Write(logWARNING) << "Only one file can be specified";
         return -1;
     } catch(boost::program_options::error& e) {

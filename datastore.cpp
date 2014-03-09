@@ -26,7 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "DataStructures/QueryEdge.h"
+#ifndef OSRM_WIN
 #include "DataStructures/SharedMemoryFactory.h"
+#endif
 #include "DataStructures/SharedMemoryVectorWrapper.h"
 #include "DataStructures/StaticGraph.h"
 #include "DataStructures/StaticRTree.h"

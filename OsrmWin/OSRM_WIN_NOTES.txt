@@ -1,0 +1,3 @@
+
+- all projects pre-defined
+  OSRM_WIN, NOMINMAX

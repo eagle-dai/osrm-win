@@ -256,7 +256,7 @@ public:
         if(new_size < mCurrentSize) {
             std::size_t number_of_necessary_buckets = 1+(new_size / bucketSizeC);
 
-            for(unsigned i = number_of_necessary_buckets; i < mBucketList.size(); ++i) {
+            for(unsigned i = (unsigned)number_of_necessary_buckets; i < (unsigned)mBucketList.size(); ++i) { // OSRM_WIN change
                 delete[] mBucketList[i];
             }
             mBucketList.resize(number_of_necessary_buckets);

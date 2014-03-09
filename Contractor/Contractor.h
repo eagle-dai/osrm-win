@@ -339,7 +339,7 @@ public:
 
                 //create new graph
                 std::sort(newSetOfEdges.begin(), newSetOfEdges.end());
-                _graph = boost::make_shared<_DynamicGraph>(remainingNodes.size(), newSetOfEdges);
+                _graph = boost::make_shared<_DynamicGraph>((int32_t)remainingNodes.size(), newSetOfEdges); // OSRM_WIN change
 
                 newSetOfEdges.clear();
                 flushedContractor = true;
@@ -590,7 +590,7 @@ private:
     template< bool Simulate >
     inline bool _Contract( _ThreadData* data, NodeID node, _ContractionInformation* stats = NULL ) {
         _Heap& heap = data->heap;
-        int insertedEdgesSize = data->insertedEdges.size();
+        int insertedEdgesSize = (int)data->insertedEdges.size(); // OSRM_WIN change
         std::vector< _ContractorEdge >& insertedEdges = data->insertedEdges;
 
         for ( _DynamicGraph::EdgeIterator inEdge = _graph->BeginEdges( node ), endInEdges = _graph->EndEdges( node ); inEdge != endInEdges; ++inEdge ) {
@@ -656,7 +656,7 @@ private:
             }
         }
         if ( !Simulate ) {
-            for ( int i = insertedEdgesSize, iend = insertedEdges.size(); i < iend; ++i ) {
+            for ( int i = insertedEdgesSize, iend = (int)insertedEdges.size(); i < iend; ++i ) { // OSRM_WIN change
                 bool found = false;
                 for ( int other = i + 1 ; other < iend ; ++other ) {
                     if ( insertedEdges[other].source != insertedEdges[i].source )
