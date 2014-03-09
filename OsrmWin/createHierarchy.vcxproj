@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}</ProjectGuid>
+    <RootNamespace>createHierarchy</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(BoostPath);$(StxxlPath)\include;$(LibXml2Path)\include;$(IconvPath)\include;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;$(Bzip2Path)\include;$(ZlibPath)\include;..\;$(ProtobufPath)\include;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>libbz2.lib;libxml2.lib;zlibd.lib;libprotobuf-debug.lib;libstxxl-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)..\contractor.ini" "$(OutDir)" /f /y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(BoostPath);$(StxxlPath)\include;$(LibXml2Path)\include;$(IconvPath)\include;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;$(Bzip2Path)\include;$(ZlibPath)\include;..\;$(ProtobufPath)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>libbz2.lib;libxml2.lib;zlib.lib;libprotobuf.lib;libstxxl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)..\contractor.ini" "$(OutDir)" /f /y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\createHierarchy.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="getopt.h" />
+    <ClInclude Include="..\typedefs.h" />
+    <ClInclude Include="unistd.h" />
+    <ClInclude Include="..\Contractor\ContractionCleanup.h" />
+    <ClInclude Include="..\Contractor\Contractor.h" />
+    <ClInclude Include="..\DataStructures\BaseParser.h" />
+    <ClInclude Include="..\DataStructures\BinaryHeap.h" />
+    <ClInclude Include="..\DataStructures\DynamicGraph.h" />
+    <ClInclude Include="..\DataStructures\ExtractorCallBacks.h" />
+    <ClInclude Include="..\DataStructures\ExtractorStructs.h" />
+    <ClInclude Include="..\DataStructures\GridEdge.h" />
+    <ClInclude Include="..\DataStructures\HashTable.h" />
+    <ClInclude Include="..\DataStructures\ImportEdge.h" />
+    <ClInclude Include="..\DataStructures\InputReaderFactory.h" />
+    <ClInclude Include="..\DataStructures\LevelInformation.h" />
+    <ClInclude Include="..\DataStructures\LRUCache.h" />
+    <ClInclude Include="..\DataStructures\NNGrid.h" />
+    <ClInclude Include="..\DataStructures\NodeCoords.h" />
+    <ClInclude Include="..\DataStructures\NodeInformationHelpDesk.h" />
+    <ClInclude Include="..\DataStructures\PBFParser.h" />
+    <ClInclude Include="..\DataStructures\Percent.h" />
+    <ClInclude Include="..\DataStructures\PhantomNodes.h" />
+    <ClInclude Include="..\DataStructures\PolylineCompressor.h" />
+    <ClInclude Include="..\DataStructures\SearchEngine.h" />
+    <ClInclude Include="..\DataStructures\StaticGraph.h" />
+    <ClInclude Include="..\DataStructures\StaticKDTree.h" />
+    <ClInclude Include="..\DataStructures\Util.h" />
+    <ClInclude Include="..\DataStructures\XMLParser.h" />
+    <ClInclude Include="..\Plugins\BaseDescriptor.h" />
+    <ClInclude Include="..\Plugins\BasePlugin.h" />
+    <ClInclude Include="..\Plugins\GPXDescriptor.h" />
+    <ClInclude Include="..\Plugins\HelloWorldPlugin.h" />
+    <ClInclude Include="..\Plugins\JSONDescriptor.h" />
+    <ClInclude Include="..\Plugins\KMLDescriptor.h" />
+    <ClInclude Include="..\Plugins\LocatePlugin.h" />
+    <ClInclude Include="..\Plugins\NearestPlugin.h" />
+    <ClInclude Include="..\Plugins\ObjectForPluginStruct.h" />
+    <ClInclude Include="..\Plugins\PluginMapFactory.h" />
+    <ClInclude Include="..\Plugins\RawRouteData.h" />
+    <ClInclude Include="..\Plugins\RouteParameters.h" />
+    <ClInclude Include="..\Plugins\RoutePlugin.h" />
+    <ClInclude Include="..\Plugins\ViaRoutePlugin.h" />
+    <ClInclude Include="..\Server\BasicDatastructures.h" />
+    <ClInclude Include="..\Server\Connection.h" />
+    <ClInclude Include="..\Server\RequestHandler.h" />
+    <ClInclude Include="..\Server\RequestParser.h" />
+    <ClInclude Include="..\Server\Server.h" />
+    <ClInclude Include="..\Server\ServerConfiguration.h" />
+    <ClInclude Include="..\Server\ServerFactory.h" />
+    <ClInclude Include="..\Util\BaseConfiguration.h" />
+    <ClInclude Include="..\Util\GraphLoader.h" />
+    <ClInclude Include="..\Util\InputFileUtil.h" />
+    <ClInclude Include="..\Util\LinuxStackTrace.h" />
+    <ClInclude Include="..\Util\MachineInfo.h" />
+    <ClInclude Include="..\Util\StringUtil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\DataStructures\pbf-proto\fileformat.proto" />
+    <None Include="..\DataStructures\pbf-proto\osmformat.proto" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
