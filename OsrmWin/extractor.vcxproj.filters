@@ -42,12 +42,6 @@
     <ClCompile Include="..\extractor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\DataStructures\pbf-proto\fileformat.pb.cc">
-      <Filter>Source Files\DataStructures\pbf-proto</Filter>
-    </ClCompile>
-    <ClCompile Include="..\DataStructures\pbf-proto\osmformat.pb.cc">
-      <Filter>Source Files\DataStructures\pbf-proto</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\typedefs.h">
@@ -221,9 +215,5 @@
     <ClInclude Include="..\win\unistd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\DataStructures\pbf-proto\fileformat.proto" />
-    <CustomBuild Include="..\DataStructures\pbf-proto\osmformat.proto" />
   </ItemGroup>
 </Project>

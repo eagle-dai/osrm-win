@@ -56,8 +56,8 @@
     <ClCompile>
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(BoostPath);$(StxxlPath)\include;$(LibXml2Path)\include;$(IconvPath)\include;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;$(Bzip2Path)\include;$(ZlibPath)\include;..\;$(ProtobufPath)\include;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;..\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OSRM_WIN;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <OpenMPSupport>true</OpenMPSupport>
@@ -65,11 +65,12 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>C4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>libbz2.lib;libxml2.lib;zlibd.lib;libprotobuf-debug.lib;libstxxl-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;C:\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -87,8 +88,8 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(BoostPath);$(StxxlPath)\include;$(LibXml2Path)\include;$(IconvPath)\include;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;$(Bzip2Path)\include;$(ZlibPath)\include;..\;$(ProtobufPath)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OSRM_WIN;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <OpenMPSupport>true</OpenMPSupport>
@@ -97,11 +98,12 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>
       </DebugInformationFormat>
+      <DisableSpecificWarnings>C4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>libbz2.lib;libxml2.lib;zlib.lib;libprotobuf.lib;libstxxl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;C:\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -117,9 +119,12 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\extractor.cpp" />
-    <ClCompile Include="..\DataStructures\pbf-proto\fileformat.pb.cc" />
-    <ClCompile Include="..\DataStructures\pbf-proto\osmformat.pb.cc" />
+    <ClCompile Include="..\extractor.cpp">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4819</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4819</DisableSpecificWarnings>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\win\unistd.h" />
@@ -179,28 +184,6 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
     <ClInclude Include="..\Util\LinuxStackTrace.h" />
     <ClInclude Include="..\Util\MachineInfo.h" />
     <ClInclude Include="..\Util\StringUtil.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\DataStructures\pbf-proto\fileformat.proto">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating fileformat.pb.{h,cc}...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProtobufPath)/bin/protoc" -I"$(SolutionDir).." --cpp_out=.. "$(SolutionDir)../DataStructures/pbf-proto/fileformat.proto"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)../DataStructures/pbf-proto/fileformat.pb.h;$(SolutionDir)../DataStructures/pbf-proto/fileformat.pb.cc;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating fileformat.pb.{h,cc}...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProtobufPath)/bin/protoc" -I"$(SolutionDir).." --cpp_out=.. "$(SolutionDir)../DataStructures/pbf-proto/fileformat.proto"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)../DataStructures/pbf-proto/fileformat.pb.h;$(SolutionDir)../DataStructures/pbf-proto/fileformat.pb.cc;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="..\DataStructures\pbf-proto\osmformat.proto">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating osmformat.pb.{h,cc}...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProtobufPath)/bin/protoc" -I"$(SolutionDir).." --cpp_out=.. "$(SolutionDir)../DataStructures/pbf-proto/osmformat.proto"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)../DataStructures/pbf-proto/osmformat.pb.h;$(SolutionDir)../DataStructures/pbf-proto/osmformat.pb.cc;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating osmformat.pb.{h,cc}...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProtobufPath)/bin/protoc" -I"$(SolutionDir).." --cpp_out=.. "$(SolutionDir)../DataStructures/pbf-proto/osmformat.proto"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)../DataStructures/pbf-proto/osmformat.pb.h;$(SolutionDir)../DataStructures/pbf-proto/osmformat.pb.cc;%(Outputs)</Outputs>
-    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

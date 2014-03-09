@@ -35,13 +35,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="getopt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\typedefs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="unistd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Contractor\ContractionCleanup.h">
@@ -90,9 +84,6 @@
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\NodeInformationHelpDesk.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\PBFParser.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\Percent.h">
@@ -199,6 +190,12 @@
     </ClInclude>
     <ClInclude Include="..\Util\StringUtil.h">
       <Filter>Header Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\win\getopt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\win\unistd.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

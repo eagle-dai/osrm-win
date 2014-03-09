@@ -6,7 +6,7 @@
 	>
 	<UserMacro
 		Name="BoostPath"
-		Value="$(SolutionDir)lib\boost_1_47\"
+		Value="$(SolutionDir)\..\lib\boost\"
 	/>
 	<UserMacro
 		Name="Bzip2Path"

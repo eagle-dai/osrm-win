@@ -42,6 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 
+#ifdef OSRM_WIN
+namespace osrm {
+#endif
+
 //implements a singleton, i.e. there is one and only one conviguration object
 class UUID : boost::noncopyable {
 public:
@@ -65,5 +69,9 @@ private:
     boost::uuids::uuid named_uuid;
     bool has_64_bits;
 };
+
+#ifdef OSRM_WIN
+}
+#endif
 
 #endif /* UUID_H */
