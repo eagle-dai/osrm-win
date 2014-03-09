@@ -36,7 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/filesystem/fstream.hpp>
 #include <boost/integer.hpp>
 #include <boost/interprocess/mapped_region.hpp>
+#ifndef OSRM_WIN
 #include <boost/interprocess/xsi_shared_memory.hpp>
+#else
+#include <boost/interprocess/windows_shared_memory.hpp>
+#endif
 
 #ifdef __linux__
 #include <sys/ipc.h>
@@ -76,9 +80,11 @@ class SharedMemory : boost::noncopyable {
 			if(m_initialized) {
 				SimpleLogger().Write(logDEBUG) <<
 					"automatic memory deallocation";
+#ifndef OSRM_WIN
 				if(!boost::interprocess::xsi_shared_memory::remove(m_shmid)) {
 					SimpleLogger().Write(logDEBUG) << "could not deallocate id " << m_shmid;
 				}
+#endif
 			}
 		}
 	};
@@ -167,6 +173,7 @@ public:
 	}
 
 private:
+#ifndef OSRM_WIN
 	static bool RegionExists( const boost::interprocess::xsi_key &key ) {
 		bool result = true;
 	    try {
@@ -198,9 +205,47 @@ private:
 		}
 		return ret;
 	}
+#else
+	static bool RegionExists( const std::string &key ) {
+		bool result = true;
+	    try {
+		    boost::interprocess::windows_shared_memory shm(
+		        boost::interprocess::open_only,
+                key.c_str(), boost::interprocess::read_only
+		    );
+	    } catch(...) {
+	    	result = false;
+	    }
+	    return result;
+	}
 
+	static bool Remove(
+		const std::string &key
+	) {
+		bool ret = false;
+		try{
+			SimpleLogger().Write(logDEBUG) << "deallocating prev memory";
+		    boost::interprocess::windows_shared_memory shm(
+		        boost::interprocess::open_only,
+                key.c_str(), boost::interprocess::read_only
+		    );
+			ret = true; // boost::interprocess::xsi_shared_memory::remove(xsi.get_shmid());
+		} catch(const boost::interprocess::interprocess_exception &e){
+			if(e.get_error_code() != boost::interprocess::not_found_error) {
+				throw;
+			}
+		}
+		return ret;
+	}
+#endif
+
+#ifndef OSRM_WIN
 	boost::interprocess::xsi_key key;
 	boost::interprocess::xsi_shared_memory shm;
+#else
+	std::string key;
+	boost::interprocess::windows_shared_memory shm;
+#endif
 	boost::interprocess::mapped_region region;
 	shm_remove remover;
 };

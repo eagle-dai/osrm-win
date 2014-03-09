@@ -65,7 +65,7 @@ public:
         reply.content.push_back("\nlanguage: ");
         reply.content.push_back(routeParameters.language);
         reply.content.push_back("\nNumber of locations: ");
-        intToString(routeParameters.coordinates.size(), temp_string);
+        intToString((int)routeParameters.coordinates.size(), temp_string);
         reply.content.push_back(temp_string);
         reply.content.push_back("\n");
         for(unsigned i = 0; i < routeParameters.coordinates.size(); ++i) {
@@ -81,7 +81,7 @@ public:
             reply.content.push_back("\n");
         }
         reply.content.push_back( "Number of hints: ");
-        intToString(routeParameters.hints.size(), temp_string);
+        intToString((int)routeParameters.hints.size(), temp_string);
         reply.content.push_back(temp_string);
         reply.content.push_back("\n");
         for(unsigned i = 0; i < routeParameters.hints.size(); ++i) {

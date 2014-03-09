@@ -201,8 +201,4 @@
       <Filter>Header Files\Util</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\DataStructures\pbf-proto\fileformat.proto" />
-    <None Include="..\DataStructures\pbf-proto\osmformat.proto" />
-  </ItemGroup>
 </Project>

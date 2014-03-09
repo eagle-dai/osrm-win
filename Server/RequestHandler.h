@@ -82,7 +82,7 @@ public:
 
             if ( !result || (it != request.end()) ) {
                 rep = http::Reply::StockReply(http::Reply::badRequest);
-                const int position = std::distance(request.begin(), it);
+                const int position = (int)std::distance(request.begin(), it);
                 std::string tmp_position_string;
                 intToString(position, tmp_position_string);
                 rep.content.push_back(
@@ -92,7 +92,7 @@ public:
                 rep.content.push_back( request );
                 rep.content.push_back(tmp_position_string);
                 rep.content.push_back("<br>");
-                const unsigned end = std::distance(request.begin(), it);
+                const unsigned end = (unsigned)std::distance(request.begin(), it);
                 for(unsigned i = 0; i < end; ++i) {
                     rep.content.push_back("&nbsp;");
                 }

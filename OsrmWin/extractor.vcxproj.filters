@@ -8,9 +8,6 @@
     <Filter Include="Source Files\DataStructures">
       <UniqueIdentifier>{41de980b-42ee-438e-b617-9b3b9757317f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\DataStructures\pbf-proto">
-      <UniqueIdentifier>{94e518cc-fe3d-4f05-a8ee-ae0ae1bfa727}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>

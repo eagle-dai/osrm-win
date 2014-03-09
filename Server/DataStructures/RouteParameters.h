@@ -114,8 +114,8 @@ struct RouteParameters {
     }
 
     void addCoordinate(const boost::fusion::vector < double, double > & arg_) {
-        int lat = COORDINATE_PRECISION*boost::fusion::at_c < 0 > (arg_);
-        int lon = COORDINATE_PRECISION*boost::fusion::at_c < 1 > (arg_);
+        int lat = (int)(COORDINATE_PRECISION*boost::fusion::at_c < 0 > (arg_)); // OSRM_WIN change
+        int lon = (int)(COORDINATE_PRECISION*boost::fusion::at_c < 1 > (arg_)); // OSRM_WIN change
         coordinates.push_back(FixedPointCoordinate(lat, lon));
     }
 };

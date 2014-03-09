@@ -69,7 +69,7 @@ public:
             const unsigned time
         ) {
             //compute distance/duration for route summary
-            intToString(round(distance), lengthString);
+            intToString((int)round(distance), lengthString);
             int travelTime = time/10 + 1;
             intToString(travelTime, durationString);
         }

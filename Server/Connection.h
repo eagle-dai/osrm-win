@@ -111,7 +111,7 @@ private:
 						compression_type,
 						compressed_output
 					);
-					reply.setSize(compressed_output.size());
+					reply.setSize((unsigned)compressed_output.size());
 					output_buffer = reply.HeaderstoBuffers();
 					output_buffer.push_back(
 						boost::asio::buffer(compressed_output)
@@ -140,7 +140,7 @@ private:
 						compression_type,
 						compressed_output
 					);
-					reply.setSize(compressed_output.size());
+					reply.setSize((unsigned)compressed_output.size());
 					output_buffer = reply.HeaderstoBuffers();
 					output_buffer.push_back(
 						boost::asio::buffer(compressed_output)

@@ -52,8 +52,8 @@
     <ClCompile>
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\lua\src;..\lib\luabind;..\lib\protobuf;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;..\win;..\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>OSRM_WIN;WIN32;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\lua\src;..\lib\luabind;..\win;..\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OSRM_WIN;WIN32;_WIN32_WINNT=0x0600;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <OpenMPSupport>true</OpenMPSupport>
@@ -80,8 +80,8 @@
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\lua\src;..\lib\luabind;..\lib\protobuf;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;..\win;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>OSRM_WIN;WIN32;NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\lua\src;..\lib\luabind;..\win;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OSRM_WIN;WIN32;_WIN32_WINNT=0x0600;NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <OpenMPSupport>true</OpenMPSupport>
@@ -164,10 +164,6 @@
     <ClInclude Include="..\Util\StringUtil.h" />
     <ClInclude Include="..\win\getopt.h" />
     <ClInclude Include="..\win\unistd.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\DataStructures\pbf-proto\fileformat.proto" />
-    <None Include="..\DataStructures\pbf-proto\osmformat.proto" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

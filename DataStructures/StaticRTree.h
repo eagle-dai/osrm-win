@@ -33,9 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "HilbertValue.h"
 #include "MercatorUtil.h"
 #include "PhantomNodes.h"
-#ifndef OSRM_WIN
 #include "SharedMemoryFactory.h"
-#endif
 #include "SharedMemoryVectorWrapper.h"
 
 #include "../Util/OSRMException.h"
