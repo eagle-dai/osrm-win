@@ -81,7 +81,7 @@ inline unsigned GetPhysicalmemory(void){
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
-	return status.ullTotalPhys/1024;
+	return (unsigned)status.ullTotalPhys/1024;
 #else
 	std::cout << "[Warning] Compiling on unknown architecture." << std::endl
 		<< "Please file a ticket at http://project-osrm.org" << std::endl;

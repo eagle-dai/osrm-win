@@ -5,6 +5,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extractor", "extractor.vcxproj", "{F630F025-637A-43DF-9258-2860AE9E6740}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "createHierarchy", "createHierarchy.vcxproj", "{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F17BA5C7-E90E-4B09-A222-E9A74D0759ED} = {F17BA5C7-E90E-4B09-A222-E9A74D0759ED}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stxxl", "..\lib\stxxl\vsproj\stxxl.vcxproj", "{F17BA5C7-E90E-4B09-A222-E9A74D0759ED}"
 EndProject

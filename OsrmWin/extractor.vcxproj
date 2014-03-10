@@ -18,13 +18,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -184,6 +184,11 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
     <ClInclude Include="..\Util\LinuxStackTrace.h" />
     <ClInclude Include="..\Util\MachineInfo.h" />
     <ClInclude Include="..\Util\StringUtil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\lib\stxxl\vsproj\stxxl.vcxproj">
+      <Project>{f17ba5c7-e90e-4b09-a222-e9a74d0759ed}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
