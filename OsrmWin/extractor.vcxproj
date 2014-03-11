@@ -69,8 +69,8 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libxml2.lib;zlibd.lib;libprotobuf-debug.lib;libstxxl-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;C:\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories);\Dev\external\boost_1_54_0\lib64-msvc-11.0</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -102,8 +102,8 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libxml2.lib;zlib.lib;libprotobuf.lib;libstxxl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;C:\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories);\Dev\external\boost_1_54_0\lib64-msvc-11.0</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

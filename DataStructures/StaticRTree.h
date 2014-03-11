@@ -59,6 +59,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 
+#ifdef OSRM_WIN
+#include <float.h>
+namespace std {
+    static inline int isnan (double d) {
+        return _isnan(d);
+    }
+}
+#endif
+
 //tuning parameters
 const static uint32_t RTREE_BRANCHING_FACTOR = 50;
 const static uint32_t RTREE_LEAF_NODE_SIZE = 1170;
@@ -820,7 +829,7 @@ public:
                             found_a_nearest_edge = true;
                         } else if(
                                 DoubleEpsilonCompare(current_perpendicular_distance, min_dist) &&
-                                1 == abs(current_edge.id - result_phantom_node.edgeBasedNode )
+                                1 == abs((long long)current_edge.id - (long long)result_phantom_node.edgeBasedNode ) // OSRM_WIN change
                         && CoordinatesAreEquivalent(
                                 current_start_coordinate,
                                 FixedPointCoordinate(

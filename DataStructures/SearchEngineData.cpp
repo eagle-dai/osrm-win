@@ -27,6 +27,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "SearchEngineData.h"
 
+#ifdef OSRM_WIN
+SearchEngineData::SearchEngineHeapPtr SearchEngineData::forwardHeap;
+SearchEngineData::SearchEngineHeapPtr SearchEngineData::backwardHeap;
+SearchEngineData::SearchEngineHeapPtr SearchEngineData::forwardHeap2;
+SearchEngineData::SearchEngineHeapPtr SearchEngineData::backwardHeap2;
+SearchEngineData::SearchEngineHeapPtr SearchEngineData::forwardHeap3;
+SearchEngineData::SearchEngineHeapPtr SearchEngineData::backwardHeap3;
+#endif
+
 void SearchEngineData::InitializeOrClearFirstThreadLocalStorage(const unsigned number_of_nodes) {
     if(!forwardHeap.get()) {
         forwardHeap.reset(new QueryHeap(number_of_nodes));

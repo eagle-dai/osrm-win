@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 #ifdef OSRM_WIN
-namespace osrm {
+#define UUID OSRM_UUID
 #endif
 
 //implements a singleton, i.e. there is one and only one conviguration object
@@ -69,9 +69,5 @@ private:
     boost::uuids::uuid named_uuid;
     bool has_64_bits;
 };
-
-#ifdef OSRM_WIN
-}
-#endif
 
 #endif /* UUID_H */

@@ -68,13 +68,8 @@ NodeID readBinaryOSRMGraphFromStream(
     std::vector<NodeInfo>        * int_to_ext_node_id_map,
     std::vector<TurnRestriction> & restriction_list
 ) {
-#ifndef OSRM_WIN
     const UUID uuid_orig;
     UUID uuid_loaded;
-#else
-    const osrm::UUID uuid_orig;
-    osrm::UUID uuid_loaded;
-#endif
     input_stream.read((char *) &uuid_loaded, sizeof(UUID));
 
     if( !uuid_loaded.TestGraphUtil(uuid_orig) ) {

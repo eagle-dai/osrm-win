@@ -9,9 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\Contractor">
-      <UniqueIdentifier>{aced04e3-2454-411d-bb9b-5a4f2d01b1b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\DataStructures">
       <UniqueIdentifier>{ee19f800-67f8-4115-81e8-bfb0d23ed3bd}</UniqueIdentifier>
     </Filter>
@@ -28,10 +25,19 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="Source Files\Contractor">
+      <UniqueIdentifier>{aced04e3-2454-411d-bb9b-5a4f2d01b1b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\prepare.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Contractor\TemporaryStorage.cpp">
+      <Filter>Source Files\Contractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Contractor\EdgeBasedGraphFactory.cpp">
+      <Filter>Source Files\Contractor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -39,10 +45,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Contractor\ContractionCleanup.h">
-      <Filter>Header Files\Contractor</Filter>
+      <Filter>Source Files\Contractor</Filter>
     </ClInclude>
     <ClInclude Include="..\Contractor\Contractor.h">
-      <Filter>Header Files\Contractor</Filter>
+      <Filter>Source Files\Contractor</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\BaseParser.h">
       <Filter>Header Files\DataStructures</Filter>

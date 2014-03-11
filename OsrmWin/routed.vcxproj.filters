@@ -12,36 +12,66 @@
     <Filter Include="Header Files\Contractor">
       <UniqueIdentifier>{afc89735-652f-467f-bc3e-8e7289a5f46f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DataStructures">
-      <UniqueIdentifier>{0da304c3-b98c-463c-bdb0-a6545b838390}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Plugins">
       <UniqueIdentifier>{43d7fe04-b24b-49de-be94-dd0c1daecc88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Server">
-      <UniqueIdentifier>{a5e8d6af-a22b-414b-b4cb-be25a26f3e6b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Util">
-      <UniqueIdentifier>{27426cd8-9f42-46da-957d-3fab5f7cf1f3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Server">
+      <UniqueIdentifier>{a5e8d6af-a22b-414b-b4cb-be25a26f3e6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Library">
+      <UniqueIdentifier>{e5711dc3-ee32-4214-9284-1b3380abbd28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataStructures">
+      <UniqueIdentifier>{0da304c3-b98c-463c-bdb0-a6545b838390}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Server\Http">
+      <UniqueIdentifier>{d74bda6c-40d2-4b07-9ffe-1a54b99da83f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Descriptors">
+      <UniqueIdentifier>{cbb8cdcf-9dcc-4c33-adfa-a2e771daf20d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Algorithms">
+      <UniqueIdentifier>{f978cc03-1777-438a-b155-004fa05e546c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Util">
+      <UniqueIdentifier>{27426cd8-9f42-46da-957d-3fab5f7cf1f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\routed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Library\OSRM.cpp">
+      <Filter>Source Files\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DataStructures\SearchEngineData.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\Http\Reply.cpp">
+      <Filter>Source Files\Server\Http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Descriptors\DescriptionFactory.cpp">
+      <Filter>Source Files\Descriptors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Algorithms\PolylineCompressor.cpp">
+      <Filter>Source Files\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Algorithms\DouglasePeucker.cpp">
+      <Filter>Source Files\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\RequestParser.cpp">
+      <Filter>Source Files\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Util\GitDescription.cpp">
+      <Filter>Source Files\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="getopt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\typedefs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="unistd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Contractor\ContractionCleanup.h">
@@ -50,74 +80,38 @@
     <ClInclude Include="..\Contractor\Contractor.h">
       <Filter>Header Files\Contractor</Filter>
     </ClInclude>
-    <ClInclude Include="..\DataStructures\BaseParser.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="..\DataStructures\BinaryHeap.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\DynamicGraph.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\ExtractorCallBacks.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\ExtractorStructs.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\GridEdge.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\HashTable.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\ImportEdge.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\InputReaderFactory.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\LevelInformation.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\LRUCache.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\NNGrid.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\NodeCoords.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\NodeInformationHelpDesk.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\PBFParser.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\Percent.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\PhantomNodes.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\PolylineCompressor.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\SearchEngine.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\StaticGraph.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\DataStructures\StaticKDTree.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\Util.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DataStructures\XMLParser.h">
-      <Filter>Header Files\DataStructures</Filter>
+      <Filter>Source Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="..\Plugins\BaseDescriptor.h">
       <Filter>Header Files\Plugins</Filter>
@@ -161,44 +155,8 @@
     <ClInclude Include="..\Plugins\ViaRoutePlugin.h">
       <Filter>Header Files\Plugins</Filter>
     </ClInclude>
-    <ClInclude Include="..\Server\BasicDatastructures.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Server\Connection.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Server\RequestHandler.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Server\RequestParser.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Server\Server.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Server\ServerConfiguration.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Server\ServerFactory.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Util\BaseConfiguration.h">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Util\GraphLoader.h">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Util\InputFileUtil.h">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Util\LinuxStackTrace.h">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Util\MachineInfo.h">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Util\StringUtil.h">
-      <Filter>Header Files\Util</Filter>
+    <ClInclude Include="..\Library\OSRM.h">
+      <Filter>Source Files\Library</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -65,8 +65,8 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>zlibd.lib;libprotobuf-debug.lib;libstxxl-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -94,8 +94,8 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>zlib.lib;libprotobuf.lib;libstxxl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -107,6 +107,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Contractor\EdgeBasedGraphFactory.cpp" />
+    <ClCompile Include="..\Contractor\TemporaryStorage.cpp" />
     <ClCompile Include="..\prepare.cpp" />
   </ItemGroup>
   <ItemGroup>

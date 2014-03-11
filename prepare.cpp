@@ -163,11 +163,7 @@ int main (int argc, char *argv[]) {
         LogPolicy::GetInstance().Unmute();
         std::ifstream restrictionsInstream( restrictions_path.c_str(), std::ios::binary);
         TurnRestriction restriction;
-#ifndef OSRM_WIN
         UUID uuid_loaded, uuid_orig;
-#else
-        osrm::UUID uuid_loaded, uuid_orig;
-#endif
         unsigned usableRestrictionsCounter(0);
         restrictionsInstream.read((char*)&uuid_loaded, sizeof(UUID));
         if( !uuid_loaded.TestPrepare(uuid_orig) ) {

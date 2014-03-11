@@ -106,10 +106,18 @@ public:
 			id
 	) {
     	if( 0 == size ){ //read_only
+#ifndef OSRM_WIN
     		shm = boost::interprocess::xsi_shared_memory (
     			boost::interprocess::open_only,
     			key
 			);
+#else
+    		shm = boost::interprocess::windows_shared_memory (
+    			boost::interprocess::open_only,
+    			key.c_str(),
+                boost::interprocess::read_only
+			);
+#endif
 
     		region = boost::interprocess::mapped_region (
     			shm,
@@ -124,11 +132,20 @@ public:
     		if( remove_prev ) {
 	    		Remove(key);
 	    	}
-    		shm = boost::interprocess::xsi_shared_memory (
+#ifndef OSRM_WIN
+            shm = boost::interprocess::xsi_shared_memory (
     			boost::interprocess::open_or_create,
     			key,
     			size
     		);
+#else
+            shm = boost::interprocess::windows_shared_memory (
+    			boost::interprocess::open_or_create,
+                key.c_str(),
+                boost::interprocess::read_write,
+    			size
+    		);
+#endif
 #ifdef __linux__
 			if( -1 == shmctl(shm.get_shmid(), SHM_LOCK, 0) ) {
 				if( ENOMEM == errno ) {
@@ -142,7 +159,9 @@ public:
 		    	boost::interprocess::read_write
 	    	);
 
+#ifndef OSRM_WIN
  			remover.SetID( shm.get_shmid() );
+#endif
  			SimpleLogger().Write(logDEBUG) <<
  				"writeable memory allocated " << size << " bytes";
     	}
@@ -168,7 +187,11 @@ public:
 		const IdentifierT id
 	) {
 		OSRMLockFile lock_file;
+#ifndef OSRM_WIN
 		boost::interprocess::xsi_key key( lock_file().string().c_str(), id );
+#else
+        std::string key (lock_file().string());
+#endif
 		return Remove(key);
 	}
 
