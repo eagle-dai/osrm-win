@@ -1,3 +1,6 @@
+#ifndef __LIBICONV_WIN32_CONFIG__
+#define __LIBICONV_WIN32_CONFIG__
+
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define to the number of bits in type 'ptrdiff_t'. */
@@ -924,3 +927,4 @@
 # define DLL_VARIABLE
 #endif
 
+#endif /*__LIBICONV_WIN32_CONFIG__*/

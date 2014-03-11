@@ -65,7 +65,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libxml2.lib;zlibd.lib;libprotobuf-debug.lib;libstxxl-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibd.lib;libprotobuf-debug.lib;libstxxl-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -94,7 +94,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libxml2.lib;zlib.lib;libprotobuf.lib;libstxxl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;libprotobuf.lib;libstxxl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(BoostPath)\lib;$(StxxlPath)\lib;$(LibXml2Path)\lib;$(IconvPath)\lib;$(Bzip2Path)\lib;$(ZlibPath)\lib;$(ProtobufPath)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -168,6 +168,12 @@
   <ItemGroup>
     <ProjectReference Include="..\lib\bzip2\vsprojs\libbz2.vcxproj">
       <Project>{b256c771-ddd9-4538-b6b0-a25780216b88}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\libiconv\build-win\libiconv.vcxproj">
+      <Project>{1704ea01-6b21-4362-9f1f-44d25cf2e0d7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\libxml2\win32\VC11\libxml2.vcxproj">
+      <Project>{1d6039f6-5078-416f-a3af-a36efc7e6a1c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\lib\stxxl\vsproj\stxxl.vcxproj">
       <Project>{f17ba5c7-e90e-4b09-a222-e9a74d0759ed}</Project>

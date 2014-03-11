@@ -21,6 +21,12 @@
 #ifndef _LIBICONV_H
 #define _LIBICONV_H
 
+#if defined _MSC_VER && defined _DLL
+# define DLL_VARIABLE __declspec (dllimport)
+#else
+# define DLL_VARIABLE
+#endif
+
 #define _LIBICONV_VERSION 0x010E    /* version number: (major<<8) + minor */
 extern DLL_VARIABLE int _libiconv_version; /* Likewise */
 

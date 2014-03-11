@@ -35,3 +35,5 @@ Log/
 # ignore Eclipse generated project properties
 .settings/
 classes/
+
+obj/
