@@ -29,7 +29,7 @@
     <ClCompile Include="localcharset.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\iconv.c">
+    <ClCompile Include="iconv.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
