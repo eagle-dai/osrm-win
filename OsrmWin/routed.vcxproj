@@ -72,9 +72,7 @@
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
-    <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\server.ini" "$(OutDir)" /f /y</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -103,9 +101,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
-    <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\server.ini" "$(OutDir)" /f /y</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Algorithms\DouglasePeucker.cpp" />
@@ -117,6 +113,7 @@
     <ClCompile Include="..\Server\Http\Reply.cpp" />
     <ClCompile Include="..\Server\RequestParser.cpp" />
     <ClCompile Include="..\Util\GitDescription.cpp" />
+    <ClCompile Include="..\Util\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Library\OSRM.h" />

@@ -111,6 +111,8 @@
     <ClCompile Include="..\Contractor\EdgeBasedGraphFactory.cpp" />
     <ClCompile Include="..\Contractor\TemporaryStorage.cpp" />
     <ClCompile Include="..\prepare.cpp" />
+    <ClCompile Include="..\Util\GitDescription.cpp" />
+    <ClCompile Include="..\Util\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\typedefs.h" />
@@ -159,7 +161,6 @@
     <ClInclude Include="..\Server\Server.h" />
     <ClInclude Include="..\Server\ServerConfiguration.h" />
     <ClInclude Include="..\Server\ServerFactory.h" />
-    <ClInclude Include="..\Util\BaseConfiguration.h" />
     <ClInclude Include="..\Util\GraphLoader.h" />
     <ClInclude Include="..\Util\InputFileUtil.h" />
     <ClInclude Include="..\Util\LinuxStackTrace.h" />

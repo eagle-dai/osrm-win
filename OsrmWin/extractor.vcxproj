@@ -14,7 +14,7 @@
     <ProjectGuid>{F630F025-637A-43DF-9258-2860AE9E6740}</ProjectGuid>
     <RootNamespace>extractor</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>osrm-extractor</ProjectName>
+    <ProjectName>osrm-extract</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
