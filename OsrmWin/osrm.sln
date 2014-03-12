@@ -18,6 +18,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osrm-datastore", "osrm-data
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liblua", "..\lib\lua\build-win\liblua.vcxproj", "{49207EE7-E940-444F-9151-1C92E8A971C8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libprotobuf", "..\lib\protobuf\vsprojects\libprotobuf.vcxproj", "{3E283F37-A4ED-41B7-A3E6-A2D89D131A30}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osmpbf", "..\lib\OSM-binary\build-win\src\osmpbf.vcxproj", "{B23B481A-9077-49CE-A96F-3221B8745DBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -60,6 +64,14 @@ Global
 		{49207EE7-E940-444F-9151-1C92E8A971C8}.Debug|x64.Build.0 = Debug|x64
 		{49207EE7-E940-444F-9151-1C92E8A971C8}.Release|x64.ActiveCfg = Release|x64
 		{49207EE7-E940-444F-9151-1C92E8A971C8}.Release|x64.Build.0 = Release|x64
+		{3E283F37-A4ED-41B7-A3E6-A2D89D131A30}.Debug|x64.ActiveCfg = Debug|x64
+		{3E283F37-A4ED-41B7-A3E6-A2D89D131A30}.Debug|x64.Build.0 = Debug|x64
+		{3E283F37-A4ED-41B7-A3E6-A2D89D131A30}.Release|x64.ActiveCfg = Release|x64
+		{3E283F37-A4ED-41B7-A3E6-A2D89D131A30}.Release|x64.Build.0 = Release|x64
+		{B23B481A-9077-49CE-A96F-3221B8745DBF}.Debug|x64.ActiveCfg = Debug|x64
+		{B23B481A-9077-49CE-A96F-3221B8745DBF}.Debug|x64.Build.0 = Debug|x64
+		{B23B481A-9077-49CE-A96F-3221B8745DBF}.Release|x64.ActiveCfg = Release|x64
+		{B23B481A-9077-49CE-A96F-3221B8745DBF}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

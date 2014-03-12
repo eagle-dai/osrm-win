@@ -34,10 +34,40 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="Source Files\Util">
+      <UniqueIdentifier>{e1d4f9a4-2f23-4587-8f38-124cabc95b21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Extractor">
+      <UniqueIdentifier>{aa0493c6-485b-4305-8aa0-356f926525d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\extractor.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Util\GitDescription.cpp">
+      <Filter>Source Files\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Util\UUID.cpp">
+      <Filter>Source Files\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Extractor\ExtractionContainers.cpp">
+      <Filter>Source Files\Extractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Extractor\ExtractorCallbacks.cpp">
+      <Filter>Source Files\Extractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Extractor\ScriptingEnvironment.cpp">
+      <Filter>Source Files\Extractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Extractor\PBFParser.cpp">
+      <Filter>Source Files\Extractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Extractor\XMLParser.cpp">
+      <Filter>Source Files\Extractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Extractor\BaseParser.cpp">
+      <Filter>Source Files\Extractor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

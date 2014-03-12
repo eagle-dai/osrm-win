@@ -135,13 +135,13 @@ int main (int argc, char *argv[]) {
         SimpleLogger().Write() << "Threads: " << requested_num_threads;
 
         /*** Setup Scripting Environment ***/
-        ScriptingEnvironment scriptingEnvironment(profile_path.c_str());
+        ScriptingEnvironment scriptingEnvironment(profile_path.string().c_str()); // OSRM_WIN change
 
         omp_set_num_threads( std::min( omp_get_num_procs(), requested_num_threads) );
 
         bool file_has_pbf_format(false);
-        std::string output_file_name(input_path.c_str());
-        std::string restrictionsFileName(input_path.c_str());
+        std::string output_file_name(input_path.string()); // OSRM_WIN change
+        std::string restrictionsFileName(input_path.string()); // OSRM_WIN change
         std::string::size_type pos = output_file_name.find(".osm.bz2");
         if(pos==std::string::npos) {
             pos = output_file_name.find(".osm.pbf");
@@ -176,9 +176,9 @@ int main (int argc, char *argv[]) {
         extractCallBacks = new ExtractorCallbacks(&externalMemory, &stringMap);
         BaseParser* parser;
         if(file_has_pbf_format) {
-            parser = new PBFParser(input_path.c_str(), extractCallBacks, scriptingEnvironment);
+            parser = new PBFParser(input_path.string().c_str(), extractCallBacks, scriptingEnvironment); // OSRM_WIN change
         } else {
-            parser = new XMLParser(input_path.c_str(), extractCallBacks, scriptingEnvironment);
+            parser = new XMLParser(input_path.string().c_str(), extractCallBacks, scriptingEnvironment); // OSRM_WIN change
         }
 
         if(!parser->ReadHeader()) {

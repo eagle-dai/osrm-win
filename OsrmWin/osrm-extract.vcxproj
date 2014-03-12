@@ -57,7 +57,7 @@
     <ClCompile>
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\lua\src;..\lib\luabind;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;..\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\lua\src;..\lib\luabind;..\lib\bzip2;..\lib\zlib;..\lib\OSM-binary\include;..\lib\protobuf\src;..\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OSRM_WIN;WIN32;_WIN32_WINNT=0x0600;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -65,12 +65,11 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>\Dev\external\boost_1_55_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories);\Dev\external\boost_1_54_0\lib64-msvc-11.0</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -88,7 +87,7 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\lua\src;..\lib\luabind;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;$(SparsehashPath)\src\;$(SparsehashPath)\src\windows;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\lua\src;..\lib\luabind;..\lib\bzip2;..\lib\zlib;..\lib\OSM-binary\include;..\lib\protobuf\src;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OSRM_WIN;WIN32;_WIN32_WINNT=0x0600;NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -96,8 +95,6 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -124,6 +121,14 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\Extractor\BaseParser.cpp" />
+    <ClCompile Include="..\Extractor\ExtractionContainers.cpp" />
+    <ClCompile Include="..\Extractor\ExtractorCallbacks.cpp" />
+    <ClCompile Include="..\Extractor\PBFParser.cpp" />
+    <ClCompile Include="..\Extractor\ScriptingEnvironment.cpp" />
+    <ClCompile Include="..\Extractor\XMLParser.cpp" />
+    <ClCompile Include="..\Util\GitDescription.cpp" />
+    <ClCompile Include="..\Util\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\win\unistd.h" />
@@ -185,6 +190,21 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
     <ClInclude Include="..\Util\StringUtil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\lib\bzip2\vsprojs\libbz2.vcxproj">
+      <Project>{b256c771-ddd9-4538-b6b0-a25780216b88}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\libiconv\build-win\libiconv.vcxproj">
+      <Project>{1704ea01-6b21-4362-9f1f-44d25cf2e0d7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\libxml2\win32\VC11\libxml2.vcxproj">
+      <Project>{1d6039f6-5078-416f-a3af-a36efc7e6a1c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\OSM-binary\build-win\src\osmpbf.vcxproj">
+      <Project>{b23b481a-9077-49ce-a96f-3221b8745dbf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\protobuf\vsprojects\libprotobuf.vcxproj">
+      <Project>{3e283f37-a4ed-41b7-a3e6-a2d89d131a30}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\lib\stxxl\vsproj\stxxl.vcxproj">
       <Project>{f17ba5c7-e90e-4b09-a222-e9a74d0759ed}</Project>
     </ProjectReference>
