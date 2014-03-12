@@ -71,10 +71,9 @@
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories);\Dev\external\boost_1_54_0\lib64-msvc-11.0</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>\Dev\external\boost_1_55_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories);\Dev\external\boost_1_54_0\lib64-msvc-11.0</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)..\.stxxl" "$(OutDir)" /f /y
@@ -104,12 +103,11 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Dev\external\boost_1_54_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories);\Dev\external\boost_1_54_0\lib64-msvc-11.0</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>\Dev\external\boost_1_55_0\lib64-msvc-11.0;%(AdditionalLibraryDirectories);\Dev\external\boost_1_54_0\lib64-msvc-11.0</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)..\.stxxl" "$(OutDir)" /f /y
