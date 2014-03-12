@@ -160,7 +160,11 @@ int main( const int argc, const char * argv[] ) {
             shared_layout_ptr->ram_index_file_name
         );
         // add zero termination
+#ifdef OSRM_WIN
+        unsigned end_of_string_index = 1023ul < (unsigned)file_index_file_name.length() ? 1023ul : (unsigned)file_index_file_name.length();
+#else
         unsigned end_of_string_index = std::min(1023ul, file_index_file_name.length());
+#endif
         shared_layout_ptr->ram_index_file_name[end_of_string_index] = '\0';
 
         // collect number of elements to store in shared memory object

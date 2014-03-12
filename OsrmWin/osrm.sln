@@ -1,14 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "routed", "routed.vcxproj", "{675D419D-E442-4A21-9030-B54B4C09439A}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extractor", "extractor.vcxproj", "{F630F025-637A-43DF-9258-2860AE9E6740}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osrm-prepare", "createHierarchy.vcxproj", "{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F17BA5C7-E90E-4B09-A222-E9A74D0759ED} = {F17BA5C7-E90E-4B09-A222-E9A74D0759ED}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stxxl", "..\lib\stxxl\vsproj\stxxl.vcxproj", "{F17BA5C7-E90E-4B09-A222-E9A74D0759ED}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libbz2", "..\lib\bzip2\vsprojs\libbz2.vcxproj", "{B256C771-DDD9-4538-B6B0-A25780216B88}"
@@ -17,24 +8,20 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "..\lib\libiconv
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libxml2", "..\lib\libxml2\win32\VC11\libxml2.vcxproj", "{1D6039F6-5078-416F-A3AF-A36EFC7E6A1C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osrm-prepare", "osrm-prepare.vcxproj", "{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osrm-extract", "osrm-extract.vcxproj", "{F630F025-637A-43DF-9258-2860AE9E6740}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osrm-routed", "osrm-routed.vcxproj", "{675D419D-E442-4A21-9030-B54B4C09439A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osrm-datastore", "osrm-datastore.vcxproj", "{EF0D3391-76B4-4F3B-8CCF-67E7B7A05223}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{675D419D-E442-4A21-9030-B54B4C09439A}.Debug|x64.ActiveCfg = Debug|x64
-		{675D419D-E442-4A21-9030-B54B4C09439A}.Debug|x64.Build.0 = Debug|x64
-		{675D419D-E442-4A21-9030-B54B4C09439A}.Release|x64.ActiveCfg = Release|x64
-		{675D419D-E442-4A21-9030-B54B4C09439A}.Release|x64.Build.0 = Release|x64
-		{F630F025-637A-43DF-9258-2860AE9E6740}.Debug|x64.ActiveCfg = Debug|x64
-		{F630F025-637A-43DF-9258-2860AE9E6740}.Debug|x64.Build.0 = Debug|x64
-		{F630F025-637A-43DF-9258-2860AE9E6740}.Release|x64.ActiveCfg = Release|x64
-		{F630F025-637A-43DF-9258-2860AE9E6740}.Release|x64.Build.0 = Release|x64
-		{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}.Debug|x64.ActiveCfg = Debug|x64
-		{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}.Debug|x64.Build.0 = Debug|x64
-		{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}.Release|x64.ActiveCfg = Release|x64
-		{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}.Release|x64.Build.0 = Release|x64
 		{F17BA5C7-E90E-4B09-A222-E9A74D0759ED}.Debug|x64.ActiveCfg = Debug|x64
 		{F17BA5C7-E90E-4B09-A222-E9A74D0759ED}.Debug|x64.Build.0 = Debug|x64
 		{F17BA5C7-E90E-4B09-A222-E9A74D0759ED}.Release|x64.ActiveCfg = Release|x64
@@ -51,6 +38,22 @@ Global
 		{1D6039F6-5078-416F-A3AF-A36EFC7E6A1C}.Debug|x64.Build.0 = Debug|x64
 		{1D6039F6-5078-416F-A3AF-A36EFC7E6A1C}.Release|x64.ActiveCfg = Release|x64
 		{1D6039F6-5078-416F-A3AF-A36EFC7E6A1C}.Release|x64.Build.0 = Release|x64
+		{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}.Debug|x64.ActiveCfg = Debug|x64
+		{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}.Debug|x64.Build.0 = Debug|x64
+		{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}.Release|x64.ActiveCfg = Release|x64
+		{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}.Release|x64.Build.0 = Release|x64
+		{F630F025-637A-43DF-9258-2860AE9E6740}.Debug|x64.ActiveCfg = Debug|x64
+		{F630F025-637A-43DF-9258-2860AE9E6740}.Debug|x64.Build.0 = Debug|x64
+		{F630F025-637A-43DF-9258-2860AE9E6740}.Release|x64.ActiveCfg = Release|x64
+		{F630F025-637A-43DF-9258-2860AE9E6740}.Release|x64.Build.0 = Release|x64
+		{675D419D-E442-4A21-9030-B54B4C09439A}.Debug|x64.ActiveCfg = Debug|x64
+		{675D419D-E442-4A21-9030-B54B4C09439A}.Debug|x64.Build.0 = Debug|x64
+		{675D419D-E442-4A21-9030-B54B4C09439A}.Release|x64.ActiveCfg = Release|x64
+		{675D419D-E442-4A21-9030-B54B4C09439A}.Release|x64.Build.0 = Release|x64
+		{EF0D3391-76B4-4F3B-8CCF-67E7B7A05223}.Debug|x64.ActiveCfg = Debug|x64
+		{EF0D3391-76B4-4F3B-8CCF-67E7B7A05223}.Debug|x64.Build.0 = Debug|x64
+		{EF0D3391-76B4-4F3B-8CCF-67E7B7A05223}.Release|x64.ActiveCfg = Release|x64
+		{EF0D3391-76B4-4F3B-8CCF-67E7B7A05223}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

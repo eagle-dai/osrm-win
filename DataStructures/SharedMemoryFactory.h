@@ -174,7 +174,11 @@ public:
 		bool result = true;
 		try {
 			OSRMLockFile lock_file;
+#ifndef OSRM_WIN
 			boost::interprocess::xsi_key key( lock_file().string().c_str(), id );
+#else
+			std::string key( lock_file().string() );
+#endif
 			result = RegionExists(key);
 		} catch(...) {
 			result = false;
