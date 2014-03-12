@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stxxl", "..\lib\stxxl\vsproj\stxxl.vcxproj", "{F17BA5C7-E90E-4B09-A222-E9A74D0759ED}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libstxxl", "..\lib\stxxl\vsproj\stxxl.vcxproj", "{F17BA5C7-E90E-4B09-A222-E9A74D0759ED}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libbz2", "..\lib\bzip2\vsprojs\libbz2.vcxproj", "{B256C771-DDD9-4538-B6B0-A25780216B88}"
 EndProject
@@ -15,6 +15,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osrm-routed", "osrm-routed.vcxproj", "{675D419D-E442-4A21-9030-B54B4C09439A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osrm-datastore", "osrm-datastore.vcxproj", "{EF0D3391-76B4-4F3B-8CCF-67E7B7A05223}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liblua", "..\lib\lua\build-win\liblua.vcxproj", "{49207EE7-E940-444F-9151-1C92E8A971C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{EF0D3391-76B4-4F3B-8CCF-67E7B7A05223}.Debug|x64.Build.0 = Debug|x64
 		{EF0D3391-76B4-4F3B-8CCF-67E7B7A05223}.Release|x64.ActiveCfg = Release|x64
 		{EF0D3391-76B4-4F3B-8CCF-67E7B7A05223}.Release|x64.Build.0 = Release|x64
+		{49207EE7-E940-444F-9151-1C92E8A971C8}.Debug|x64.ActiveCfg = Debug|x64
+		{49207EE7-E940-444F-9151-1C92E8A971C8}.Debug|x64.Build.0 = Debug|x64
+		{49207EE7-E940-444F-9151-1C92E8A971C8}.Release|x64.ActiveCfg = Release|x64
+		{49207EE7-E940-444F-9151-1C92E8A971C8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

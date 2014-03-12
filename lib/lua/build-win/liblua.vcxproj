@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1704EA01-6B21-4362-9F1F-44D25CF2E0D7}</ProjectGuid>
+    <ProjectGuid>{49207EE7-E940-444F-9151-1C92E8A971C8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libiconv</RootNamespace>
   </PropertyGroup>
@@ -84,18 +84,6 @@
     </Link>
     <Lib />
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="localcharset.h" />
-    <ClInclude Include="relocatable.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="iconv.c" />
-    <ClCompile Include="localcharset.c" />
-    <ClCompile Include="relocatable.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="libiconv.rc" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

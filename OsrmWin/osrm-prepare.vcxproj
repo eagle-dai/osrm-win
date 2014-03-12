@@ -179,6 +179,9 @@
     <ProjectReference Include="..\lib\libxml2\win32\VC11\libxml2.vcxproj">
       <Project>{1d6039f6-5078-416f-a3af-a36efc7e6a1c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\lib\lua\build-win\liblua.vcxproj">
+      <Project>{49207ee7-e940-444f-9151-1c92e8a971c8}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\lib\stxxl\vsproj\stxxl.vcxproj">
       <Project>{f17ba5c7-e90e-4b09-a222-e9a74d0759ed}</Project>
     </ProjectReference>
