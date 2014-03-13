@@ -103,6 +103,8 @@
   <ItemGroup>
     <ClCompile Include="..\Algorithms\DouglasePeucker.cpp" />
     <ClCompile Include="..\Algorithms\PolylineCompressor.cpp" />
+    <ClCompile Include="..\Contractor\EdgeBasedGraphFactory.cpp" />
+    <ClCompile Include="..\Contractor\TemporaryStorage.cpp" />
     <ClCompile Include="..\DataStructures\SearchEngineData.cpp" />
     <ClCompile Include="..\Descriptors\DescriptionFactory.cpp" />
     <ClCompile Include="..\Extractor\BaseParser.cpp" />

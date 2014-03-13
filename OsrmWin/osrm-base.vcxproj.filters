@@ -29,6 +29,9 @@
     <Filter Include="Source Files\Extractor">
       <UniqueIdentifier>{952a0fa8-bc1d-4cb4-8a95-7ffa8a812c73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Contractor">
+      <UniqueIdentifier>{5e747791-0c38-45a0-84c7-adc5d825772d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Library\OSRM.cpp">
@@ -75,6 +78,12 @@
     </ClCompile>
     <ClCompile Include="..\Extractor\ExtractionContainers.cpp">
       <Filter>Source Files\Extractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Contractor\TemporaryStorage.cpp">
+      <Filter>Source Files\Contractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Contractor\EdgeBasedGraphFactory.cpp">
+      <Filter>Source Files\Contractor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
