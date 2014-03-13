@@ -11,22 +11,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{38C3EEAC-032B-4BEA-BECB-C694A47AA7E2}</ProjectGuid>
-    <RootNamespace>createHierarchy</RootNamespace>
+    <ProjectGuid>{C0DD23D5-5738-400B-8FB8-13DC67D4D895}</ProjectGuid>
+    <RootNamespace>routed</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>osrm-prepare</ProjectName>
+    <ProjectName>osrm-base</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v110</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -53,7 +53,7 @@
     <ClCompile>
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\lua\src;..\lib\luabind;..\win;..\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;..\lib\lua\src;..\lib\luabind;..\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OSRM_WIN;WIN32;_WIN32_WINNT=0x0600;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -70,16 +70,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
-    <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\contractor.ini" "$(OutDir)" /f /y</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\lua\src;..\lib\luabind;..\win;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;..\lib\lua\src;..\lib\luabind;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OSRM_WIN;WIN32;_WIN32_WINNT=0x0600;NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -98,32 +96,38 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\contractor.ini" "$(OutDir)" /f /y</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\prepare.cpp" />
+    <ClCompile Include="..\Algorithms\DouglasePeucker.cpp" />
+    <ClCompile Include="..\Algorithms\PolylineCompressor.cpp" />
+    <ClCompile Include="..\DataStructures\SearchEngineData.cpp" />
+    <ClCompile Include="..\Descriptors\DescriptionFactory.cpp" />
+    <ClCompile Include="..\Extractor\BaseParser.cpp" />
+    <ClCompile Include="..\Extractor\ExtractionContainers.cpp" />
+    <ClCompile Include="..\Extractor\ExtractorCallbacks.cpp" />
+    <ClCompile Include="..\Extractor\PBFParser.cpp" />
+    <ClCompile Include="..\Extractor\ScriptingEnvironment.cpp" />
+    <ClCompile Include="..\Extractor\XMLParser.cpp" />
+    <ClCompile Include="..\Library\OSRM.cpp" />
+    <ClCompile Include="..\Server\Http\Reply.cpp" />
+    <ClCompile Include="..\Server\RequestParser.cpp" />
+    <ClCompile Include="..\Util\GitDescription.cpp" />
+    <ClCompile Include="..\Util\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\lib\bzip2\vsprojs\libbz2.vcxproj">
-      <Project>{b256c771-ddd9-4538-b6b0-a25780216b88}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\libiconv\build-win\libiconv.vcxproj">
-      <Project>{1704ea01-6b21-4362-9f1f-44d25cf2e0d7}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\libxml2\win32\VC11\libxml2.vcxproj">
-      <Project>{1d6039f6-5078-416f-a3af-a36efc7e6a1c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\lua\build-win\liblua.vcxproj">
-      <Project>{49207ee7-e940-444f-9151-1c92e8a971c8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\stxxl\vsproj\stxxl.vcxproj">
-      <Project>{f17ba5c7-e90e-4b09-a222-e9a74d0759ed}</Project>
-    </ProjectReference>
-    <ProjectReference Include="osrm-base.vcxproj">
-      <Project>{c0dd23d5-5738-400b-8fb8-13dc67d4d895}</Project>
-    </ProjectReference>
+    <ClInclude Include="..\Library\OSRM.h" />
+    <ClInclude Include="..\DataStructures\BinaryHeap.h" />
+    <ClInclude Include="..\DataStructures\DynamicGraph.h" />
+    <ClInclude Include="..\DataStructures\HashTable.h" />
+    <ClInclude Include="..\DataStructures\ImportEdge.h" />
+    <ClInclude Include="..\DataStructures\InputReaderFactory.h" />
+    <ClInclude Include="..\DataStructures\LRUCache.h" />
+    <ClInclude Include="..\DataStructures\Percent.h" />
+    <ClInclude Include="..\DataStructures\PhantomNodes.h" />
+    <ClInclude Include="..\DataStructures\SearchEngine.h" />
+    <ClInclude Include="..\DataStructures\StaticGraph.h" />
+    <ClInclude Include="..\DataStructures\StaticKDTree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

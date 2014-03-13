@@ -121,73 +121,6 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="..\Extractor\BaseParser.cpp" />
-    <ClCompile Include="..\Extractor\ExtractionContainers.cpp" />
-    <ClCompile Include="..\Extractor\ExtractorCallbacks.cpp" />
-    <ClCompile Include="..\Extractor\PBFParser.cpp" />
-    <ClCompile Include="..\Extractor\ScriptingEnvironment.cpp" />
-    <ClCompile Include="..\Extractor\XMLParser.cpp" />
-    <ClCompile Include="..\Util\GitDescription.cpp" />
-    <ClCompile Include="..\Util\UUID.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\win\unistd.h" />
-    <ClInclude Include="..\typedefs.h" />
-    <ClInclude Include="unistd.h" />
-    <ClInclude Include="..\Contractor\ContractionCleanup.h" />
-    <ClInclude Include="..\Contractor\Contractor.h" />
-    <ClInclude Include="..\DataStructures\BaseParser.h" />
-    <ClInclude Include="..\DataStructures\BinaryHeap.h" />
-    <ClInclude Include="..\DataStructures\ConcurrentQueue.h" />
-    <ClInclude Include="..\DataStructures\DynamicGraph.h" />
-    <ClInclude Include="..\DataStructures\ExtractorCallBacks.h" />
-    <ClInclude Include="..\DataStructures\ExtractorStructs.h" />
-    <ClInclude Include="..\DataStructures\GridEdge.h" />
-    <ClInclude Include="..\DataStructures\HashTable.h" />
-    <ClInclude Include="..\DataStructures\ImportEdge.h" />
-    <ClInclude Include="..\DataStructures\InputReaderFactory.h" />
-    <ClInclude Include="..\DataStructures\LevelInformation.h" />
-    <ClInclude Include="..\DataStructures\LRUCache.h" />
-    <ClInclude Include="..\DataStructures\NNGrid.h" />
-    <ClInclude Include="..\DataStructures\NodeCoords.h" />
-    <ClInclude Include="..\DataStructures\NodeInformationHelpDesk.h" />
-    <ClInclude Include="..\DataStructures\PBFParser.h" />
-    <ClInclude Include="..\DataStructures\Percent.h" />
-    <ClInclude Include="..\DataStructures\PhantomNodes.h" />
-    <ClInclude Include="..\DataStructures\PolylineCompressor.h" />
-    <ClInclude Include="..\DataStructures\SearchEngine.h" />
-    <ClInclude Include="..\DataStructures\StaticGraph.h" />
-    <ClInclude Include="..\DataStructures\StaticKDTree.h" />
-    <ClInclude Include="..\DataStructures\Util.h" />
-    <ClInclude Include="..\DataStructures\XMLParser.h" />
-    <ClInclude Include="..\DataStructures\pbf-proto\fileformat.pb.h" />
-    <ClInclude Include="..\DataStructures\pbf-proto\osmformat.pb.h" />
-    <ClInclude Include="..\Plugins\BaseDescriptor.h" />
-    <ClInclude Include="..\Plugins\BasePlugin.h" />
-    <ClInclude Include="..\Plugins\GPXDescriptor.h" />
-    <ClInclude Include="..\Plugins\HelloWorldPlugin.h" />
-    <ClInclude Include="..\Plugins\JSONDescriptor.h" />
-    <ClInclude Include="..\Plugins\KMLDescriptor.h" />
-    <ClInclude Include="..\Plugins\LocatePlugin.h" />
-    <ClInclude Include="..\Plugins\NearestPlugin.h" />
-    <ClInclude Include="..\Plugins\ObjectForPluginStruct.h" />
-    <ClInclude Include="..\Plugins\PluginMapFactory.h" />
-    <ClInclude Include="..\Plugins\RawRouteData.h" />
-    <ClInclude Include="..\Plugins\RouteParameters.h" />
-    <ClInclude Include="..\Plugins\RoutePlugin.h" />
-    <ClInclude Include="..\Plugins\ViaRoutePlugin.h" />
-    <ClInclude Include="..\Server\BasicDatastructures.h" />
-    <ClInclude Include="..\Server\Connection.h" />
-    <ClInclude Include="..\Server\RequestHandler.h" />
-    <ClInclude Include="..\Server\RequestParser.h" />
-    <ClInclude Include="..\Server\Server.h" />
-    <ClInclude Include="..\Server\ServerConfiguration.h" />
-    <ClInclude Include="..\Server\ServerFactory.h" />
-    <ClInclude Include="..\Util\GraphLoader.h" />
-    <ClInclude Include="..\Util\InputFileUtil.h" />
-    <ClInclude Include="..\Util\LinuxStackTrace.h" />
-    <ClInclude Include="..\Util\MachineInfo.h" />
-    <ClInclude Include="..\Util\StringUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\lib\bzip2\vsprojs\libbz2.vcxproj">
@@ -207,6 +140,9 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
     </ProjectReference>
     <ProjectReference Include="..\lib\stxxl\vsproj\stxxl.vcxproj">
       <Project>{f17ba5c7-e90e-4b09-a222-e9a74d0759ed}</Project>
+    </ProjectReference>
+    <ProjectReference Include="osrm-base.vcxproj">
+      <Project>{c0dd23d5-5738-400b-8fb8-13dc67d4d895}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

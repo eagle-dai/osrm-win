@@ -112,8 +112,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\datastore.cpp" />
-    <ClCompile Include="..\Util\GitDescription.cpp" />
-    <ClCompile Include="..\Util\UUID.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="osrm-base.vcxproj">
+      <Project>{c0dd23d5-5738-400b-8fb8-13dc67d4d895}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

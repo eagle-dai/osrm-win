@@ -99,52 +99,15 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Algorithms\DouglasePeucker.cpp" />
-    <ClCompile Include="..\Algorithms\PolylineCompressor.cpp" />
-    <ClCompile Include="..\DataStructures\SearchEngineData.cpp" />
-    <ClCompile Include="..\Descriptors\DescriptionFactory.cpp" />
-    <ClCompile Include="..\Library\OSRM.cpp" />
-    <ClCompile Include="..\routed.cpp" />
-    <ClCompile Include="..\Server\Http\Reply.cpp" />
-    <ClCompile Include="..\Server\RequestParser.cpp" />
-    <ClCompile Include="..\Util\GitDescription.cpp" />
-    <ClCompile Include="..\Util\UUID.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Library\OSRM.h" />
-    <ClInclude Include="..\typedefs.h" />
-    <ClInclude Include="..\Contractor\ContractionCleanup.h" />
-    <ClInclude Include="..\Contractor\Contractor.h" />
-    <ClInclude Include="..\DataStructures\BinaryHeap.h" />
-    <ClInclude Include="..\DataStructures\DynamicGraph.h" />
-    <ClInclude Include="..\DataStructures\HashTable.h" />
-    <ClInclude Include="..\DataStructures\ImportEdge.h" />
-    <ClInclude Include="..\DataStructures\InputReaderFactory.h" />
-    <ClInclude Include="..\DataStructures\LRUCache.h" />
-    <ClInclude Include="..\DataStructures\Percent.h" />
-    <ClInclude Include="..\DataStructures\PhantomNodes.h" />
-    <ClInclude Include="..\DataStructures\SearchEngine.h" />
-    <ClInclude Include="..\DataStructures\StaticGraph.h" />
-    <ClInclude Include="..\DataStructures\StaticKDTree.h" />
-    <ClInclude Include="..\Plugins\BaseDescriptor.h" />
-    <ClInclude Include="..\Plugins\BasePlugin.h" />
-    <ClInclude Include="..\Plugins\GPXDescriptor.h" />
-    <ClInclude Include="..\Plugins\HelloWorldPlugin.h" />
-    <ClInclude Include="..\Plugins\JSONDescriptor.h" />
-    <ClInclude Include="..\Plugins\KMLDescriptor.h" />
-    <ClInclude Include="..\Plugins\LocatePlugin.h" />
-    <ClInclude Include="..\Plugins\NearestPlugin.h" />
-    <ClInclude Include="..\Plugins\ObjectForPluginStruct.h" />
-    <ClInclude Include="..\Plugins\PluginMapFactory.h" />
-    <ClInclude Include="..\Plugins\RawRouteData.h" />
-    <ClInclude Include="..\Plugins\RouteParameters.h" />
-    <ClInclude Include="..\Plugins\RoutePlugin.h" />
-    <ClInclude Include="..\Plugins\ViaRoutePlugin.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\lib\stxxl\vsproj\stxxl.vcxproj">
       <Project>{f17ba5c7-e90e-4b09-a222-e9a74d0759ed}</Project>
     </ProjectReference>
+    <ProjectReference Include="osrm-base.vcxproj">
+      <Project>{c0dd23d5-5738-400b-8fb8-13dc67d4d895}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\routed.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
