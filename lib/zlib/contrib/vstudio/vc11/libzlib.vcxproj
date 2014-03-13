@@ -99,6 +99,7 @@
     <ClCompile Include="..\..\..\inffast.c" />
     <ClCompile Include="..\..\..\inflate.c" />
     <ClCompile Include="..\..\..\inftrees.c" />
+    <ClCompile Include="..\..\masmx64\inffas8664.c" />
     <ClCompile Include="..\..\minizip\ioapi.c" />
     <ClCompile Include="..\..\..\trees.c" />
     <ClCompile Include="..\..\..\uncompr.c" />
