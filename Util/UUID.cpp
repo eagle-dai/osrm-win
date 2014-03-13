@@ -43,6 +43,7 @@ UUID::UUID() : magic_number(1297240911) {
  	std::string temp_string(__DATE__);
  	temp_string += __TIME__;
 
+#ifndef OSRM_WIN
  	std::copy(MD5PREPARE, MD5PREPARE+strlen(MD5PREPARE), md5_prepare);
  	temp_string += md5_prepare;
  	std::copy(MD5RTREE, MD5RTREE+32, md5_tree);
@@ -51,6 +52,16 @@ UUID::UUID() : magic_number(1297240911) {
  	temp_string += md5_graph;
  	std::copy(MD5OBJECTS, MD5OBJECTS+32, md5_objects);
  	temp_string += md5_objects;
+#else
+    strncpy_s(md5_prepare, MD5PREPARE, strlen(MD5PREPARE));
+ 	temp_string += md5_prepare;
+    strncpy_s(md5_tree, MD5RTREE, strlen(MD5RTREE));
+ 	temp_string += md5_tree;
+    strncpy_s(md5_graph, MD5GRAPH, strlen(MD5GRAPH));
+ 	temp_string += md5_graph;
+    strncpy_s(md5_objects, MD5OBJECTS, strlen(MD5OBJECTS));
+ 	temp_string += md5_objects;
+#endif
 
 	named_uuid = gen(temp_string);
 	has_64_bits = HAS64BITS;
