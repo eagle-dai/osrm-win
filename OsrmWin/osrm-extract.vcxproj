@@ -66,6 +66,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <ForcedIncludeFiles>./src/osrm_base_inc.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
@@ -96,6 +97,7 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <ForcedIncludeFiles>./src/osrm_base_inc.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <AdditionalOptions>/STACK:16777216 /NOLOGO /OPT:REF %(AdditionalOptions)</AdditionalOptions>
