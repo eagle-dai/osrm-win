@@ -75,13 +75,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
-    <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\.stxxl" "$(OutDir)" /f /y
-xcopy "$(SolutionDir)..\extractor.ini" "$(OutDir)" /f /y
-xcopy "$(SolutionDir)..\speedprofile.ini" "$(OutDir)" /f /y
-xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -108,13 +102,7 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\.stxxl" "$(OutDir)" /f /y
-xcopy "$(SolutionDir)..\extractor.ini" "$(OutDir)" /f /y
-xcopy "$(SolutionDir)..\speedprofile.ini" "$(OutDir)" /f /y
-xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\extractor.cpp">
@@ -134,6 +122,12 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
     <ProjectReference Include="..\lib\libxml2\win32\VC11\libxml2.vcxproj">
       <Project>{1d6039f6-5078-416f-a3af-a36efc7e6a1c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\lib\luabind\build-win\libluabind.vcxproj">
+      <Project>{c2541392-a782-42de-bb8f-85aa72fdbbb0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\lua\build-win\liblua.vcxproj">
+      <Project>{49207ee7-e940-444f-9151-1c92e8a971c8}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\lib\OSM-binary\build-win\src\osmpbf.vcxproj">
       <Project>{b23b481a-9077-49ce-a96f-3221b8745dbf}</Project>
     </ProjectReference>
@@ -142,6 +136,9 @@ xcopy "$(Bzip2Path)\bin\libbz2.dll" "$(OutDir)" /f /y
     </ProjectReference>
     <ProjectReference Include="..\lib\stxxl\vsproj\stxxl.vcxproj">
       <Project>{f17ba5c7-e90e-4b09-a222-e9a74d0759ed}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\zlib\contrib\vstudio\vc11\libzlib.vcxproj">
+      <Project>{745dec58-ebb3-47a9-a9b8-4c6627c01bf8}</Project>
     </ProjectReference>
     <ProjectReference Include="osrm-base.vcxproj">
       <Project>{c0dd23d5-5738-400b-8fb8-13dc67d4d895}</Project>

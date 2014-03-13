@@ -71,7 +71,8 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\contractor.ini" "$(OutDir)" /f /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -99,7 +100,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\contractor.ini" "$(OutDir)" /f /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -114,6 +116,9 @@
     </ProjectReference>
     <ProjectReference Include="..\lib\libxml2\win32\VC11\libxml2.vcxproj">
       <Project>{1d6039f6-5078-416f-a3af-a36efc7e6a1c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\luabind\build-win\libluabind.vcxproj">
+      <Project>{c2541392-a782-42de-bb8f-85aa72fdbbb0}</Project>
     </ProjectReference>
     <ProjectReference Include="..\lib\lua\build-win\liblua.vcxproj">
       <Project>{49207ee7-e940-444f-9151-1c92e8a971c8}</Project>
