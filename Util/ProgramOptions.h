@@ -141,10 +141,12 @@ inline bool GenerateServerProgramOptions(
             "namesdata",
             boost::program_options::value<boost::filesystem::path>(&paths["namesdata"]),
             ".names file")
+#if 0 // OSRM_WIN change
         (
             "timestamp",
             boost::program_options::value<boost::filesystem::path>(&paths["timestamp"]),
             ".timestamp file")
+#endif
         (
             "ip,i",
             boost::program_options::value<std::string>(&ip_address)->default_value("0.0.0.0"),

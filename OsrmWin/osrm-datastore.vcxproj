@@ -75,6 +75,12 @@
       </Version>
     </Link>
     <ProjectReference />
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -109,6 +115,12 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <ProjectReference />
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\datastore.cpp" />

@@ -71,8 +71,8 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -100,8 +100,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

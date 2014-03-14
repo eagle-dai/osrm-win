@@ -76,6 +76,12 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -103,6 +109,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\extractor.cpp">

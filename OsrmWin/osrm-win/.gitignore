@@ -1,0 +1,16 @@
+stxxl.errlog
+stxxl.log
+
+*.osrm
+*.osrm.names
+*.osrm.restrictions
+*.osrm.edges
+*.osrm.fileIndex
+*.osrm.hsgr
+*.osrm.nodes
+*.osrm.ramIndex
+
+server.ini
+*.exe
+
+bin/
