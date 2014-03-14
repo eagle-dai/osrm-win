@@ -76,11 +76,13 @@
     </Link>
     <ProjectReference />
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+      <Command>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+      <Message>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Message>
     </PostBuildEvent>
+    <PreLinkEvent />
+    <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -116,11 +118,15 @@
     </Link>
     <ProjectReference />
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+      <Command>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+      <Message>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Message>
     </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>if not exists $(SolutionDir)osrm-win\bin mkdir $(SolutionDir)osrm-win\bin</Command>
+    </PreLinkEvent>
+    <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\datastore.cpp" />

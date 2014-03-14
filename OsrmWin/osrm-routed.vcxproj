@@ -72,9 +72,10 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+      <Message>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Message>
+      <Command>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Command>
     </PostBuildEvent>
+    <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -102,9 +103,10 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+      <Message>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Message>
+      <Command>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Command>
     </PostBuildEvent>
+    <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\lib\stxxl\vsproj\stxxl.vcxproj">

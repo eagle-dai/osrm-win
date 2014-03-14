@@ -15,9 +15,6 @@ echo fileIndex=%OSM%.fileIndex >> server.ini
 echo namesData=%OSM%.names >> server.ini
 rem echo timestamp=%OSM%.timestamp >> server.ini
 
-rem start ../WebContent/Main.html
+start ../WebContent/Main.html
 osrm-routed.exe
 cd ..
-
-
-

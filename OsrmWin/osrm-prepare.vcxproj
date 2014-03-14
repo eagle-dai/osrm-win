@@ -71,9 +71,10 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
-      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+      <Command>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Command>
+      <Message>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Message>
     </PostBuildEvent>
+    <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -100,9 +101,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
-      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+      <Command>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Command>
+      <Message>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Message>
     </PostBuildEvent>
+    <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\prepare.cpp" />

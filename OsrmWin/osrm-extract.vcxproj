@@ -50,10 +50,7 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
+    <PreBuildEvent />
     <ClCompile>
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
@@ -77,10 +74,10 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+      <Command>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+      <Message>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -110,11 +107,12 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Command>
+      <Command>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>copy /Y $(TargetPath) $(SolutionDir)\osrm-win\bin</Message>
+      <Message>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Message>
     </PostBuildEvent>
+    <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\extractor.cpp">
