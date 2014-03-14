@@ -13,7 +13,7 @@ echo edgesData=%OSM%.edges >> server.ini
 echo ramIndex=%OSM%.ramIndex >> server.ini
 echo fileIndex=%OSM%.fileIndex >> server.ini
 echo namesData=%OSM%.names >> server.ini
-echo timestamp=%OSM%.timestamp >> server.ini
+rem echo timestamp=%OSM%.timestamp >> server.ini
 
 rem start ../WebContent/Main.html
 osrm-routed.exe
