@@ -123,9 +123,7 @@
     <PostBuildEvent>
       <Message>xcopy /Y $(TargetPath) $(SolutionDir)osrm-win\bin\</Message>
     </PostBuildEvent>
-    <PreLinkEvent>
-      <Command>if not exists $(SolutionDir)osrm-win\bin mkdir $(SolutionDir)osrm-win\bin</Command>
-    </PreLinkEvent>
+    <PreLinkEvent />
     <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
