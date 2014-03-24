@@ -1,3 +1,10 @@
 
 - all projects pre-defined
   OSRM_WIN, NOMINMAX
+
+- openMP disabled
+
+- 64bit release configuration is verified OK
+
+- for easy debug, typedefs.h is modified to disable optimization on release mode.
+  comment it out before building if you care about performance.

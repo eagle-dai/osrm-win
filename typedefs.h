@@ -61,4 +61,8 @@ typedef unsigned int EdgeWeight;
 static const NodeID SPECIAL_NODEID = boost::integer_traits<uint32_t>::const_max;
 static const EdgeID SPECIAL_EDGEID = boost::integer_traits<uint32_t>::const_max;
 
+#if defined(OSRM_WIN) && !defined(_DEBUG)
+#pragma optimize("", off) // for easy debugging in release mode
+#endif
+
 #endif /* TYPEDEFS_H_ */
