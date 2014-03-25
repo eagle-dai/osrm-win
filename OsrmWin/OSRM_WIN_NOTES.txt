@@ -2,9 +2,18 @@
 - all projects pre-defined
   OSRM_WIN, NOMINMAX
 
-- openMP disabled
+- OpenMP disabled. To enable it, update project settings:
+  Configuration Properties | c/C+= | Language | Open MP Support
 
 - 64bit release configuration is verified OK
 
 - for easy debug, typedefs.h is modified to disable optimization on release mode.
   comment it out before building if you care about performance.
+
+- build:
+  Open OsrmWin\OSRM-WIN.sln with Visual C++ Express 2012
+  Build configuration set to x64 | Release
+  Right click the following projects one by one and click build on popup menu
+    osrm-datastore, osrm-extract, osrm-prepare,osrm-route
+  Output are in OsrmWin\osrm-win\
+
