@@ -23,7 +23,7 @@ OSRM.RoutingGeometry = {
 
 // show route geometry - if there is a route
 show: function(response) {
-	var geometry = OSRM.RoutingGeometry._decode(response.route_geometry, 5);
+	var geometry = OSRM.RoutingGeometry._decode(response.route_geometry, 6); // OSRM_WIN fix: 5 -> 6
 
 	OSRM.G.route.showRoute(geometry, OSRM.Route.ROUTE);
 },
