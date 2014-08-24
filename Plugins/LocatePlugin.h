@@ -25,99 +25,55 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef LOCATEPLUGIN_H_
-#define LOCATEPLUGIN_H_
+#ifndef LOCATE_PLUGIN_H
+#define LOCATE_PLUGIN_H
 
 #include "BasePlugin.h"
+#include "../DataStructures/JSONContainer.h"
 #include "../Util/StringUtil.h"
 
-//locates the nearest node in the road network for a given coordinate.
+#include <string>
 
-template<class DataFacadeT>
-class LocatePlugin : public BasePlugin {
-public:
-    LocatePlugin(DataFacadeT * facade)
-     :
-        descriptor_string("locate"),
-        facade(facade)
-    { }
-    const std::string & GetDescriptor() const { return descriptor_string; }
+// locates the nearest node in the road network for a given coordinate.
+template <class DataFacadeT> class LocatePlugin : public BasePlugin
+{
+  public:
+    explicit LocatePlugin(DataFacadeT *facade) : descriptor_string("locate"), facade(facade) {}
+    const std::string GetDescriptor() const { return descriptor_string; }
 
-    void HandleRequest(
-        const RouteParameters & routeParameters,
-        http::Reply& reply
-    ) {
-        //check number of parameters
-        if(!routeParameters.coordinates.size()) {
-            reply = http::Reply::StockReply(http::Reply::badRequest);
-            return;
-        }
-        if(false == checkCoord(routeParameters.coordinates[0])) {
+    void HandleRequest(const RouteParameters &route_parameters, http::Reply &reply)
+    {
+        // check number of parameters
+        if (route_parameters.coordinates.empty() ||
+            !route_parameters.coordinates.front().isValid())
+        {
             reply = http::Reply::StockReply(http::Reply::badRequest);
             return;
         }
 
-        //query to helpdesk
+        JSON::Object json_result;
         FixedPointCoordinate result;
-        std::string tmp;
-        //json
-
-        if(!routeParameters.jsonpParameter.empty()) {
-            reply.content.push_back(routeParameters.jsonpParameter);
-            reply.content.push_back("(");
+        if (!facade->LocateClosestEndPointForCoordinate(route_parameters.coordinates.front(),
+                                                        result))
+        {
+            json_result.values["status"] = 207;
         }
-        reply.status = http::Reply::ok;
-        reply.content.push_back ("{");
-        reply.content.push_back ("\"version\":0.3,");
-        if(
-            !facade->LocateClosestEndPointForCoordinate(
-                routeParameters.coordinates[0],
-                result
-             )
-        ) {
-            reply.content.push_back ("\"status\":207,");
-            reply.content.push_back ("\"mapped_coordinate\":[]");
-        } else {
-            //Write coordinate to stream
+        else
+        {
             reply.status = http::Reply::ok;
-            reply.content.push_back ("\"status\":0,");
-            reply.content.push_back ("\"mapped_coordinate\":");
-            convertInternalLatLonToString(result.lat, tmp);
-            reply.content.push_back("[");
-            reply.content.push_back(tmp);
-            convertInternalLatLonToString(result.lon, tmp);
-            reply.content.push_back(",");
-            reply.content.push_back(tmp);
-            reply.content.push_back("]");
+            json_result.values["status"] = 0;
+            JSON::Array json_coordinate;
+            json_coordinate.values.push_back(result.lat/COORDINATE_PRECISION);
+            json_coordinate.values.push_back(result.lon/COORDINATE_PRECISION);
+            json_result.values["mapped_coordinate"] = json_coordinate;
         }
-        reply.content.push_back(",\"transactionId\": \"OSRM Routing Engine JSON Locate (v0.3)\"");
-        reply.content.push_back("}");
-        reply.headers.resize(3);
-        if(!routeParameters.jsonpParameter.empty()) {
-            reply.content.push_back( ")");
-            reply.headers[1].name = "Content-Type";
-            reply.headers[1].value = "text/javascript";
-            reply.headers[2].name = "Content-Disposition";
-            reply.headers[2].value = "attachment; filename=\"location.js\"";
-        } else {
-            reply.headers[1].name = "Content-Type";
-            reply.headers[1].value = "application/x-javascript";
-            reply.headers[2].name = "Content-Disposition";
-            reply.headers[2].value = "attachment; filename=\"location.json\"";
-        }
-        reply.headers[0].name = "Content-Length";
-        unsigned content_length = 0;
-        BOOST_FOREACH(const std::string & snippet, reply.content) {
-            content_length += snippet.length();
-        }
-        intToString(content_length, tmp);
-        reply.headers[0].value = tmp;
-        return;
+
+        JSON::render(reply.content, json_result);
     }
 
-private:
+  private:
     std::string descriptor_string;
-    DataFacadeT * facade;
+    DataFacadeT *facade;
 };
 
-#endif /* LOCATEPLUGIN_H_ */
+#endif /* LOCATE_PLUGIN_H */

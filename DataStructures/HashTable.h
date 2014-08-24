@@ -25,43 +25,54 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef HASHTABLE_H_
-#define HASHTABLE_H_
+#ifndef HASH_TABLE_H
+#define HASH_TABLE_H
 
-#include <boost/ref.hpp>
-#include <boost/unordered_map.hpp>
+#include <vector>
 
-template<typename keyT, typename valueT>
-class HashTable : public boost::unordered_map<keyT, valueT> {
-private:
-    typedef boost::unordered_map<keyT, valueT> super;
-public:
-    HashTable() : super() { }
+template <typename Key, typename Value>
+class HashTable
+{
+  private:
+    typedef std::pair<Key, Value> KeyValPair;
+    std::vector<KeyValPair> table;
 
-    HashTable(const unsigned size) : super(size) { }
+  public:
+    HashTable() {}
 
-    HashTable &operator=(const HashTable &other) {
-        super::operator = (other);
-        return *this;
+    inline void Add(Key const &key, Value const &value)
+    {
+        table.emplace_back(std::move(key), std::move(value));
     }
 
-    inline void Add(const keyT& key, const valueT& value){
-        super::insert(std::make_pair(key, value));
+    inline void Clear()
+    {
+        table.clear();
     }
 
-    inline valueT Find(const keyT& key) const {
-        if(super::find(key) == super::end()) {
-            return valueT();
+    inline const Value Find(Key const &key) const
+    {
+        for (const auto &key_val_pair : table)
+        {
+            if (key_val_pair.first == key)
+            {
+                return key_val_pair.second;
+            }
         }
-        return boost::ref(super::find(key)->second);
+        return Value();
     }
 
-    inline bool Holds(const keyT& key) const {
-        if(super::find(key) == super::end()) {
-            return false;
+    inline const bool Holds(Key const &key) const
+    {
+        for (const auto &key_val_pair : table)
+        {
+            if (key_val_pair.first == key)
+            {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 };
 
-#endif /* HASHTABLE_H_ */
+#endif /* HASH_TABLE_H */

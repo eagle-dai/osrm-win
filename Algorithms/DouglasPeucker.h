@@ -28,42 +28,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef DOUGLASPEUCKER_H_
 #define DOUGLASPEUCKER_H_
 
-#include "../DataStructures/Coordinate.h"
-#include "../DataStructures/SegmentInformation.h"
-
-#include <boost/assert.hpp>
-
-#include <cmath>
-
-#include <limits>
 #include <stack>
+#include <utility>
 #include <vector>
 
-/*This class object computes the bitvector of indicating generalized input points
- * according to the (Ramer-)Douglas-Peucker algorithm.
+/* This class object computes the bitvector of indicating generalized input
+ * points according to the (Ramer-)Douglas-Peucker algorithm.
  *
- * Input is vector of pairs. Each pair consists of the point information and a bit
- * indicating if the points is present in the generalization.
+ * Input is vector of pairs. Each pair consists of the point information and a
+ * bit indicating if the points is present in the generalization.
  * Note: points may also be pre-selected*/
 
-class DouglasPeucker {
-private:
-    typedef std::pair<std::size_t, std::size_t> PairOfPoints;
-    //Stack to simulate the recursion
-    std::stack<PairOfPoints > recursion_stack;
+struct SegmentInformation;
 
-    /**
-     * This distance computation does integer arithmetic only and is about twice as fast as
-     * the other distance function. It is an approximation only, but works more or less ok.
-     */
-    int fastDistance(
-        const FixedPointCoordinate& point,
-        const FixedPointCoordinate& segA,
-        const FixedPointCoordinate& segB
-    ) const;
-public:
-    void Run(std::vector<SegmentInformation> & input_geometry, const unsigned zoom_level);
+class DouglasPeucker
+{
+  private:
+    std::vector<int> douglas_peucker_thresholds;
 
+    typedef std::pair<unsigned, unsigned> GeometryRange;
+    // Stack to simulate the recursion
+    std::stack<GeometryRange> recursion_stack;
+
+  public:
+    DouglasPeucker();
+    void Run(std::vector<SegmentInformation> &input_geometry, const unsigned zoom_level);
 };
 
 #endif /* DOUGLASPEUCKER_H_ */

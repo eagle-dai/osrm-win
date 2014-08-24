@@ -28,32 +28,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef BASEPLUGIN_H_
 #define BASEPLUGIN_H_
 
-#include "../DataStructures/Coordinate.h"
-#include "../Server/DataStructures/RouteParameters.h"
-#include "../Server/Http/Reply.h"
+#include "../Util/StringUtil.h"
+
+#include <osrm/Coordinate.h>
+#include <osrm/Reply.h>
+#include <osrm/RouteParameters.h>
 
 #include <string>
 #include <vector>
 
-class BasePlugin {
-public:
-	BasePlugin() { }
-	//Maybe someone can explain the pure virtual destructor thing to me (dennis)
-	virtual ~BasePlugin() { }
-	virtual const std::string & GetDescriptor() const = 0;
-	virtual void HandleRequest(const RouteParameters & routeParameters, http::Reply& reply) = 0;
-
-	inline bool checkCoord(const FixedPointCoordinate & c) {
-        if(
-            c.lat >   90*COORDINATE_PRECISION ||
-            c.lat <  -90*COORDINATE_PRECISION ||
-            c.lon >  180*COORDINATE_PRECISION ||
-            c.lon < -180*COORDINATE_PRECISION
-        ) {
-            return false;
-        }
-        return true;
-    }
+class BasePlugin
+{
+  public:
+    BasePlugin() {}
+    // Maybe someone can explain the pure virtual destructor thing to me (dennis)
+    virtual ~BasePlugin() {}
+    virtual const std::string GetDescriptor() const = 0;
+    virtual void HandleRequest(const RouteParameters &routeParameters, http::Reply &reply) = 0;
 };
 
 #endif /* BASEPLUGIN_H_ */

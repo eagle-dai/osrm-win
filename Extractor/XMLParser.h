@@ -29,24 +29,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define XMLPARSER_H_
 
 #include "BaseParser.h"
-#include "../DataStructures/Coordinate.h"
-#include "../Util/SimpleLogger.h"
-#include "../Util/StringUtil.h"
-#include "../typedefs.h"
+#include "../DataStructures/Restriction.h"
 
 #include <libxml/xmlreader.h>
 
+class ExtractorCallbacks;
 
-class XMLParser : public BaseParser {
-public:
-    XMLParser(const char* filename, ExtractorCallbacks* ec, ScriptingEnvironment& se);
+class XMLParser : public BaseParser
+{
+  public:
+    XMLParser(const char *filename,
+              ExtractorCallbacks *extractor_callbacks,
+              ScriptingEnvironment &scripting_environment);
     bool ReadHeader();
     bool Parse();
 
-private:
-    InputRestrictionContainer _ReadXMLRestriction();
-    ExtractionWay _ReadXMLWay();
-    ImportNode _ReadXMLNode();
+  private:
+    InputRestrictionContainer ReadXMLRestriction();
+    ExtractionWay ReadXMLWay();
+    ImportNode ReadXMLNode();
     xmlTextReaderPtr inputReader;
 };
 

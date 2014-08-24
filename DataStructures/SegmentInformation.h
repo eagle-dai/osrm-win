@@ -25,27 +25,48 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef SEGMENTINFORMATION_H_
-#define SEGMENTINFORMATION_H_
+#ifndef SEGMENT_INFORMATION_H
+#define SEGMENT_INFORMATION_H
 
-#include "Coordinate.h"
 #include "TurnInstructions.h"
+
 #include "../typedefs.h"
 
-#include <climits>
+#include <osrm/Coordinate.h>
 
-struct SegmentInformation {
+// Struct fits everything in one cache line
+struct SegmentInformation
+{
     FixedPointCoordinate location;
-    NodeID nameID;
-    double length;
-    unsigned duration;
-    double bearing;
-    TurnInstruction turnInstruction;
-    bool necessary;
-    SegmentInformation(const FixedPointCoordinate & loc, const NodeID nam, const double len, const unsigned dur, const TurnInstruction tInstr, const bool nec) :
-            location(loc), nameID(nam), length(len), duration(dur), bearing(0.), turnInstruction(tInstr), necessary(nec) {}
-    SegmentInformation(const FixedPointCoordinate & loc, const NodeID nam, const double len, const unsigned dur, const TurnInstruction tInstr) :
-        location(loc), nameID(nam), length(len), duration(dur), bearing(0.), turnInstruction(tInstr), necessary(tInstr != 0) {}
+    NodeID name_id;
+    EdgeWeight duration;
+    float length;
+    short bearing; // more than enough [0..3600] fits into 12 bits
+    TurnInstruction turn_instruction;
+    bool necessary:1;
+    bool is_via_location:1;
+
+    explicit SegmentInformation(const FixedPointCoordinate &location,
+                                const NodeID name_id,
+                                const EdgeWeight duration,
+                                const float length,
+                                const TurnInstruction turn_instruction,
+                                const bool necessary,
+                                const bool is_via_location)
+        : location(location), name_id(name_id), duration(duration), length(length), bearing(0),
+          turn_instruction(turn_instruction), necessary(necessary), is_via_location(is_via_location)
+    {
+    }
+
+    explicit SegmentInformation(const FixedPointCoordinate &location,
+                                const NodeID name_id,
+                                const EdgeWeight duration,
+                                const float length,
+                                const TurnInstruction turn_instruction)
+        : location(location), name_id(name_id), duration(duration), length(length), bearing(0),
+          turn_instruction(turn_instruction), necessary(turn_instruction != TurnInstruction::NoTurn), is_via_location(false)
+    {
+    }
 };
 
-#endif /* SEGMENTINFORMATION_H_ */
+#endif /* SEGMENT_INFORMATION_H */

@@ -31,47 +31,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "QueryNode.h"
 #include "../DataStructures/HashTable.h"
 
+#include <string>
 
-struct ExternalMemoryNode : NodeInfo {
-    ExternalMemoryNode(
-        int lat,
-        int lon,
-        unsigned int id,
-        bool bollard,
-        bool traffic_light
-    ) :
-        NodeInfo(lat, lon, id),
-        bollard(bollard),
-        trafficLight(traffic_light)
-    { }
-    ExternalMemoryNode() : bollard(false), trafficLight(false) {}
+struct ExternalMemoryNode : NodeInfo
+{
+    ExternalMemoryNode(int lat, int lon, unsigned int id, bool bollard, bool traffic_light);
 
-    static ExternalMemoryNode min_value() {
-        return ExternalMemoryNode(0,0,0, false, false);
-    }
-    static ExternalMemoryNode max_value() {
-        return ExternalMemoryNode(
-            std::numeric_limits<int>::max(),
-            std::numeric_limits<int>::max(),
-            std::numeric_limits<unsigned>::max(),
-            false,
-            false
-        );
-    }
-    NodeID key() const {
-        return id;
-    }
+    ExternalMemoryNode();
+
+    static ExternalMemoryNode min_value();
+
+    static ExternalMemoryNode max_value();
+
     bool bollard;
     bool trafficLight;
 };
 
-struct ImportNode : public ExternalMemoryNode {
+struct ImportNode : public ExternalMemoryNode
+{
     HashTable<std::string, std::string> keyVals;
 
-	inline void Clear() {
-		keyVals.clear();
-		lat = 0; lon = 0; id = 0; bollard = false; trafficLight = false;
-	}
+    inline void Clear();
 };
 
 #endif /* IMPORTNODE_H_ */

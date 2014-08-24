@@ -25,77 +25,79 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef HELLOWORLDPLUGIN_H_
-#define HELLOWORLDPLUGIN_H_
+#ifndef HELLO_WORLD_PLUGIN_H
+#define HELLO_WORLD_PLUGIN_H
 
 #include "BasePlugin.h"
+#include "../DataStructures/JSONContainer.h"
 #include "../Util/StringUtil.h"
 
 #include <string>
 
-class HelloWorldPlugin : public BasePlugin {
-    private:
-        std::string temp_string;
-public:
-	HelloWorldPlugin() : descriptor_string("hello"){}
-	virtual ~HelloWorldPlugin() { }
-	const std::string & GetDescriptor()    const { return descriptor_string; }
+class HelloWorldPlugin : public BasePlugin
+{
+  private:
+    std::string temp_string;
 
-	void HandleRequest(const RouteParameters & routeParameters, http::Reply& reply) {
-		reply.status = http::Reply::ok;
-		reply.content.push_back("<html><head><title>Hello World Demonstration Document</title></head><body><h1>Hello, World!</h1>");
-		reply.content.push_back("<pre>");
-        reply.content.push_back("zoom level: ");
-        intToString(routeParameters.zoomLevel, temp_string);
-        reply.content.push_back(temp_string);
-        reply.content.push_back("\nchecksum: ");
-        intToString(routeParameters.checkSum, temp_string);
-        reply.content.push_back(temp_string);
-        reply.content.push_back("\ninstructions: ");
-        reply.content.push_back((routeParameters.printInstructions ? "yes" : "no"));
-        reply.content.push_back(temp_string);
-        reply.content.push_back("\ngeometry: ");
-        reply.content.push_back((routeParameters.geometry ? "yes" : "no"));
-        reply.content.push_back("\ncompression: ");
-        reply.content.push_back((routeParameters.compression ? "yes" : "no"));
-        reply.content.push_back("\noutput format: ");
-        reply.content.push_back(routeParameters.outputFormat);
-        reply.content.push_back("\njson parameter: ");
-        reply.content.push_back(routeParameters.jsonpParameter);
-        reply.content.push_back("\nlanguage: ");
-        reply.content.push_back(routeParameters.language);
-        reply.content.push_back("\nNumber of locations: ");
-        intToString((int)routeParameters.coordinates.size(), temp_string);
-        reply.content.push_back(temp_string);
-        reply.content.push_back("\n");
-        for(unsigned i = 0; i < routeParameters.coordinates.size(); ++i) {
-            reply.content.push_back( "  [");
-            intToString(i, temp_string);
-            reply.content.push_back(temp_string);
-            reply.content.push_back("] ");
-            doubleToString(routeParameters.coordinates[i].lat/COORDINATE_PRECISION, temp_string);
-            reply.content.push_back(temp_string);
-            reply.content.push_back(",");
-            doubleToString(routeParameters.coordinates[i].lon/COORDINATE_PRECISION, temp_string);
-            reply.content.push_back(temp_string);
-            reply.content.push_back("\n");
+  public:
+    HelloWorldPlugin() : descriptor_string("hello") {}
+    virtual ~HelloWorldPlugin() {}
+    const std::string GetDescriptor() const { return descriptor_string; }
+
+    void HandleRequest(const RouteParameters &routeParameters, http::Reply &reply)
+    {
+        reply.status = http::Reply::ok;
+
+        JSON::Object json_result;
+        std::string temp_string;
+        json_result.values["title"] = "Hello World";
+
+        temp_string = IntToString(routeParameters.zoom_level);
+        json_result.values["zoom_level"] = temp_string;
+
+        temp_string = UintToString(routeParameters.check_sum);
+        json_result.values["check_sum"] = temp_string;
+        json_result.values["instructions"] = (routeParameters.print_instructions ? "yes" : "no");
+        json_result.values["geometry"] = (routeParameters.geometry ? "yes" : "no");
+        json_result.values["compression"] = (routeParameters.compression ? "yes" : "no");
+        json_result.values["output_format"] = (!routeParameters.output_format.empty() ? "yes" : "no");
+
+        json_result.values["jsonp_parameter"] = (!routeParameters.jsonp_parameter.empty() ? "yes" : "no");
+        json_result.values["language"] = (!routeParameters.language.empty() ? "yes" : "no");
+
+        temp_string = UintToString(static_cast<unsigned>(routeParameters.coordinates.size()));
+        json_result.values["location_count"] = temp_string;
+
+        JSON::Array json_locations;
+        unsigned counter = 0;
+        for (const FixedPointCoordinate &coordinate : routeParameters.coordinates)
+        {
+            JSON::Object json_location;
+            JSON::Array json_coordinates;
+
+            json_coordinates.values.push_back(coordinate.lat / COORDINATE_PRECISION);
+            json_coordinates.values.push_back(coordinate.lon / COORDINATE_PRECISION);
+            json_location.values[UintToString(counter)] = json_coordinates;
+            json_locations.values.push_back(json_location);
+            ++counter;
         }
-        reply.content.push_back( "Number of hints: ");
-        intToString((int)routeParameters.hints.size(), temp_string);
-        reply.content.push_back(temp_string);
-        reply.content.push_back("\n");
-        for(unsigned i = 0; i < routeParameters.hints.size(); ++i) {
-            reply.content.push_back( "  [");
-            intToString(i, temp_string);
-            reply.content.push_back(temp_string);
-            reply.content.push_back("] ");
-            reply.content.push_back(routeParameters.hints[i]);
-            reply.content.push_back("\n");
+        json_result.values["locations"] = json_locations;
+        json_result.values["hint_count"] = routeParameters.hints.size();
+
+        JSON::Array json_hints;
+        counter = 0;
+        for (const std::string &current_hint : routeParameters.hints)
+        {
+            json_hints.values.push_back(current_hint);
+            ++counter;
         }
-        reply.content.push_back( "</pre></body></html>");
-	}
-private:
+        json_result.values["hints"] = json_hints;
+
+        JSON::render(reply.content, json_result);
+    }
+
+  private:
     std::string descriptor_string;
 };
 
-#endif /* HELLOWORLDPLUGIN_H_ */
+#endif // HELLO_WORLD_PLUGIN_H

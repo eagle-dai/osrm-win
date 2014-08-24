@@ -25,180 +25,181 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef STATICGRAPH_H_INCLUDED
-#define STATICGRAPH_H_INCLUDED
+#ifndef STATIC_GRAPH_H
+#define STATIC_GRAPH_H
 
-#include "../DataStructures/Percent.h"
-#include "../DataStructures/SharedMemoryVectorWrapper.h"
+#include "Percent.h"
+#include "Range.h"
+#include "SharedMemoryVectorWrapper.h"
 #include "../Util/SimpleLogger.h"
 #include "../typedefs.h"
 
+#include <boost/assert.hpp>
+
+#include <tbb/parallel_sort.h>
+
 #include <algorithm>
+#include <limits>
+#include <utility>
 #include <vector>
 
-template< typename EdgeDataT, bool UseSharedMemory = false>
-class StaticGraph {
-public:
+template <typename EdgeDataT, bool UseSharedMemory = false> class StaticGraph
+{
+  public:
     typedef NodeID NodeIterator;
     typedef NodeID EdgeIterator;
     typedef EdgeDataT EdgeData;
-    class InputEdge {
-    public:
-        EdgeDataT data;
+    typedef osrm::range<EdgeIterator> EdgeRange;
+
+    class InputEdge
+    {
+      public:
         NodeIterator source;
         NodeIterator target;
-        bool operator<( const InputEdge& right ) const {
-            if ( source != right.source ) {
+        EdgeDataT data;
+
+        template<typename... Ts>
+        InputEdge(NodeIterator source, NodeIterator target, Ts &&...data) : source(source), target(target), data(std::forward<Ts>(data)...) { }
+        bool operator<(const InputEdge &right) const
+        {
+            if (source != right.source)
+            {
                 return source < right.source;
             }
             return target < right.target;
         }
     };
 
-    struct _StrNode {
-        //index of the first edge
-        EdgeIterator firstEdge;
+    struct NodeArrayEntry
+    {
+        // index of the first edge
+        EdgeIterator first_edge;
     };
 
-    struct _StrEdge {
+    struct EdgeArrayEntry
+    {
         NodeID target;
         EdgeDataT data;
     };
 
-    StaticGraph( const int nodes, std::vector< InputEdge > &graph ) {
-        std::sort( graph.begin(), graph.end() );
-        _numNodes = nodes;
-        _numEdges = ( EdgeIterator ) graph.size();
-        _nodes.resize( _numNodes + 1);
+    EdgeRange GetAdjacentEdgeRange(const NodeID node) const
+    {
+        return osrm::irange(BeginEdges(node), EndEdges(node));
+    }
+
+    StaticGraph(const int nodes, std::vector<InputEdge> &graph)
+    {
+        tbb::parallel_sort(graph.begin(), graph.end());
+        number_of_nodes = nodes;
+        number_of_edges = (EdgeIterator)graph.size();
+        node_array.resize(number_of_nodes + 1);
         EdgeIterator edge = 0;
         EdgeIterator position = 0;
-        for ( NodeIterator node = 0; node <= _numNodes; ++node ) {
-            EdgeIterator lastEdge = edge;
-            while ( edge < _numEdges && graph[edge].source == node )
+        for (const auto node : osrm::irange(0u, number_of_nodes+1))
+        {
+            EdgeIterator last_edge = edge;
+            while (edge < number_of_edges && graph[edge].source == node)
+            {
                 ++edge;
-            _nodes[node].firstEdge = position; //=edge
-            position += edge - lastEdge; //remove
+            }
+            node_array[node].first_edge = position; //=edge
+            position += edge - last_edge;           // remove
         }
-        _edges.resize( position ); //(edge)
+        edge_array.resize(position); //(edge)
         edge = 0;
-        for ( NodeIterator node = 0; node < _numNodes; ++node ) {
-            for ( EdgeIterator i = _nodes[node].firstEdge, e = _nodes[node+1].firstEdge; i != e; ++i ) {
-                _edges[i].target = graph[edge].target;
-                _edges[i].data = graph[edge].data;
-                assert(_edges[i].data.distance > 0);
+        for (const auto node : osrm::irange(0u, number_of_nodes))
+        {
+            EdgeIterator e = node_array[node + 1].first_edge;
+            for (EdgeIterator i = node_array[node].first_edge; i != e; ++i)
+            {
+                edge_array[i].target = graph[edge].target;
+                edge_array[i].data = graph[edge].data;
+                BOOST_ASSERT(edge_array[i].data.distance > 0);
                 edge++;
             }
         }
     }
 
-    StaticGraph(
-        typename ShM<_StrNode, UseSharedMemory>::vector & nodes,
-        typename ShM<_StrEdge, UseSharedMemory>::vector & edges
-    ) {
-        _numNodes = nodes.size()-1;
-        _numEdges = edges.size();
+    StaticGraph(typename ShM<NodeArrayEntry, UseSharedMemory>::vector &nodes,
+                typename ShM<EdgeArrayEntry, UseSharedMemory>::vector &edges)
+    {
+        number_of_nodes = nodes.size() - 1;
+        number_of_edges = edges.size();
 
-        _nodes.swap(nodes);
-        _edges.swap(edges);
-
-#ifndef NDEBUG
-        Percent p(GetNumberOfNodes());
-        for(unsigned u = 0; u < GetNumberOfNodes(); ++u) {
-            for(unsigned eid = BeginEdges(u); eid < EndEdges(u); ++eid) {
-                unsigned v = GetTarget(eid);
-                EdgeData & data = GetEdgeData(eid);
-                if(data.shortcut) {
-                    unsigned eid2 = FindEdgeInEitherDirection(u, data.id);
-                    if(eid2 == UINT_MAX) {
-                        SimpleLogger().Write(logWARNING) <<
-                            "cannot find first segment of edge (" <<
-                                u << "," << data.id << "," << v << ")";
-
-                        data.shortcut = false;
-                    }
-                    eid2 = FindEdgeInEitherDirection(data.id, v);
-                    if(eid2 == UINT_MAX) {
-                        SimpleLogger().Write(logWARNING) <<
-                            "cannot find second segment of edge (" <<
-                                u << "," << data.id << "," << v << ")";
-                        data.shortcut = false;
-                    }
-                }
-            }
-            p.printIncrement();
-        }
-#endif
+        node_array.swap(nodes);
+        edge_array.swap(edges);
     }
 
-    unsigned GetNumberOfNodes() const {
-        return _numNodes;
+    unsigned GetNumberOfNodes() const { return number_of_nodes; }
+
+    unsigned GetNumberOfEdges() const { return number_of_edges; }
+
+    unsigned GetOutDegree(const NodeIterator n) const { return EndEdges(n) - BeginEdges(n); }
+
+    inline NodeIterator GetTarget(const EdgeIterator e) const
+    {
+        return NodeIterator(edge_array[e].target);
     }
 
-    unsigned GetNumberOfEdges() const {
-        return _numEdges;
+    inline EdgeDataT &GetEdgeData(const EdgeIterator e) { return edge_array[e].data; }
+
+    const EdgeDataT &GetEdgeData(const EdgeIterator e) const { return edge_array[e].data; }
+
+    EdgeIterator BeginEdges(const NodeIterator n) const
+    {
+        return EdgeIterator(node_array.at(n).first_edge);
     }
 
-    unsigned GetOutDegree( const NodeIterator n ) const {
-        return BeginEdges(n)-EndEdges(n) - 1;
+    EdgeIterator EndEdges(const NodeIterator n) const
+    {
+        return EdgeIterator(node_array.at(n + 1).first_edge);
     }
 
-    inline NodeIterator GetTarget( const EdgeIterator e ) const {
-        return NodeIterator( _edges[e].target );
-    }
-
-    inline EdgeDataT &GetEdgeData( const EdgeIterator e ) {
-        return _edges[e].data;
-    }
-
-    const EdgeDataT &GetEdgeData( const EdgeIterator e ) const {
-        return _edges[e].data;
-    }
-
-    EdgeIterator BeginEdges( const NodeIterator n ) const {
-        return EdgeIterator( _nodes[n].firstEdge );
-    }
-
-    EdgeIterator EndEdges( const NodeIterator n ) const {
-        return EdgeIterator( _nodes[n+1].firstEdge );
-    }
-
-    //searches for a specific edge
-    EdgeIterator FindEdge( const NodeIterator from, const NodeIterator to ) const {
-        EdgeIterator smallestEdge = SPECIAL_EDGEID;
-        EdgeWeight smallestWeight = UINT_MAX;
-        for ( EdgeIterator edge = BeginEdges( from ); edge < EndEdges(from); edge++ ) {
+    // searches for a specific edge
+    EdgeIterator FindEdge(const NodeIterator from, const NodeIterator to) const
+    {
+        EdgeIterator smallest_edge = SPECIAL_EDGEID;
+        EdgeWeight smallest_weight = INVALID_EDGE_WEIGHT;
+        for (auto edge : GetAdjacentEdgeRange(from))
+        {
             const NodeID target = GetTarget(edge);
             const EdgeWeight weight = GetEdgeData(edge).distance;
-            if(target == to && weight < smallestWeight) {
-                smallestEdge = edge; smallestWeight = weight;
+            if (target == to && weight < smallest_weight)
+            {
+                smallest_edge = edge;
+                smallest_weight = weight;
             }
         }
-        return smallestEdge;
+        return smallest_edge;
     }
 
-    EdgeIterator FindEdgeInEitherDirection( const NodeIterator from, const NodeIterator to ) const {
-        EdgeIterator tmp =  FindEdge( from, to );
-        return (UINT_MAX != tmp ? tmp : FindEdge( to, from ));
+    EdgeIterator FindEdgeInEitherDirection(const NodeIterator from, const NodeIterator to) const
+    {
+        EdgeIterator tmp = FindEdge(from, to);
+        return (SPECIAL_NODEID != tmp ? tmp : FindEdge(to, from));
     }
 
-    EdgeIterator FindEdgeIndicateIfReverse( const NodeIterator from, const NodeIterator to, bool & result ) const {
-        EdgeIterator tmp =  FindEdge( from, to );
-        if(UINT_MAX == tmp) {
-            tmp =  FindEdge( to, from );
-            if(UINT_MAX != tmp) {
+    EdgeIterator
+    FindEdgeIndicateIfReverse(const NodeIterator from, const NodeIterator to, bool &result) const
+    {
+        EdgeIterator current_iterator = FindEdge(from, to);
+        if (SPECIAL_NODEID == current_iterator)
+        {
+            current_iterator = FindEdge(to, from);
+            if (SPECIAL_NODEID != current_iterator)
+            {
                 result = true;
             }
         }
-        return tmp;
+        return current_iterator;
     }
 
-private:
+  private:
+    NodeIterator number_of_nodes;
+    EdgeIterator number_of_edges;
 
-    NodeIterator _numNodes;
-    EdgeIterator _numEdges;
-
-    typename ShM< _StrNode, UseSharedMemory >::vector _nodes;
-    typename ShM< _StrEdge, UseSharedMemory >::vector _edges;
+    typename ShM<NodeArrayEntry, UseSharedMemory>::vector node_array;
+    typename ShM<EdgeArrayEntry, UseSharedMemory>::vector edge_array;
 };
 
-#endif // STATICGRAPH_H_INCLUDED
+#endif // STATIC_GRAPH_H

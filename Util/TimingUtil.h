@@ -25,48 +25,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef TIMINGUTIL_H_
-#define TIMINGUTIL_H_
+#ifndef TIMINGUTIL_H
+#define TIMINGUTIL_H
 
-// excluded as this requires boost 1.47 (for now)
-// #include <boost/chrono.hpp>
-// #include <boost/timer/timer.hpp>
+#include <chrono>
 
-// static boost::timer::cpu_timer my_timer;
+#define TIMER_START(_X) auto _X##_start = std::chrono::steady_clock::now(), _X##_stop = _X##_start
+#define TIMER_STOP(_X) _X##_stop = std::chrono::steady_clock::now()
+#define TIMER_MSEC(_X) std::chrono::duration_cast<std::chrono::milliseconds>(_X##_stop - _X##_start).count()
+#define TIMER_SEC(_X) (0.001*std::chrono::duration_cast<std::chrono::milliseconds>(_X##_stop - _X##_start).count())
+#define TIMER_MIN(_X) std::chrono::duration_cast<std::chrono::minutes>(_X##_stop - _X##_start).count()
 
-// /** Returns a timestamp (now) in seconds (incl. a fractional part). */
-// static inline double get_timestamp() {
-//     boost::chrono::duration<double> duration = boost::chrono::nanoseconds(
-//         my_timer.elapsed().user + my_timer.elapsed().system +
-//         my_timer.elapsed().wall
-//     );
-//     return duration.count();
-// }
-
-#include <climits>
-#include <cstdlib>
-
-
-#ifdef _WIN32
-#include <sys/timeb.h>
-#include <sys/types.h>
-#include <winsock.h>
-static inline // OSRM_WIN
-void gettimeofday(struct timeval* t,void* timezone) {
-    struct _timeb timebuffer;
-    _ftime( &timebuffer );
-    t->tv_sec=(long)timebuffer.time;
-    t->tv_usec=1000*timebuffer.millitm;
-}
-#else
-#include <sys/time.h>
-#endif
-
-/** Returns a timestamp (now) in seconds (incl. a fractional part). */
-static inline double get_timestamp() {
-    struct timeval tp;
-    gettimeofday(&tp, NULL);
-    return double(tp.tv_sec) + tp.tv_usec / 1000000.;
-}
-
-#endif /* TIMINGUTIL_H_ */
+#endif // TIMINGUTIL_H

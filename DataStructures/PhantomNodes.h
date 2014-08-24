@@ -25,78 +25,149 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef PHANTOMNODES_H_
-#define PHANTOMNODES_H_
+#ifndef PHANTOM_NODES_H
+#define PHANTOM_NODES_H
 
-#include "Coordinate.h"
+#include <osrm/Coordinate.h>
+#include "../Util/SimpleLogger.h"
+#include "../typedefs.h"
 
-struct PhantomNode {
-    PhantomNode() :
-        edgeBasedNode(UINT_MAX),
-        nodeBasedEdgeNameID(UINT_MAX),
-        weight1(INT_MAX),
-        weight2(INT_MAX),
-        ratio(0.)
+#include <vector>
+
+struct PhantomNode
+{
+    PhantomNode(NodeID forward_node_id, NodeID reverse_node_id, unsigned name_id,
+                int forward_weight, int reverse_weight, int forward_offset, int reverse_offset,
+                unsigned packed_geometry_id, FixedPointCoordinate &location,
+                unsigned short fwd_segment_position) :
+        forward_node_id(forward_node_id),
+        reverse_node_id(reverse_node_id),
+        name_id(name_id),
+        forward_weight(forward_weight),
+        reverse_weight(reverse_weight),
+        forward_offset(forward_offset),
+        reverse_offset(reverse_offset),
+        packed_geometry_id(packed_geometry_id),
+        location(location),
+        fwd_segment_position(fwd_segment_position)
     { }
 
-    NodeID edgeBasedNode;
-    unsigned nodeBasedEdgeNameID;
-    int weight1;
-    int weight2;
-    double ratio;
+    PhantomNode() :
+        forward_node_id(SPECIAL_NODEID),
+        reverse_node_id(SPECIAL_NODEID),
+        name_id(std::numeric_limits<unsigned>::max()),
+        forward_weight(INVALID_EDGE_WEIGHT),
+        reverse_weight(INVALID_EDGE_WEIGHT),
+        forward_offset(0),
+        reverse_offset(0),
+        packed_geometry_id(SPECIAL_EDGEID),
+        fwd_segment_position(0)
+    { }
+
+    NodeID forward_node_id;
+    NodeID reverse_node_id;
+    unsigned name_id;
+    int forward_weight;
+    int reverse_weight;
+    int forward_offset;
+    int reverse_offset;
+    unsigned packed_geometry_id;
     FixedPointCoordinate location;
-    void Reset() {
-        edgeBasedNode = UINT_MAX;
-        nodeBasedEdgeNameID = UINT_MAX;
-        weight1 = INT_MAX;
-        weight2 = INT_MAX;
-        ratio = 0.;
-        location.Reset();
-    }
-    bool isBidirected() const {
-        return weight2 != INT_MAX;
-    }
-    bool isValid(const unsigned numberOfNodes) const {
-        return location.isValid() && (edgeBasedNode < numberOfNodes) && (weight1 != INT_MAX) && (ratio >= 0.) && (ratio <= 1.) && (nodeBasedEdgeNameID != UINT_MAX);
+    unsigned short fwd_segment_position;
+
+    int GetForwardWeightPlusOffset() const
+    {
+        if (SPECIAL_NODEID == forward_node_id)
+        {
+            return 0;
+        }
+        const int result = (forward_offset + forward_weight);
+        return result;
     }
 
-    bool operator==(const PhantomNode & other) const {
+    int GetReverseWeightPlusOffset() const
+    {
+        if (SPECIAL_NODEID == reverse_node_id)
+        {
+            return 0;
+        }
+        const int result = (reverse_offset + reverse_weight);
+        return result;
+    }
+
+    bool isBidirected() const
+    {
+        return (forward_node_id != SPECIAL_NODEID) &&
+               (reverse_node_id != SPECIAL_NODEID);
+    }
+
+    bool IsCompressed() const
+    {
+        return (forward_offset != 0) || (reverse_offset != 0);
+    }
+
+    bool isValid(const unsigned numberOfNodes) const
+    {
+        return
+            location.isValid() &&
+            (
+                (forward_node_id < numberOfNodes) ||
+                (reverse_node_id < numberOfNodes)
+            ) &&
+            (
+                (forward_weight != INVALID_EDGE_WEIGHT) ||
+                (reverse_weight != INVALID_EDGE_WEIGHT)
+            ) &&
+            (name_id != std::numeric_limits<unsigned>::max()
+        );
+    }
+
+    bool isValid() const
+    {
+        return location.isValid() &&
+               (name_id != std::numeric_limits<unsigned>::max());
+    }
+
+    bool operator==(const PhantomNode & other) const
+    {
         return location == other.location;
     }
 };
 
-struct PhantomNodes {
-    PhantomNode startPhantom;
-    PhantomNode targetPhantom;
-    void Reset() {
-        startPhantom.Reset();
-        targetPhantom.Reset();
-    }
+typedef std::vector<std::vector<PhantomNode>> PhantomNodeArray;
 
-    bool PhantomsAreOnSameNodeBasedEdge() const {
-        return (startPhantom.edgeBasedNode == targetPhantom.edgeBasedNode);
-    }
-
-    bool AtLeastOnePhantomNodeIsUINTMAX() const {
-        return !(startPhantom.edgeBasedNode == UINT_MAX || targetPhantom.edgeBasedNode == UINT_MAX);
-    }
-
-    bool PhantomNodesHaveEqualLocation() const {
-        return startPhantom == targetPhantom;
-    }
+struct PhantomNodeLists
+{
+    std::vector<PhantomNode> source_phantom_list;
+    std::vector<PhantomNode> target_phantom_list;
 };
 
-inline std::ostream& operator<<(std::ostream &out, const PhantomNodes & pn){
-    out << "Node1: " << pn.startPhantom.edgeBasedNode << std::endl;
-    out << "Node2: " << pn.targetPhantom.edgeBasedNode << std::endl;
-    out << "startCoord: " << pn.startPhantom.location << std::endl;
-    out << "targetCoord: " << pn.targetPhantom.location << std::endl;
+struct PhantomNodes
+{
+    PhantomNode source_phantom;
+    PhantomNode target_phantom;
+};
+
+inline std::ostream& operator<<(std::ostream &out, const PhantomNodes & pn)
+{
+    out << "source_coord: " << pn.source_phantom.location        << "\n";
+    out << "target_coord: " << pn.target_phantom.location        << std::endl;
     return out;
 }
 
-inline std::ostream& operator<<(std::ostream &out, const PhantomNode & pn){
-    out << "node: " << pn.edgeBasedNode << ", name: " << pn.nodeBasedEdgeNameID << ", w1: " << pn.weight1 << ", w2: " << pn.weight2 << ", ratio: " << pn.ratio << ", loc: " << pn.location;
+inline std::ostream& operator<<(std::ostream &out, const PhantomNode & pn)
+{
+    out <<  "node1: " << pn.forward_node_id      << ", " <<
+            "node2: " << pn.reverse_node_id      << ", " <<
+            "name: "  << pn.name_id              << ", " <<
+            "fwd-w: " << pn.forward_weight       << ", " <<
+            "rev-w: " << pn.reverse_weight       << ", " <<
+            "fwd-o: " << pn.forward_offset       << ", " <<
+            "rev-o: " << pn.reverse_offset       << ", " <<
+            "geom: "  << pn.packed_geometry_id   << ", " <<
+            "pos: "   << pn.fwd_segment_position << ", " <<
+            "loc: "   << pn.location;
     return out;
 }
 
-#endif /* PHANTOMNODES_H_ */
+#endif // PHANTOM_NODES_H

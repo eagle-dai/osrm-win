@@ -28,42 +28,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef POLYLINECOMPRESSOR_H_
 #define POLYLINECOMPRESSOR_H_
 
-#include "../DataStructures/SegmentInformation.h"
-#include "../Util/StringUtil.h"
+struct SegmentInformation;
+
+#include "../DataStructures/JSONContainer.h"
 
 #include <string>
 #include <vector>
 
-class PolylineCompressor {
-private:
-	void encodeVectorSignedNumber(
-        std::vector<int> & numbers,
-        std::string & output
-    ) const;
+class PolylineCompressor
+{
+  private:
+    void encodeVectorSignedNumber(std::vector<int> &numbers, std::string &output) const;
 
-	void encodeNumber(int number_to_encode, std::string & output) const;
+    void encodeNumber(int number_to_encode, std::string &output) const;
 
-public:
-    void printEncodedString(
-        const std::vector<SegmentInformation> & polyline,
-        std::string & output
-    ) const;
+  public:
+    JSON::String printEncodedString(const std::vector<SegmentInformation> &polyline) const;
 
-    void printEncodedString(
-        const std::vector<FixedPointCoordinate>& polyline,
-        std::string &output
-    ) const;
-
-    void printUnencodedString(
-        const std::vector<FixedPointCoordinate> & polyline,
-        std::string & output
-    ) const;
-
-    void printUnencodedString(
-        const std::vector<SegmentInformation> & polyline,
-        std::string & output
-    ) const;
-
+    JSON::Array printUnencodedString(const std::vector<SegmentInformation> &polyline) const;
 };
 
 #endif /* POLYLINECOMPRESSOR_H_ */

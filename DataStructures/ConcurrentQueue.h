@@ -25,75 +25,61 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef CONCURRENTQUEUE_H_
-#define CONCURRENTQUEUE_H_
+#ifndef CONCURRENT_QUEUE_H
+#define CONCURRENT_QUEUE_H
 
 #include "../typedefs.h"
 
-#include <boost/bind.hpp>
 #include <boost/circular_buffer.hpp>
-#include <boost/thread/condition.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/thread.hpp>
+#include <condition_variable>
+#include <mutex>
 
-template<typename Data>
-class ConcurrentQueue {
+template <typename Data> class ConcurrentQueue
+{
+  public:
+    explicit ConcurrentQueue(const size_t max_size) : m_internal_queue(max_size) {}
 
-public:
-    ConcurrentQueue(const size_t max_size) : m_internal_queue(max_size) { }
-
-    inline void push(const Data & data) {
-        boost::mutex::scoped_lock lock(m_mutex);
-        m_not_full.wait(
-            lock,
-            boost::bind(&ConcurrentQueue<Data>::is_not_full, this)
-        );
+    inline void push(const Data &data)
+    {
+        std::unique_lock<std::mutex> lock(m_mutex);
+        m_not_full.wait(lock,
+                        [this]
+                        { return m_internal_queue.size() < m_internal_queue.capacity(); });
         m_internal_queue.push_back(data);
-        lock.unlock();
         m_not_empty.notify_one();
     }
 
-    inline bool empty() const {
-        return m_internal_queue.empty();
-    }
+    inline bool empty() const { return m_internal_queue.empty(); }
 
-    inline void wait_and_pop(Data & popped_value) {
-        boost::mutex::scoped_lock lock(m_mutex);
-        m_not_empty.wait(
-            lock,
-            boost::bind(&ConcurrentQueue<Data>::is_not_empty, this)
-        );
+    inline void wait_and_pop(Data &popped_value)
+    {
+        std::unique_lock<std::mutex> lock(m_mutex);
+        m_not_empty.wait(lock,
+                         [this]
+                         { return !m_internal_queue.empty(); });
         popped_value = m_internal_queue.front();
         m_internal_queue.pop_front();
-        lock.unlock();
         m_not_full.notify_one();
     }
 
-    inline bool try_pop(Data& popped_value) {
-        boost::mutex::scoped_lock lock(m_mutex);
-        if(m_internal_queue.empty()) {
+    inline bool try_pop(Data &popped_value)
+    {
+        std::unique_lock<std::mutex> lock(m_mutex);
+        if (m_internal_queue.empty())
+        {
             return false;
         }
-        popped_value=m_internal_queue.front();
+        popped_value = m_internal_queue.front();
         m_internal_queue.pop_front();
-        lock.unlock();
         m_not_full.notify_one();
         return true;
     }
 
-private:
-    inline bool is_not_empty() const {
-        return !m_internal_queue.empty();
-    }
-
-    inline bool is_not_full() const {
-        return m_internal_queue.size() < m_internal_queue.capacity();
-    }
-
-    boost::circular_buffer<Data>    m_internal_queue;
-    boost::mutex                    m_mutex;
-    boost::condition                m_not_empty;
-    boost::condition                m_not_full;
+  private:
+    boost::circular_buffer<Data> m_internal_queue;
+    std::mutex m_mutex;
+    std::condition_variable m_not_empty;
+    std::condition_variable m_not_full;
 };
 
-#endif /* CONCURRENTQUEUE_H_ */
+#endif // CONCURRENT_QUEUE_H

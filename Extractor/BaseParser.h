@@ -28,41 +28,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef BASEPARSER_H_
 #define BASEPARSER_H_
 
-#include "ExtractorCallbacks.h"
-#include "ScriptingEnvironment.h"
-#include "../Util/OSRMException.h"
-#include "../Util/SimpleLogger.h"
+#include <string>
+#include <vector>
 
-extern "C" {
-    #include <lua.h>
-    #include <lauxlib.h>
-    #include <lualib.h>
-}
+struct lua_State;
+class ExtractorCallbacks;
+class ScriptingEnvironment;
+struct ExtractionWay;
+struct ImportNode;
 
-#include <boost/noncopyable.hpp>
-
-class BaseParser : boost::noncopyable {
-public:
-    BaseParser(ExtractorCallbacks* ec, ScriptingEnvironment& se);
+class BaseParser
+{
+  public:
+    BaseParser() = delete;
+    BaseParser(const BaseParser &) = delete;
+    BaseParser(ExtractorCallbacks *extractor_callbacks,
+               ScriptingEnvironment &scripting_environment);
     virtual ~BaseParser() {}
     virtual bool ReadHeader() = 0;
     virtual bool Parse() = 0;
 
-    virtual void ParseNodeInLua(ImportNode& n, lua_State* luaStateForThread);
-    virtual void ParseWayInLua(ExtractionWay& n, lua_State* luaStateForThread);
-    virtual void report_errors(lua_State *L, const int status) const;
+    virtual void ParseNodeInLua(ImportNode &node, lua_State *lua_state);
+    virtual void ParseWayInLua(ExtractionWay &way, lua_State *lua_state);
+    virtual void report_errors(lua_State *lua_state, const int status) const;
 
-protected:
+  protected:
     virtual void ReadUseRestrictionsSetting();
     virtual void ReadRestrictionExceptions();
-    virtual bool ShouldIgnoreRestriction(const std::string& except_tag_string) const;
+    virtual bool ShouldIgnoreRestriction(const std::string &except_tag_string) const;
 
-    ExtractorCallbacks* extractor_callbacks;
-    ScriptingEnvironment& scriptingEnvironment;
-    lua_State* luaState;
+    ExtractorCallbacks *extractor_callbacks;
+    lua_State *lua_state;
+    ScriptingEnvironment &scripting_environment;
     std::vector<std::string> restriction_exceptions;
     bool use_turn_restrictions;
-
 };
 
 #endif /* BASEPARSER_H_ */

@@ -25,28 +25,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef SERVERFACTORY_H_
-#define SERVERFACTORY_H_
+#ifndef SERVER_FACTORY_H
+#define SERVER_FACTORY_H
 
 #include "Server.h"
 #include "../Util/SimpleLogger.h"
-#include "../Util/StringUtil.h"
 
 #include <zlib.h>
 
-#include <boost/noncopyable.hpp>
-#include <sstream>
-
-struct ServerFactory : boost::noncopyable {
-	static Server * CreateServer(std::string& ip_address, int ip_port, int threads) {
-
-		SimpleLogger().Write() <<
-			"http 1.1 compression handled by zlib version " << zlibVersion();
-
-        std::stringstream   port_stream;
-        port_stream << ip_port;
-        return new Server( ip_address, port_stream.str(), std::min( omp_get_num_procs(), threads) );
-	}
+struct ServerFactory
+{
+    ServerFactory() = delete;
+    ServerFactory(const ServerFactory &) = delete;
+    static Server *CreateServer(std::string &ip_address, int ip_port, unsigned requested_num_threads)
+    {
+        SimpleLogger().Write() << "http 1.1 compression handled by zlib version " << zlibVersion();
+        const unsigned hardware_threads = std::max(1u, std::thread::hardware_concurrency());
+        const unsigned real_num_threads = std::min(hardware_threads, requested_num_threads);
+        return new Server(ip_address, ip_port, real_num_threads);
+    }
 };
 
-#endif /* SERVERFACTORY_H_ */
+#endif // SERVER_FACTORY_H

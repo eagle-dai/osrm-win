@@ -27,93 +27,95 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ScriptingEnvironment.h"
 
+#include "ExtractionHelperFunctions.h"
+#include "ExtractionWay.h"
+#include "../DataStructures/ImportNode.h"
+#include "../Util/LuaUtil.h"
+#include "../Util/OSRMException.h"
+#include "../Util/SimpleLogger.h"
+#include "../typedefs.h"
+
+#include <sstream>
+
 ScriptingEnvironment::ScriptingEnvironment() {}
-ScriptingEnvironment::ScriptingEnvironment(const char * fileName) {
-	SimpleLogger().Write() << "Using script " << fileName;
+ScriptingEnvironment::ScriptingEnvironment(const char *file_name)
+: file_name(file_name)
+{
+    SimpleLogger().Write() << "Using script " << file_name;
+}
 
-    // Create a new lua state
-    for(int i = 0; i < omp_get_max_threads(); ++i) {
-        luaStateVector.push_back(luaL_newstate());
-    }
+void ScriptingEnvironment::initLuaState(lua_State* lua_state)
+{
+    luabind::open(lua_state);
+    // open utility libraries string library;
+    luaL_openlibs(lua_state);
 
-    // Connect LuaBind to this lua state for all threads
-#pragma omp parallel
+    luaAddScriptFolderToLoadPath(lua_state, file_name.c_str());
+
+    // Add our function to the state's global scope
+    luabind::module(lua_state)[
+        luabind::def("print", LUA_print<std::string>),
+        luabind::def("durationIsValid", durationIsValid),
+        luabind::def("parseDuration", parseDuration),
+
+        luabind::class_<HashTable<std::string, std::string>>("keyVals")
+        .def("Add", &HashTable<std::string, std::string>::Add)
+        .def("Find", &HashTable<std::string, std::string>::Find)
+        .def("Holds", &HashTable<std::string, std::string>::Holds),
+
+        luabind::class_<ImportNode>("Node")
+        // .def(luabind::constructor<>())
+        .def_readwrite("lat", &ImportNode::lat)
+        .def_readwrite("lon", &ImportNode::lon)
+        .def_readonly("id", &ImportNode::node_id)
+        .def_readwrite("bollard", &ImportNode::bollard)
+        .def_readwrite("traffic_light", &ImportNode::trafficLight)
+        .def_readwrite("tags", &ImportNode::keyVals),
+
+       luabind::class_<ExtractionWay>("Way")
+        // .def(luabind::constructor<>())
+        .def_readonly("id", &ExtractionWay::id)
+        .def_readwrite("name", &ExtractionWay::name)
+        .def_readwrite("speed", &ExtractionWay::speed)
+        .def_readwrite("backward_speed", &ExtractionWay::backward_speed)
+        .def_readwrite("duration", &ExtractionWay::duration)
+        .def_readwrite("type", &ExtractionWay::type)
+        .def_readwrite("access", &ExtractionWay::access)
+        .def_readwrite("roundabout", &ExtractionWay::roundabout)
+        .def_readwrite("is_access_restricted", &ExtractionWay::isAccessRestricted)
+        .def_readwrite("ignore_in_grid", &ExtractionWay::ignoreInGrid)
+        .def_readwrite("tags", &ExtractionWay::keyVals)
+        .def_readwrite("direction", &ExtractionWay::direction)
+        .enum_("constants")[
+            luabind::value("notSure", 0),
+            luabind::value("oneway", 1),
+            luabind::value("bidirectional", 2),
+            luabind::value("opposite", 3)
+        ],
+        luabind::class_<std::vector<std::string>>("vector")
+        .def("Add", static_cast<void (std::vector<std::string>::*)(const std::string &)>(&std::vector<std::string>::push_back))
+    ];
+
+    if (0 != luaL_dofile(lua_state, file_name.c_str()))
     {
-        lua_State * myLuaState = getLuaStateForThreadID(omp_get_thread_num());
-        luabind::open(myLuaState);
-        //open utility libraries string library;
-        luaL_openlibs(myLuaState);
-
-        luaAddScriptFolderToLoadPath( myLuaState, fileName );
-
-        // Add our function to the state's global scope
-        luabind::module(myLuaState) [
-            luabind::def("print", LUA_print<std::string>),
-            luabind::def("parseMaxspeed", parseMaxspeed),
-            luabind::def("durationIsValid", durationIsValid),
-            luabind::def("parseDuration", parseDuration)
-        ];
-
-        luabind::module(myLuaState) [
-            luabind::class_<HashTable<std::string, std::string> >("keyVals")
-            .def("Add", &HashTable<std::string, std::string>::Add)
-            .def("Find", &HashTable<std::string, std::string>::Find)
-            .def("Holds", &HashTable<std::string, std::string>::Holds)
-        ];
-
-        luabind::module(myLuaState) [
-            luabind::class_<ImportNode>("Node")
-            .def(luabind::constructor<>())
-            .def_readwrite("lat", &ImportNode::lat)
-            .def_readwrite("lon", &ImportNode::lon)
-            .def_readonly("id", &ImportNode::id)
-            .def_readwrite("bollard", &ImportNode::bollard)
-            .def_readwrite("traffic_light", &ImportNode::trafficLight)
-            .def_readwrite("tags", &ImportNode::keyVals)
-        ];
-
-        luabind::module(myLuaState) [
-            luabind::class_<ExtractionWay>("Way")
-            .def(luabind::constructor<>())
-            .def_readonly("id", &ExtractionWay::id)
-            .def_readwrite("name", &ExtractionWay::name)
-            .def_readwrite("speed", &ExtractionWay::speed)
-            .def_readwrite("backward_speed", &ExtractionWay::backward_speed)
-            .def_readwrite("duration", &ExtractionWay::duration)
-            .def_readwrite("type", &ExtractionWay::type)
-            .def_readwrite("access", &ExtractionWay::access)
-            .def_readwrite("roundabout", &ExtractionWay::roundabout)
-            .def_readwrite("is_access_restricted", &ExtractionWay::isAccessRestricted)
-            .def_readwrite("ignore_in_grid", &ExtractionWay::ignoreInGrid)
-            .def_readwrite("tags", &ExtractionWay::keyVals)
-            .def_readwrite("direction", &ExtractionWay::direction)
-            .enum_("constants") [
-				  luabind::value("notSure", 0),
-				  luabind::value("oneway", 1),
-				  luabind::value("bidirectional", 2),
-				  luabind::value("opposite", 3)
-			]
-    	];
-
-        // fails on c++11/OS X 10.9
-        luabind::module(myLuaState) [
-             luabind::class_<std::vector<std::string> >("vector")
-             .def("Add", static_cast<void (std::vector<std::string>::*)(const std::string&)>(&std::vector<std::string>::push_back)
-             )
-        ];
-
-        if(0 != luaL_dofile(myLuaState, fileName) ) {
-            throw OSRMException("ERROR occured in scripting block");
-        }
+        luabind::object error_msg(luabind::from_stack(lua_state, -1));
+        std::ostringstream error_stream;
+        error_stream << error_msg;
+        throw OSRMException("ERROR occured in profile script:\n" + error_stream.str());
     }
 }
 
-ScriptingEnvironment::~ScriptingEnvironment() {
-    for(unsigned i = 0; i < luaStateVector.size(); ++i) {
-        //        luaStateVector[i];
+lua_State *ScriptingEnvironment::getLuaState()
+{
+    bool initialized = false;
+    auto& ref = script_contexts.local(initialized);
+    if (!initialized)
+    {
+        std::shared_ptr<lua_State> state(luaL_newstate(), lua_close);
+        ref = state;
+        initLuaState(ref.get());
     }
+
+    return ref.get();
 }
 
-lua_State * ScriptingEnvironment::getLuaStateForThreadID(const int id) {
-    return luaStateVector[id];
-}

@@ -25,43 +25,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef EXTRACTORCALLBACKS_H_
-#define EXTRACTORCALLBACKS_H_
+#ifndef EXTRACTOR_CALLBACKS_H
+#define EXTRACTOR_CALLBACKS_H
 
-#include "ExtractionContainers.h"
-#include "ExtractionHelperFunctions.h"
-#include "ExtractorStructs.h"
+#include "../typedefs.h"
 
-#include "../DataStructures/Coordinate.h"
-
-#include <cfloat>
-
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/regex.hpp>
-#include <boost/regex.hpp>
-
+#include <unordered_map>
 #include <string>
-#include <vector>
 
-class ExtractorCallbacks{
-private:
-    StringMap * stringMap;
-    ExtractionContainers * externalMemory;
+struct ExternalMemoryNode;
+class ExtractionContainers;
+struct ExtractionWay;
+struct InputRestrictionContainer;
 
-    ExtractorCallbacks();
-public:
-    explicit ExtractorCallbacks(ExtractionContainers * ext, StringMap * strMap);
+class ExtractorCallbacks
+{
+  private:
+    std::unordered_map<std::string, NodeID> &string_map;
+    ExtractionContainers &external_memory;
 
-    ~ExtractorCallbacks();
+  public:
+    ExtractorCallbacks() = delete;
+    ExtractorCallbacks(const ExtractorCallbacks &) = delete;
+    explicit ExtractorCallbacks(ExtractionContainers &extraction_containers,
+                                std::unordered_map<std::string, NodeID> &string_map);
 
-    /** warning: caller needs to take care of synchronization! */
-    void nodeFunction(const ExternalMemoryNode &n);
+    // warning: caller needs to take care of synchronization!
+    void ProcessNode(const ExternalMemoryNode &node);
 
-    bool restrictionFunction(const InputRestrictionContainer &r);
+    // warning: caller needs to take care of synchronization!
+    bool ProcessRestriction(const InputRestrictionContainer &restriction);
 
-    /** warning: caller needs to take care of synchronization! */
-    void wayFunction(ExtractionWay &w);
-
+    // warning: caller needs to take care of synchronization!
+    void ProcessWay(ExtractionWay &way);
 };
 
-#endif /* EXTRACTORCALLBACKS_H_ */
+#endif /* EXTRACTOR_CALLBACKS_H */

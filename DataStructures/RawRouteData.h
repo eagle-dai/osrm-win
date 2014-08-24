@@ -25,32 +25,61 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef RAWROUTEDATA_H_
-#define RAWROUTEDATA_H_
+#ifndef RAW_ROUTE_DATA_H
+#define RAW_ROUTE_DATA_H
 
-#include "../DataStructures/Coordinate.h"
 #include "../DataStructures/PhantomNodes.h"
+#include "../DataStructures/TurnInstructions.h"
 #include "../typedefs.h"
+
+#include <osrm/Coordinate.h>
 
 #include <vector>
 
-struct _PathData {
-    _PathData(NodeID no, unsigned na, unsigned tu, unsigned dur) : node(no), nameID(na), durationOfSegment(dur), turnInstruction(tu) { }
+struct PathData
+{
+    PathData()
+        : node(SPECIAL_NODEID), name_id(INVALID_EDGE_WEIGHT),
+          segment_duration(INVALID_EDGE_WEIGHT),
+          turn_instruction(TurnInstruction::NoTurn)
+    {
+    }
+
+    PathData(NodeID node, unsigned name_id, TurnInstruction turn_instruction, EdgeWeight segment_duration)
+        : node(node), name_id(name_id), segment_duration(segment_duration), turn_instruction(turn_instruction)
+    {
+    }
     NodeID node;
-    unsigned nameID;
-    unsigned durationOfSegment;
-    short turnInstruction;
+    unsigned name_id;
+    EdgeWeight segment_duration;
+    TurnInstruction turn_instruction;
 };
 
-struct RawRouteData {
-    std::vector< _PathData > computedShortestPath;
-    std::vector< _PathData > computedAlternativePath;
-    std::vector< PhantomNodes > segmentEndCoordinates;
-    std::vector< FixedPointCoordinate > rawViaNodeCoordinates;
-    unsigned checkSum;
-    int lengthOfShortestPath;
-    int lengthOfAlternativePath;
-    RawRouteData() : checkSum(UINT_MAX), lengthOfShortestPath(INT_MAX), lengthOfAlternativePath(INT_MAX) {}
+struct RawRouteData
+{
+    std::vector<std::vector<PathData>> unpacked_path_segments;
+    std::vector<PathData> unpacked_alternative;
+    std::vector<PhantomNodes> segment_end_coordinates;
+    std::vector<FixedPointCoordinate> raw_via_node_coordinates;
+    std::vector<bool> source_traversed_in_reverse;
+    std::vector<bool> target_traversed_in_reverse;
+    std::vector<bool> alt_source_traversed_in_reverse;
+    std::vector<bool> alt_target_traversed_in_reverse;
+    unsigned check_sum;
+    int shortest_path_length;
+    int alternative_path_length;
+
+    bool is_via_leg(const std::size_t leg) const
+    {
+        return (leg != unpacked_path_segments.size() - 1);
+    }
+
+    RawRouteData()
+        : check_sum(SPECIAL_NODEID),
+          shortest_path_length(INVALID_EDGE_WEIGHT),
+          alternative_path_length(INVALID_EDGE_WEIGHT)
+    {
+    }
 };
 
-#endif /* RAWROUTEDATA_H_ */
+#endif // RAW_ROUTE_DATA_H

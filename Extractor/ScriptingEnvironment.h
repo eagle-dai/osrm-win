@@ -28,26 +28,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef SCRIPTINGENVIRONMENT_H_
 #define SCRIPTINGENVIRONMENT_H_
 
-#include "ExtractionHelperFunctions.h"
-#include "ExtractorStructs.h"
-#include "../DataStructures/ImportNode.h"
-#include "../Util/LuaUtil.h"
-#include "../Util/OpenMPWrapper.h"
-#include "../Util/OSRMException.h"
-#include "../Util/SimpleLogger.h"
-#include "../typedefs.h"
+#include <string>
+#include <memory>
+#include <tbb/enumerable_thread_specific.h>
 
-#include <vector>
+struct lua_State;
 
-class ScriptingEnvironment {
-public:
+class ScriptingEnvironment
+{
+  public:
     ScriptingEnvironment();
-    ScriptingEnvironment(const char * fileName);
-    virtual ~ScriptingEnvironment();
+    explicit ScriptingEnvironment(const char *file_name);
 
-    lua_State * getLuaStateForThreadID(const int);
+    lua_State *getLuaState();
 
-    std::vector<lua_State *> luaStateVector;
+  private:
+    void initLuaState(lua_State* lua_state);
+
+    std::string file_name;
+    tbb::enumerable_thread_specific<std::shared_ptr<lua_State>> script_contexts;
 };
 
 #endif /* SCRIPTINGENVIRONMENT_H_ */

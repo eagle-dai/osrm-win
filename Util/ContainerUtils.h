@@ -31,24 +31,42 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 #include <vector>
 
-template<typename T>
-inline void sort_unique_resize(std::vector<T> & vector) {
-	std::sort(vector.begin(), vector.end());
-	unsigned number_of_unique_elements = std::unique(vector.begin(), vector.end()) - vector.begin();
-	vector.resize(number_of_unique_elements);
-}
-
-template<typename T>
-inline void sort_unique_resize_shrink_vector(std::vector<T> & vector) {
-	sort_unique_resize(vector);
-	std::vector<T>().swap(vector);
-}
-
-template<typename T>
-inline void remove_consecutive_duplicates_from_vector(std::vector<T> & vector) {
-    unsigned number_of_unique_elements = std::unique(vector.begin(), vector.end()) - vector.begin();
+template <typename T> inline void sort_unique_resize(std::vector<T> &vector)
+{
+    std::sort(vector.begin(), vector.end());
+    const auto number_of_unique_elements = std::unique(vector.begin(), vector.end()) - vector.begin();
     vector.resize(number_of_unique_elements);
 }
 
+// template <typename T> inline void sort_unique_resize_shrink_vector(std::vector<T> &vector)
+// {
+//     sort_unique_resize(vector);
+//     vector.shrink_to_fit();
+// }
+
+// template <typename T> inline void remove_consecutive_duplicates_from_vector(std::vector<T> &vector)
+// {
+//     const auto number_of_unique_elements = std::unique(vector.begin(), vector.end()) - vector.begin();
+//     vector.resize(number_of_unique_elements);
+// }
+
+template <typename ForwardIterator, typename Function>
+Function for_each_pair(ForwardIterator begin, ForwardIterator end, Function function)
+{
+    if (begin == end)
+    {
+        return function;
+    }
+
+    ForwardIterator next = begin;
+    ++next;
+
+    while (next != end)
+    {
+        function(*begin, *next);
+        ++begin; ++next;
+    }
+    return function;
+}
 
 #endif /* CONTAINERUTILS_H_ */

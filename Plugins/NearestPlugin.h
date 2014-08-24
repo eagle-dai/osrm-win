@@ -25,108 +25,67 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef NearestPlugin_H_
-#define NearestPlugin_H_
+#ifndef NEAREST_PLUGIN_H
+#define NEAREST_PLUGIN_H
 
 #include "BasePlugin.h"
+#include "../DataStructures/JSONContainer.h"
 #include "../DataStructures/PhantomNodes.h"
-#include "../Util/StringUtil.h"
+
+#include <string>
 
 /*
  * This Plugin locates the nearest point on a street in the road network for a given coordinate.
  */
 
-template<class DataFacadeT>
-class NearestPlugin : public BasePlugin {
-public:
-    NearestPlugin(DataFacadeT * facade )
-     :
-        facade(facade),
-        descriptor_string("nearest")
+template <class DataFacadeT> class NearestPlugin : public BasePlugin
+{
+  public:
+    explicit NearestPlugin(DataFacadeT *facade) : facade(facade), descriptor_string("nearest") {}
+
+    const std::string GetDescriptor() const { return descriptor_string; }
+
+    void HandleRequest(const RouteParameters &route_parameters, http::Reply &reply)
     {
-        descriptorTable.insert(std::make_pair(""    , 0)); //default descriptor
-        descriptorTable.insert(std::make_pair("json", 1));
-    }
-    const std::string & GetDescriptor() const { return descriptor_string; }
-    void HandleRequest(const RouteParameters & routeParameters, http::Reply& reply) {
-        //check number of parameters
-        if(!routeParameters.coordinates.size()) {
-            reply = http::Reply::StockReply(http::Reply::badRequest);
-            return;
-        }
-        if( !checkCoord(routeParameters.coordinates[0]) ) {
+        // check number of parameters
+        if (route_parameters.coordinates.empty() || !route_parameters.coordinates.front().isValid())
+        {
             reply = http::Reply::StockReply(http::Reply::badRequest);
             return;
         }
 
-        PhantomNode result;
-        facade->FindPhantomNodeForCoordinate(
-            routeParameters.coordinates[0],
-            result,
-            routeParameters.zoomLevel
-        );
+        std::vector<PhantomNode> phantom_node_vector;
+        facade->IncrementalFindPhantomNodeForCoordinate(route_parameters.coordinates.front(),
+                                                        phantom_node_vector,
+                                                        route_parameters.zoom_level,
+                                                        1);
 
-        std::string temp_string;
-        //json
-
-        if("" != routeParameters.jsonpParameter) {
-            reply.content.push_back(routeParameters.jsonpParameter);
-            reply.content.push_back("(");
+        JSON::Object json_result;
+        if (phantom_node_vector.empty() || !phantom_node_vector.front().isValid())
+        {
+            json_result.values["status"] = 207;
+        }
+        else
+        {
+            reply.status = http::Reply::ok;
+            json_result.values["status"] = 0;
+            JSON::Array json_coordinate;
+            json_coordinate.values.push_back(phantom_node_vector.front().location.lat /
+                                             COORDINATE_PRECISION);
+            json_coordinate.values.push_back(phantom_node_vector.front().location.lon /
+                                             COORDINATE_PRECISION);
+            json_result.values["mapped_coordinate"] = json_coordinate;
+            std::string temp_string;
+            facade->GetName(phantom_node_vector.front().name_id, temp_string);
+            json_result.values["name"] = temp_string;
         }
 
-        reply.status = http::Reply::ok;
-        reply.content.push_back("{");
-        reply.content.push_back("\"version\":0.3,");
-        reply.content.push_back("\"status\":");
-        if(UINT_MAX != result.edgeBasedNode) {
-            reply.content.push_back("0,");
-        } else {
-            reply.content.push_back("207,");
-        }
-        reply.content.push_back("\"mapped_coordinate\":");
-        reply.content.push_back("[");
-        if(UINT_MAX != result.edgeBasedNode) {
-            convertInternalLatLonToString(result.location.lat, temp_string);
-            reply.content.push_back(temp_string);
-            convertInternalLatLonToString(result.location.lon, temp_string);
-            reply.content.push_back(",");
-            reply.content.push_back(temp_string);
-        }
-        reply.content.push_back("],");
-        reply.content.push_back("\"name\":\"");
-        if(UINT_MAX != result.edgeBasedNode) {
-            facade->GetName(result.nodeBasedEdgeNameID, temp_string);
-            reply.content.push_back(temp_string);
-        }
-        reply.content.push_back("\"");
-        reply.content.push_back(",\"transactionId\":\"OSRM Routing Engine JSON Nearest (v0.3)\"");
-        reply.content.push_back("}");
-        reply.headers.resize(3);
-        if( !routeParameters.jsonpParameter.empty() ) {
-            reply.content.push_back(")");
-            reply.headers[1].name = "Content-Type";
-            reply.headers[1].value = "text/javascript";
-            reply.headers[2].name = "Content-Disposition";
-            reply.headers[2].value = "attachment; filename=\"location.js\"";
-        } else {
-            reply.headers[1].name = "Content-Type";
-            reply.headers[1].value = "application/x-javascript";
-            reply.headers[2].name = "Content-Disposition";
-            reply.headers[2].value = "attachment; filename=\"location.json\"";
-        }
-        reply.headers[0].name = "Content-Length";
-        unsigned content_length = 0;
-        BOOST_FOREACH(const std::string & snippet, reply.content) {
-            content_length += snippet.length();
-        }
-        intToString(content_length, temp_string);
-        reply.headers[0].value = temp_string;
+        JSON::render(reply.content, json_result);
     }
 
-private:
-    DataFacadeT * facade;
-    HashTable<std::string, unsigned> descriptorTable;
+  private:
+    DataFacadeT *facade;
     std::string descriptor_string;
 };
 
-#endif /* NearestPlugin_H_ */
+#endif /* NEAREST_PLUGIN_H */

@@ -27,258 +27,327 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "XMLParser.h"
 
-#include "ExtractorStructs.h"
+#include "ExtractionWay.h"
+#include "ExtractorCallbacks.h"
+
 #include "../DataStructures/HashTable.h"
+#include "../DataStructures/ImportNode.h"
 #include "../DataStructures/InputReaderFactory.h"
+#include "../DataStructures/Restriction.h"
+#include "../Util/SimpleLogger.h"
+#include "../Util/StringUtil.h"
+#include "../typedefs.h"
 
-#include <boost/ref.hpp>
+#include <osrm/Coordinate.h>
 
-XMLParser::XMLParser(const char * filename, ExtractorCallbacks* ec, ScriptingEnvironment& se) : BaseParser(ec, se) {
-	SimpleLogger().Write(logWARNING) <<
-		"Parsing plain .osm/.osm.bz2 is deprecated. Switch to .pbf";
-
-	inputReader = inputReaderFactory(filename);
+XMLParser::XMLParser(const char *filename,
+                     ExtractorCallbacks *extractor_callbacks,
+                     ScriptingEnvironment &scripting_environment)
+    : BaseParser(extractor_callbacks, scripting_environment)
+{
+    inputReader = inputReaderFactory(filename);
 }
 
-bool XMLParser::ReadHeader() {
-	return (xmlTextReaderRead( inputReader ) == 1);
+bool XMLParser::ReadHeader() { return xmlTextReaderRead(inputReader) == 1; }
+bool XMLParser::Parse()
+{
+    while (xmlTextReaderRead(inputReader) == 1)
+    {
+        const int type = xmlTextReaderNodeType(inputReader);
+
+        // 1 is Element
+        if (type != 1)
+        {
+            continue;
+        }
+
+        xmlChar *currentName = xmlTextReaderName(inputReader);
+        if (currentName == nullptr)
+        {
+            continue;
+        }
+
+        if (xmlStrEqual(currentName, (const xmlChar *)"node") == 1)
+        {
+            ImportNode current_node = ReadXMLNode();
+            ParseNodeInLua(current_node, lua_state);
+            extractor_callbacks->ProcessNode(current_node);
+        }
+
+        if (xmlStrEqual(currentName, (const xmlChar *)"way") == 1)
+        {
+            ExtractionWay way = ReadXMLWay();
+            ParseWayInLua(way, lua_state);
+            extractor_callbacks->ProcessWay(way);
+        }
+        if (use_turn_restrictions && xmlStrEqual(currentName, (const xmlChar *)"relation") == 1)
+        {
+            InputRestrictionContainer current_restriction = ReadXMLRestriction();
+            if ((UINT_MAX != current_restriction.fromWay) &&
+                !extractor_callbacks->ProcessRestriction(current_restriction))
+            {
+                std::cerr << "[XMLParser] restriction not parsed" << std::endl;
+            }
+        }
+        xmlFree(currentName);
+    }
+    return true;
 }
-bool XMLParser::Parse() {
-	while ( xmlTextReaderRead( inputReader ) == 1 ) {
-		const int type = xmlTextReaderNodeType( inputReader );
 
-		//1 is Element
-		if ( type != 1 ) {
-			continue;
-		}
+InputRestrictionContainer XMLParser::ReadXMLRestriction()
+{
 
-		xmlChar* currentName = xmlTextReaderName( inputReader );
-		if ( currentName == NULL ) {
-			continue;
-		}
-
-		if ( xmlStrEqual( currentName, ( const xmlChar* ) "node" ) == 1 ) {
-			ImportNode n = _ReadXMLNode();
-			ParseNodeInLua( n, luaState );
-			extractor_callbacks->nodeFunction(n);
-//			if(!extractor_callbacks->nodeFunction(n))
-//				std::cerr << "[XMLParser] dense node not parsed" << std::endl;
-		}
-
-		if ( xmlStrEqual( currentName, ( const xmlChar* ) "way" ) == 1 ) {
-			ExtractionWay way = _ReadXMLWay( );
-			ParseWayInLua( way, luaState );
-			extractor_callbacks->wayFunction(way);
-//			if(!extractor_callbacks->wayFunction(way))
-//				std::cerr << "[PBFParser] way not parsed" << std::endl;
-		}
-		if( use_turn_restrictions ) {
-			if ( xmlStrEqual( currentName, ( const xmlChar* ) "relation" ) == 1 ) {
-				InputRestrictionContainer r = _ReadXMLRestriction();
-				if(r.fromWay != UINT_MAX) {
-					if(!extractor_callbacks->restrictionFunction(r)) {
-						std::cerr << "[XMLParser] restriction not parsed" << std::endl;
-					}
-				}
-			}
-		}
-		xmlFree( currentName );
-	}
-	return true;
-}
-
-InputRestrictionContainer XMLParser::_ReadXMLRestriction() {
     InputRestrictionContainer restriction;
+
+    if (xmlTextReaderIsEmptyElement(inputReader) == 1)
+    {
+        return restriction;
+    }
+
     std::string except_tag_string;
+    const int depth = xmlTextReaderDepth(inputReader);
+    while (xmlTextReaderRead(inputReader) == 1)
+    {
+        const int child_type = xmlTextReaderNodeType(inputReader);
+        if (child_type != 1 && child_type != 15)
+        {
+            continue;
+        }
+        const int child_depth = xmlTextReaderDepth(inputReader);
+        xmlChar *child_name = xmlTextReaderName(inputReader);
+        if (child_name == nullptr)
+        {
+            continue;
+        }
+        if (depth == child_depth && child_type == 15 &&
+            xmlStrEqual(child_name, (const xmlChar *)"relation") == 1)
+        {
+            xmlFree(child_name);
+            break;
+        }
+        if (child_type != 1)
+        {
+            xmlFree(child_name);
+            continue;
+        }
 
-	if ( xmlTextReaderIsEmptyElement( inputReader ) != 1 ) {
-		const int depth = xmlTextReaderDepth( inputReader );while ( xmlTextReaderRead( inputReader ) == 1 ) {
-			const int childType = xmlTextReaderNodeType( inputReader );
-			if ( childType != 1 && childType != 15 ) {
-				continue;
-			}
-			const int childDepth = xmlTextReaderDepth( inputReader );
-			xmlChar* childName = xmlTextReaderName( inputReader );
-			if ( childName == NULL ) {
-				continue;
-			}
-			if ( depth == childDepth && childType == 15 && xmlStrEqual( childName, ( const xmlChar* ) "relation" ) == 1 ) {
-				xmlFree( childName );
-				break;
-			}
-			if ( childType != 1 ) {
-				xmlFree( childName );
-				continue;
-			}
+        if (xmlStrEqual(child_name, (const xmlChar *)"tag") == 1)
+        {
+            xmlChar *key = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"k");
+            xmlChar *value = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"v");
+            if (key != nullptr && value != nullptr)
+            {
+                if (xmlStrEqual(key, (const xmlChar *)"restriction") &&
+                    StringStartsWith((const char *)value, "only_"))
+                {
+                    restriction.restriction.flags.isOnly = true;
+                }
+                if (xmlStrEqual(key, (const xmlChar *)"except"))
+                {
+                    except_tag_string = (const char *)value;
+                }
+            }
 
-			if ( xmlStrEqual( childName, ( const xmlChar* ) "tag" ) == 1 ) {
-				xmlChar* k = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "k" );
-				xmlChar* value = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "v" );
-				if ( k != NULL && value != NULL ) {
-					if(xmlStrEqual(k, ( const xmlChar* ) "restriction" )){
-						if(0 == std::string((const char *) value).find("only_")) {
-							restriction.restriction.flags.isOnly = true;
-						}
-					}
-					if ( xmlStrEqual(k, (const xmlChar *) "except") ) {
-						except_tag_string = (const char*) value;
-					}
-				}
+            if (key != nullptr)
+            {
+                xmlFree(key);
+            }
+            if (value != nullptr)
+            {
+                xmlFree(value);
+            }
+        }
+        else if (xmlStrEqual(child_name, (const xmlChar *)"member") == 1)
+        {
+            xmlChar *ref = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"ref");
+            if (ref != nullptr)
+            {
+                xmlChar *role = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"role");
+                xmlChar *type = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"type");
 
-				if ( k != NULL ) {
-					xmlFree( k );
-				}
-				if ( value != NULL ) {
-					xmlFree( value );
-				}
-			} else if ( xmlStrEqual( childName, ( const xmlChar* ) "member" ) == 1 ) {
-				xmlChar* ref = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "ref" );
-				if ( ref != NULL ) {
-					xmlChar * role = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "role" );
-					xmlChar * type = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "type" );
+                if (xmlStrEqual(role, (const xmlChar *)"to") &&
+                    xmlStrEqual(type, (const xmlChar *)"way"))
+                {
+                    restriction.toWay = StringToUint((const char *)ref);
+                }
+                if (xmlStrEqual(role, (const xmlChar *)"from") &&
+                    xmlStrEqual(type, (const xmlChar *)"way"))
+                {
+                    restriction.fromWay = StringToUint((const char *)ref);
+                }
+                if (xmlStrEqual(role, (const xmlChar *)"via") &&
+                    xmlStrEqual(type, (const xmlChar *)"node"))
+                {
+                    restriction.restriction.viaNode = StringToUint((const char *)ref);
+                }
 
-					if(xmlStrEqual(role, (const xmlChar *) "to") && xmlStrEqual(type, (const xmlChar *) "way")) {
-						restriction.toWay = stringToUint((const char*) ref);
-					}
-					if(xmlStrEqual(role, (const xmlChar *) "from") && xmlStrEqual(type, (const xmlChar *) "way")) {
-						restriction.fromWay = stringToUint((const char*) ref);
-					}
-					if(xmlStrEqual(role, (const xmlChar *) "via") && xmlStrEqual(type, (const xmlChar *) "node")) {
-						restriction.restriction.viaNode = stringToUint((const char*) ref);
-					}
+                if (nullptr != type)
+                {
+                    xmlFree(type);
+                }
+                if (nullptr != role)
+                {
+                    xmlFree(role);
+                }
+                if (nullptr != ref)
+                {
+                    xmlFree(ref);
+                }
+            }
+        }
+        xmlFree(child_name);
+    }
 
-					if(NULL != type) {
-						xmlFree( type );
-					}
-					if(NULL != role) {
-						xmlFree( role );
-					}
-					if(NULL != ref) {
-						xmlFree( ref );
-					}
-				}
-			}
-			xmlFree( childName );
-		}
-	}
-
-	if( ShouldIgnoreRestriction(except_tag_string) ) {
-		restriction.fromWay = UINT_MAX;				 //workaround to ignore the restriction
-	}
-	return restriction;
+    if (ShouldIgnoreRestriction(except_tag_string))
+    {
+        restriction.fromWay = UINT_MAX; // workaround to ignore the restriction
+    }
+    return restriction;
 }
 
-ExtractionWay XMLParser::_ReadXMLWay() {
-	ExtractionWay way;
-	if ( xmlTextReaderIsEmptyElement( inputReader ) != 1 ) {
-		const int depth = xmlTextReaderDepth( inputReader );
-		while ( xmlTextReaderRead( inputReader ) == 1 ) {
-			const int childType = xmlTextReaderNodeType( inputReader );
-			if ( childType != 1 && childType != 15 ) {
-				continue;
-			}
-			const int childDepth = xmlTextReaderDepth( inputReader );
-			xmlChar* childName = xmlTextReaderName( inputReader );
-			if ( childName == NULL ) {
-				continue;
-			}
+ExtractionWay XMLParser::ReadXMLWay()
+{
+    ExtractionWay way;
+    if (xmlTextReaderIsEmptyElement(inputReader) == 1)
+    {
+        return way;
+    }
+    const int depth = xmlTextReaderDepth(inputReader);
+    while (xmlTextReaderRead(inputReader) == 1)
+    {
+        const int child_type = xmlTextReaderNodeType(inputReader);
+        if (child_type != 1 && child_type != 15)
+        {
+            continue;
+        }
+        const int child_depth = xmlTextReaderDepth(inputReader);
+        xmlChar *child_name = xmlTextReaderName(inputReader);
+        if (child_name == nullptr)
+        {
+            continue;
+        }
 
-			if ( depth == childDepth && childType == 15 && xmlStrEqual( childName, ( const xmlChar* ) "way" ) == 1 ) {
-				xmlChar* id = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "id" );
-				way.id = stringToUint((char*)id);
-				xmlFree(id);
-				xmlFree( childName );
-				break;
-			}
-			if ( childType != 1 ) {
-				xmlFree( childName );
-				continue;
-			}
+        if (depth == child_depth && child_type == 15 &&
+            xmlStrEqual(child_name, (const xmlChar *)"way") == 1)
+        {
+            xmlChar *way_id = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"id");
+            way.id = StringToUint((char *)way_id);
+            xmlFree(way_id);
+            xmlFree(child_name);
+            break;
+        }
+        if (child_type != 1)
+        {
+            xmlFree(child_name);
+            continue;
+        }
 
-			if ( xmlStrEqual( childName, ( const xmlChar* ) "tag" ) == 1 ) {
-				xmlChar* k = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "k" );
-				xmlChar* value = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "v" );
-				//				cout << "->k=" << k << ", v=" << value << endl;
-				if ( k != NULL && value != NULL ) {
-					way.keyVals.Add(std::string( (char *) k ), std::string( (char *) value));
-				}
-				if ( k != NULL ) {
-					xmlFree( k );
-				}
-				if ( value != NULL ) {
-					xmlFree( value );
-				}
-			} else if ( xmlStrEqual( childName, ( const xmlChar* ) "nd" ) == 1 ) {
-				xmlChar* ref = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "ref" );
-				if ( ref != NULL ) {
-					way.path.push_back( stringToUint(( const char* ) ref ) );
-					xmlFree( ref );
-				}
-			}
-			xmlFree( childName );
-		}
-	}
-	return way;
+        if (xmlStrEqual(child_name, (const xmlChar *)"tag") == 1)
+        {
+            xmlChar *key = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"k");
+            xmlChar *value = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"v");
+
+            if (key != nullptr && value != nullptr)
+            {
+                way.keyVals.Add(std::string((char *)key), std::string((char *)value));
+            }
+            if (key != nullptr)
+            {
+                xmlFree(key);
+            }
+            if (value != nullptr)
+            {
+                xmlFree(value);
+            }
+        }
+        else if (xmlStrEqual(child_name, (const xmlChar *)"nd") == 1)
+        {
+            xmlChar *ref = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"ref");
+            if (ref != nullptr)
+            {
+                way.path.push_back(StringToUint((const char *)ref));
+                xmlFree(ref);
+            }
+        }
+        xmlFree(child_name);
+    }
+    return way;
 }
 
-ImportNode XMLParser::_ReadXMLNode() {
-	ImportNode node;
+ImportNode XMLParser::ReadXMLNode()
+{
+    ImportNode node;
 
-	xmlChar* attribute = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "lat" );
-	if ( attribute != NULL ) {
-		node.lat =  static_cast<NodeID>(COORDINATE_PRECISION*atof(( const char* ) attribute ) );
-		xmlFree( attribute );
-	}
-	attribute = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "lon" );
-	if ( attribute != NULL ) {
-		node.lon =  static_cast<NodeID>(COORDINATE_PRECISION*atof(( const char* ) attribute ));
-		xmlFree( attribute );
-	}
-	attribute = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "id" );
-	if ( attribute != NULL ) {
-		node.id =  stringToUint(( const char* ) attribute );
-		xmlFree( attribute );
-	}
+    xmlChar *attribute = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"lat");
+    if (attribute != nullptr)
+    {
+        node.lat = static_cast<int>(COORDINATE_PRECISION * StringToDouble((const char *)attribute));
+        xmlFree(attribute);
+    }
+    attribute = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"lon");
+    if (attribute != nullptr)
+    {
+        node.lon = static_cast<int>(COORDINATE_PRECISION * StringToDouble((const char *)attribute));
+        xmlFree(attribute);
+    }
+    attribute = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"id");
+    if (attribute != nullptr)
+    {
+        node.node_id = StringToUint((const char *)attribute);
+        xmlFree(attribute);
+    }
 
-	if ( xmlTextReaderIsEmptyElement( inputReader ) != 1 ) {
-		const int depth = xmlTextReaderDepth( inputReader );
-		while ( xmlTextReaderRead( inputReader ) == 1 ) {
-			const int childType = xmlTextReaderNodeType( inputReader );
-			// 1 = Element, 15 = EndElement
-			if ( childType != 1 && childType != 15 ) {
-				continue;
-			}
-			const int childDepth = xmlTextReaderDepth( inputReader );
-			xmlChar* childName = xmlTextReaderName( inputReader );
-			if ( childName == NULL ) {
-				continue;
-			}
+    if (xmlTextReaderIsEmptyElement(inputReader) == 1)
+    {
+        return node;
+    }
+    const int depth = xmlTextReaderDepth(inputReader);
+    while (xmlTextReaderRead(inputReader) == 1)
+    {
+        const int child_type = xmlTextReaderNodeType(inputReader);
+        // 1 = Element, 15 = EndElement
+        if (child_type != 1 && child_type != 15)
+        {
+            continue;
+        }
+        const int child_depth = xmlTextReaderDepth(inputReader);
+        xmlChar *child_name = xmlTextReaderName(inputReader);
+        if (child_name == nullptr)
+        {
+            continue;
+        }
 
-			if ( depth == childDepth && childType == 15 && xmlStrEqual( childName, ( const xmlChar* ) "node" ) == 1 ) {
-				xmlFree( childName );
-				break;
-			}
-			if ( childType != 1 ) {
-				xmlFree( childName );
-				continue;
-			}
+        if (depth == child_depth && child_type == 15 &&
+            xmlStrEqual(child_name, (const xmlChar *)"node") == 1)
+        {
+            xmlFree(child_name);
+            break;
+        }
+        if (child_type != 1)
+        {
+            xmlFree(child_name);
+            continue;
+        }
 
-			if ( xmlStrEqual( childName, ( const xmlChar* ) "tag" ) == 1 ) {
-				xmlChar* k = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "k" );
-				xmlChar* value = xmlTextReaderGetAttribute( inputReader, ( const xmlChar* ) "v" );
-				if ( k != NULL && value != NULL ) {
-					node.keyVals.Add(std::string( reinterpret_cast<char*>(k) ), std::string( reinterpret_cast<char*>(value)));
-				}
-				if ( k != NULL ) {
-					xmlFree( k );
-				}
-				if ( value != NULL ) {
-					xmlFree( value );
-				}
-			}
+        if (xmlStrEqual(child_name, (const xmlChar *)"tag") == 1)
+        {
+            xmlChar *key = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"k");
+            xmlChar *value = xmlTextReaderGetAttribute(inputReader, (const xmlChar *)"v");
+            if (key != nullptr && value != nullptr)
+            {
+                node.keyVals.Add(std::string((char *)(key)), std::string((char *)(value)));
+            }
+            if (key != nullptr)
+            {
+                xmlFree(key);
+            }
+            if (value != nullptr)
+            {
+                xmlFree(value);
+            }
+        }
 
-			xmlFree( childName );
-		}
-	}
-	return node;
+        xmlFree(child_name);
+    }
+    return node;
 }

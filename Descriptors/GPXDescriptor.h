@@ -25,79 +25,76 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef GPX_DESCRIPTOR_H_
-#define GPX_DESCRIPTOR_H_
+#ifndef GPX_DESCRIPTOR_H
+#define GPX_DESCRIPTOR_H
 
 #include "BaseDescriptor.h"
 
-#include <boost/foreach.hpp>
-
-template<class DataFacadeT>
-class GPXDescriptor : public BaseDescriptor<DataFacadeT> {
-private:
+template <class DataFacadeT> class GPXDescriptor : public BaseDescriptor<DataFacadeT>
+{
+  private:
     DescriptorConfig config;
     FixedPointCoordinate current;
+    DataFacadeT * facade;
 
-    std::string tmp;
-public:
-    void SetConfig(const DescriptorConfig & c) { config = c; }
+    void AddRoutePoint(const FixedPointCoordinate & coordinate, std::vector<char> & output)
+    {
+        const std::string route_point_head = "<rtept lat=\"";
+        const std::string route_point_middle = " lon=\"";
+        const std::string route_point_tail = "\"></rtept>";
 
-    //TODO: reorder parameters
-    void Run(
-        http::Reply & reply,
-        const RawRouteData &rawRoute,
-        PhantomNodes &phantomNodes,
-        const DataFacadeT * facade
-    ) {
-        reply.content.push_back("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        reply.content.push_back(
-                "<gpx creator=\"OSRM Routing Engine\" version=\"1.1\" "
-                "xmlns=\"http://www.topografix.com/GPX/1/1\" "
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-                "xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 gpx.xsd"
-                "\">");
-        reply.content.push_back(
-                "<metadata><copyright author=\"Project OSRM\"><license>Data (c)"
-                " OpenStreetMap contributors (ODbL)</license></copyright>"
-                "</metadata>");
-        reply.content.push_back("<rte>");
-        bool found_route =  (rawRoute.lengthOfShortestPath != INT_MAX) &&
-                            (rawRoute.computedShortestPath.size()         );
-        if( found_route ) {
-            convertInternalLatLonToString(
-                phantomNodes.startPhantom.location.lat,
-                tmp
-            );
-            reply.content.push_back("<rtept lat=\"" + tmp + "\" ");
-            convertInternalLatLonToString(
-                phantomNodes.startPhantom.location.lon,
-                tmp
-            );
-            reply.content.push_back("lon=\"" + tmp + "\"></rtept>");
+        std::string tmp;
 
-            BOOST_FOREACH(
-                const _PathData & pathData,
-                rawRoute.computedShortestPath
-            ) {
-                current = facade->GetCoordinateOfNode(pathData.node);
+        FixedPointCoordinate::convertInternalLatLonToString(coordinate.lat, tmp);
+        output.insert(output.end(), route_point_head.begin(), route_point_head.end());
+        output.insert(output.end(), tmp.begin(), tmp.end());
+        output.push_back('\"');
 
-                convertInternalLatLonToString(current.lat, tmp);
-                reply.content.push_back("<rtept lat=\"" + tmp + "\" ");
-                convertInternalLatLonToString(current.lon, tmp);
-                reply.content.push_back("lon=\"" + tmp + "\"></rtept>");
+        FixedPointCoordinate::convertInternalLatLonToString(coordinate.lon, tmp);
+        output.insert(output.end(), route_point_middle.begin(), route_point_middle.end());
+        output.insert(output.end(), tmp.begin(), tmp.end());
+        output.insert(output.end(), route_point_tail.begin(), route_point_tail.end());
+    }
+
+  public:
+    GPXDescriptor(DataFacadeT *facade) : facade(facade) {}
+
+    void SetConfig(const DescriptorConfig &c) { config = c; }
+
+    // TODO: reorder parameters
+    void Run(const RawRouteData &raw_route, http::Reply &reply)
+    {
+        std::string header("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                           "<gpx creator=\"OSRM Routing Engine\" version=\"1.1\" "
+                           "xmlns=\"http://www.topografix.com/GPX/1/1\" "
+                           "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+                           "xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 gpx.xsd"
+                           "\">"
+                           "<metadata><copyright author=\"Project OSRM\"><license>Data (c)"
+                           " OpenStreetMap contributors (ODbL)</license></copyright>"
+                           "</metadata>"
+                           "<rte>");
+        reply.content.insert(reply.content.end(), header.begin(), header.end());
+        const bool found_route = (raw_route.shortest_path_length != INVALID_EDGE_WEIGHT) &&
+                                 (!raw_route.unpacked_path_segments.front().empty());
+        if (found_route)
+        {
+            AddRoutePoint(raw_route.segment_end_coordinates.front().source_phantom.location, reply.content);
+
+            for (const std::vector<PathData> &path_data_vector : raw_route.unpacked_path_segments)
+            {
+                for (const PathData &path_data : path_data_vector)
+                {
+                    const FixedPointCoordinate current_coordinate =
+                        facade->GetCoordinateOfNode(path_data.node);
+                    AddRoutePoint(current_coordinate, reply.content);
+                }
             }
-            convertInternalLatLonToString(
-                phantomNodes.targetPhantom.location.lat,
-                tmp
-            );
-            reply.content.push_back("<rtept lat=\"" + tmp + "\" ");
-            convertInternalLatLonToString(
-                phantomNodes.targetPhantom.location.lon,
-                tmp
-            );
-            reply.content.push_back("lon=\"" + tmp + "\"></rtept>");
+            AddRoutePoint(raw_route.segment_end_coordinates.back().target_phantom.location, reply.content);
+
         }
-        reply.content.push_back("</rte></gpx>");
+        std::string footer("</rte></gpx>");
+        reply.content.insert(reply.content.end(), footer.begin(), footer.end());
     }
 };
-#endif // GPX_DESCRIPTOR_H_
+#endif // GPX_DESCRIPTOR_H

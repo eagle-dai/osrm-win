@@ -28,55 +28,42 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef EXTRACTIONCONTAINERS_H_
 #define EXTRACTIONCONTAINERS_H_
 
+#include "InternalExtractorEdge.h"
 #include "ExtractorStructs.h"
-#include "../Util/SimpleLogger.h"
-#include "../Util/TimingUtil.h"
-#include "../Util/UUID.h"
+#include "../DataStructures/Restriction.h"
+#include "../Util/FingerPrint.h"
 
-#include <boost/assert.hpp>
-#include <boost/foreach.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
-
-#include <stxxl/sort>
 #include <stxxl/vector>
 
-class ExtractionContainers {
-public:
-    typedef stxxl::vector<NodeID>                    STXXLNodeIDVector;
-    typedef stxxl::vector<ExternalMemoryNode>        STXXLNodeVector;
-    typedef stxxl::vector<InternalExtractorEdge>     STXXLEdgeVector;
-    typedef stxxl::vector<std::string>               STXXLStringVector;
+class ExtractionContainers
+{
+#ifndef _MSC_VER
+    constexpr static unsigned stxxl_memory = ((sizeof(std::size_t) == 4) ? std::numeric_limits<int>::max() : std::numeric_limits<unsigned>::max());
+#else
+    const static unsigned stxxl_memory = ((sizeof(std::size_t) == 4) ? INT_MAX : UINT_MAX);
+#endif
+  public:
+    typedef stxxl::vector<NodeID> STXXLNodeIDVector;
+    typedef stxxl::vector<ExternalMemoryNode> STXXLNodeVector;
+    typedef stxxl::vector<InternalExtractorEdge> STXXLEdgeVector;
+    typedef stxxl::vector<std::string> STXXLStringVector;
     typedef stxxl::vector<InputRestrictionContainer> STXXLRestrictionsVector;
-    typedef stxxl::vector<_WayIDStartAndEndEdge>     STXXLWayIDStartEndVector;
+    typedef stxxl::vector<WayIDStartAndEndEdge> STXXLWayIDStartEndVector;
 
-    STXXLNodeIDVector                               used_node_id_list;
-    STXXLNodeVector                                 all_nodes_list;
-    STXXLEdgeVector                                 all_edges_list;
-    STXXLStringVector                               name_list;
-    STXXLRestrictionsVector                         restrictions_list;
-    STXXLWayIDStartEndVector                        way_start_end_id_list;
-    const UUID uuid;
+    STXXLNodeIDVector used_node_id_list;
+    STXXLNodeVector all_nodes_list;
+    STXXLEdgeVector all_edges_list;
+    STXXLStringVector name_list;
+    STXXLRestrictionsVector restrictions_list;
+    STXXLWayIDStartEndVector way_start_end_id_list;
+    const FingerPrint fingerprint;
 
-    ExtractionContainers() {
-        //Check if stxxl can be instantiated
-        stxxl::vector<unsigned> dummy_vector;
-        name_list.push_back("");
-    }
+    ExtractionContainers();
 
-    virtual ~ExtractionContainers() {
-        used_node_id_list.clear();
-        all_nodes_list.clear();
-        all_edges_list.clear();
-        name_list.clear();
-        restrictions_list.clear();
-        way_start_end_id_list.clear();
-    }
+    virtual ~ExtractionContainers();
 
-    void PrepareData(
-        const std::string & output_file_name,
-        const std::string & restrictions_file_name
-    );
+    void PrepareData(const std::string &output_file_name,
+                     const std::string &restrictions_file_name);
 };
 
 #endif /* EXTRACTIONCONTAINERS_H_ */
