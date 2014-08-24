@@ -91,6 +91,9 @@ namespace luabind { namespace detail
 
         instance->release_dependency_refs(L);
         instance->~object_rep();
+
+        lua_pushnil(L);
+        lua_setmetatable(L, 1);
         return 0;
     }
 
@@ -216,7 +219,7 @@ namespace luabind { namespace detail
         lua_newtable(L);
 
         // This is used as a tag to determine if a userdata is a luabind
-        // instance. We use a numeric key and a cclosure for fast comparision.
+        // instance. We use a numeric key and a cclosure for fast comparison.
         lua_pushnumber(L, 1);
         lua_pushcclosure(L, get_instance_value, 0);
         lua_rawset(L, -3);

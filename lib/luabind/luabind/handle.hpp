@@ -25,6 +25,7 @@
 
 #include <luabind/lua_include.hpp>
 #include <luabind/value_wrapper.hpp>
+#include <algorithm>
 
 namespace luabind {
 

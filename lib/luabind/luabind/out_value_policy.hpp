@@ -25,8 +25,17 @@
 #define LUABIND_OUT_VALUE_POLICY_HPP_INCLUDED
 
 #include <luabind/config.hpp>
-#include <luabind/detail/policy.hpp>
-#include <boost/mpl/apply_wrap.hpp>
+#include <luabind/detail/policy.hpp>    // for find_conversion_policy, etc
+#include <luabind/detail/decorate_type.hpp>  // for LUABIND_DECORATE_TYPE
+#include <luabind/detail/primitives.hpp>  // for by_pointer, by_reference, etc
+#include <luabind/detail/typetraits.hpp>  // for is_nonconst_pointer, is_nonconst_reference, etc
+
+#include <boost/mpl/apply_wrap.hpp>     // for apply_wrap2
+#include <boost/mpl/if.hpp>             // for if_
+#include <boost/mpl/or.hpp>             // for or_
+#include <boost/type_traits/is_same.hpp>  // for is_same
+
+#include <new>                          // for operator new
 
 namespace luabind { namespace detail
 {
@@ -83,7 +92,7 @@ namespace luabind { namespace detail
 	template<int Size, class Policies = detail::null_type>
 	struct out_value_converter
 	{
-        int const consumed_args(...)
+        int consumed_args(...) const
         {
             return 1;
         }
@@ -192,7 +201,7 @@ namespace luabind { namespace detail
 	template<int Size, class Policies = detail::null_type>
 	struct pure_out_value_converter
 	{
-        int const consumed_args(...)
+        int consumed_args(...) const
         {
             return 0;
         }
