@@ -53,7 +53,7 @@
     <ClCompile>
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;..\lib\lua\src;..\lib\luabind;..\lib\OSM-binary\include;..\lib\protobuf\src;..\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;..\lib\lua\src;..\lib\luabind;..\lib\OSM-binary\include;..\lib\protobuf\src;..\;$(SolutionDir);..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OSRM_WIN;WIN32;_WIN32_WINNT=0x0600;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -78,7 +78,7 @@
       <AdditionalOptions>-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_RTLDLL -DBOOST_LIB_DIAGNOSTIC -DSTXXL_BOOST_TIMESTAMP -DSTXXL_BOOST_CONFIG -DSTXXL_BOOST_FILESYSTEM -DSTXXL_BOOST_THREADS -DSTXXL_BOOST_RANDOM /EHsc /EHs /wd4820 /wd4217 /wd4668 /wd4619 /wd4625 /wd4626 /wd4355 /wd4996 -D_SCL_SECURE_NO_DEPRECATE /F 16777216 /nologo  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;..\lib\lua\src;..\lib\luabind;..\lib\OSM-binary\include;..\lib\protobuf\src;..\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\boost;..\lib\stxxl\vsproj\include;..\lib\stxxl\include;..\lib\libxml2\include;..\lib\libiconv\include;..\lib\bzip2;..\lib\zlib;..\lib\protobuf;..\lib\lua\src;..\lib\luabind;..\lib\OSM-binary\include;..\lib\protobuf\src;..\;$(SolutionDir);..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OSRM_WIN;WIN32;_WIN32_WINNT=0x0600;NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -100,10 +100,12 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Algorithms\DouglasePeucker.cpp" />
+    <ClCompile Include="..\Algorithms\DouglasPeucker.cpp" />
     <ClCompile Include="..\Algorithms\PolylineCompressor.cpp" />
     <ClCompile Include="..\Contractor\EdgeBasedGraphFactory.cpp" />
-    <ClCompile Include="..\Contractor\TemporaryStorage.cpp" />
+    <ClCompile Include="..\Contractor\GeometryCompressor.cpp" />
+    <ClCompile Include="..\DataStructures\RestrictionMap.cpp" />
+    <ClCompile Include="..\DataStructures\RouteParameters.cpp" />
     <ClCompile Include="..\DataStructures\SearchEngineData.cpp" />
     <ClCompile Include="..\Descriptors\DescriptionFactory.cpp" />
     <ClCompile Include="..\Extractor\BaseParser.cpp" />
@@ -112,11 +114,11 @@
     <ClCompile Include="..\Extractor\PBFParser.cpp" />
     <ClCompile Include="..\Extractor\ScriptingEnvironment.cpp" />
     <ClCompile Include="..\Extractor\XMLParser.cpp" />
-    <ClCompile Include="..\Library\OSRM.cpp" />
+    <ClCompile Include="..\Library\OSRM_impl.cpp" />
+    <ClCompile Include="..\Server\Connection.cpp" />
     <ClCompile Include="..\Server\Http\Reply.cpp" />
+    <ClCompile Include="..\Server\RequestHandler.cpp" />
     <ClCompile Include="..\Server\RequestParser.cpp" />
-    <ClCompile Include="..\Util\GitDescription.cpp" />
-    <ClCompile Include="..\Util\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Library\OSRM.h" />
@@ -131,6 +133,13 @@
     <ClInclude Include="..\DataStructures\SearchEngine.h" />
     <ClInclude Include="..\DataStructures\StaticGraph.h" />
     <ClInclude Include="..\DataStructures\StaticKDTree.h" />
+    <ClInclude Include="..\Library\OSRM_impl.h" />
+    <ClInclude Include="..\Server\Http\CompressionType.h" />
+    <ClInclude Include="..\Server\Http\Request.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Util\FingerPrint.cpp.in" />
+    <None Include="..\Util\GitDescription.cpp.in" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

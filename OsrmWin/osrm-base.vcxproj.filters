@@ -34,9 +34,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Library\OSRM.cpp">
-      <Filter>Source Files\Library</Filter>
-    </ClCompile>
     <ClCompile Include="..\DataStructures\SearchEngineData.cpp">
       <Filter>Source Files\DataStructures</Filter>
     </ClCompile>
@@ -49,17 +46,8 @@
     <ClCompile Include="..\Algorithms\PolylineCompressor.cpp">
       <Filter>Source Files\Algorithms</Filter>
     </ClCompile>
-    <ClCompile Include="..\Algorithms\DouglasePeucker.cpp">
-      <Filter>Source Files\Algorithms</Filter>
-    </ClCompile>
     <ClCompile Include="..\Server\RequestParser.cpp">
       <Filter>Source Files\Server</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Util\GitDescription.cpp">
-      <Filter>Source Files\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Util\UUID.cpp">
-      <Filter>Source Files\Util</Filter>
     </ClCompile>
     <ClCompile Include="..\Extractor\ExtractorCallbacks.cpp">
       <Filter>Source Files\Extractor</Filter>
@@ -79,11 +67,29 @@
     <ClCompile Include="..\Extractor\ExtractionContainers.cpp">
       <Filter>Source Files\Extractor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Contractor\TemporaryStorage.cpp">
-      <Filter>Source Files\Contractor</Filter>
-    </ClCompile>
     <ClCompile Include="..\Contractor\EdgeBasedGraphFactory.cpp">
       <Filter>Source Files\Contractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Algorithms\DouglasPeucker.cpp">
+      <Filter>Source Files\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Contractor\GeometryCompressor.cpp">
+      <Filter>Source Files\Contractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DataStructures\RestrictionMap.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DataStructures\RouteParameters.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\OSRM_impl.cpp">
+      <Filter>Source Files\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\Connection.cpp">
+      <Filter>Source Files\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\RequestHandler.cpp">
+      <Filter>Source Files\Server</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,5 +129,22 @@
     <ClInclude Include="..\Library\OSRM.h">
       <Filter>Source Files\Library</Filter>
     </ClInclude>
+    <ClInclude Include="..\Library\OSRM_impl.h">
+      <Filter>Source Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Server\Http\CompressionType.h">
+      <Filter>Source Files\Server\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Server\Http\Request.h">
+      <Filter>Source Files\Server\Http</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Util\FingerPrint.cpp.in">
+      <Filter>Source Files\Util</Filter>
+    </None>
+    <None Include="..\Util\GitDescription.cpp.in">
+      <Filter>Source Files\Util</Filter>
+    </None>
   </ItemGroup>
 </Project>
