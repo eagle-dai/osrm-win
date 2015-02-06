@@ -3,7 +3,7 @@
   OSRM_WIN, NOMINMAX
 
 - OpenMP disabled. To enable it, update project settings:
-  Configuration Properties | c/C+= | Language | Open MP Support
+  Configuration Properties | C/C++| Language | Open MP Support
 
 - 64bit release configuration is verified OK
 
