@@ -32,19 +32,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Necessary workaround for Windows as VS doesn't implement C99
 #ifdef _MSC_VER
+#define WIN32_LEAN_AND_MEAN
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-#define constexpr const static
 #endif
 
-typedef unsigned int NodeID;
-typedef unsigned int EdgeID;
-typedef int EdgeWeight;
+using NodeID = unsigned int;
+using EdgeID = unsigned int;
+using EdgeWeight = int;
 
-constexpr NodeID SPECIAL_NODEID = std::numeric_limits<unsigned>::max();
-constexpr EdgeID SPECIAL_EDGEID = std::numeric_limits<unsigned>::max();
-constexpr unsigned INVALID_NAMEID = std::numeric_limits<unsigned>::max();
-constexpr EdgeWeight INVALID_EDGE_WEIGHT = std::numeric_limits<int>::max();
+static const NodeID SPECIAL_NODEID = std::numeric_limits<unsigned>::max();
+static const EdgeID SPECIAL_EDGEID = std::numeric_limits<unsigned>::max();
+static const unsigned INVALID_NAMEID = std::numeric_limits<unsigned>::max();
+static const EdgeWeight INVALID_EDGE_WEIGHT = std::numeric_limits<int>::max();
 
 #endif /* TYPEDEFS_H */

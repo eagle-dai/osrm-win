@@ -25,8 +25,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#include "Http/Request.h"
 #include "RequestParser.h"
+
+#include "Http/Request.h"
 
 namespace http
 {
@@ -36,7 +37,7 @@ RequestParser::RequestParser() : state_(method_start), header({"", ""}) {}
 void RequestParser::Reset() { state_ = method_start; }
 
 boost::tuple<boost::tribool, char *>
-RequestParser::Parse(Request &req, char *begin, char *end, http::CompressionType *compression_type)
+RequestParser::Parse(Request &req, char *begin, char *end, http::CompressionType &compression_type)
 {
     while (begin != end)
     {
@@ -51,7 +52,7 @@ RequestParser::Parse(Request &req, char *begin, char *end, http::CompressionType
 }
 
 boost::tribool
-RequestParser::consume(Request &req, char input, http::CompressionType *compression_type)
+RequestParser::consume(Request &req, char input, http::CompressionType &compression_type)
 {
     switch (state_)
     {
@@ -177,11 +178,11 @@ RequestParser::consume(Request &req, char input, http::CompressionType *compress
             /* giving gzip precedence over deflate */
             if (header.value.find("deflate") != std::string::npos)
             {
-                *compression_type = deflateRFC1951;
+                compression_type = deflateRFC1951;
             }
             if (header.value.find("gzip") != std::string::npos)
             {
-                *compression_type = gzipRFC1952;
+                compression_type = gzipRFC1952;
             }
         }
 
@@ -264,18 +265,21 @@ RequestParser::consume(Request &req, char input, http::CompressionType *compress
         return false;
     default: // expecting_newline_3:
         return (input == '\n');
-    // default:
-    //     return false;
+        // default:
+        //     return false;
     }
 }
 
-inline bool RequestParser::isChar(int c) { return c >= 0 && c <= 127; }
+inline bool RequestParser::isChar(int character) { return character >= 0 && character <= 127; }
 
-inline bool RequestParser::isCTL(int c) { return (c >= 0 && c <= 31) || (c == 127); }
-
-inline bool RequestParser::isTSpecial(int c)
+inline bool RequestParser::isCTL(int character)
 {
-    switch (c)
+    return (character >= 0 && character <= 31) || (character == 127);
+}
+
+inline bool RequestParser::isTSpecial(int character)
+{
+    switch (character)
     {
     case '(':
     case ')':
@@ -302,5 +306,5 @@ inline bool RequestParser::isTSpecial(int c)
     }
 }
 
-inline bool RequestParser::isDigit(int c) { return c >= '0' && c <= '9'; }
+inline bool RequestParser::isDigit(int character) { return character >= '0' && character <= '9'; }
 }

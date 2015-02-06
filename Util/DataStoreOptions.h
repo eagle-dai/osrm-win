@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2013, Project OSRM, Dennis Luxen, others
+Copyright (c) 2015, Project OSRM, Dennis Luxen, others
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -29,10 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define DATA_STORE_OPTIONS_H
 
 #include "BoostFileSystemFix.h"
-#include "GitDescription.h"
+#include "git_sha.hpp"
 #include "IniFileUtil.h"
-#include "OSRMException.h"
-#include "SimpleLogger.h"
+#include "osrm_exception.hpp"
+#include "simple_logger.hpp"
 
 #include <osrm/ServerPaths.h>
 
@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 // generate boost::program_options object for the routing part
-inline bool GenerateDataStoreOptions(const int argc, const char *argv[], ServerPaths &paths, bool & springclean)
+bool GenerateDataStoreOptions(const int argc, const char *argv[], ServerPaths &paths)
 {
     // declare a group of options that will be allowed only on command line
     boost::program_options::options_description generic_options("Options");
@@ -122,11 +122,6 @@ inline bool GenerateDataStoreOptions(const int argc, const char *argv[], ServerP
         return false;
     }
 
-    if (option_variables.count("springclean"))
-    {
-        springclean = true;
-        return true;
-    }
     boost::program_options::notify(option_variables);
 
     const bool parameter_present = (paths.find("hsgrdata") != paths.end() &&
@@ -226,56 +221,56 @@ inline bool GenerateDataStoreOptions(const int argc, const char *argv[], ServerP
     path_iterator = paths.find("hsgrdata");
     if (path_iterator == paths.end() || path_iterator->second.string().empty())
     {
-        throw OSRMException(".hsgr file must be specified");
+        throw osrm::exception(".hsgr file must be specified");
     }
     AssertPathExists(path_iterator->second);
 
     path_iterator = paths.find("nodesdata");
     if (path_iterator == paths.end() || path_iterator->second.string().empty())
     {
-        throw OSRMException(".nodes file must be specified");
+        throw osrm::exception(".nodes file must be specified");
     }
     AssertPathExists(path_iterator->second);
 
     path_iterator = paths.find("edgesdata");
     if (path_iterator == paths.end() || path_iterator->second.string().empty())
     {
-        throw OSRMException(".edges file must be specified");
+        throw osrm::exception(".edges file must be specified");
     }
     AssertPathExists(path_iterator->second);
 
     path_iterator = paths.find("geometry");
     if (path_iterator == paths.end() || path_iterator->second.string().empty())
     {
-        throw OSRMException(".geometry file must be specified");
+        throw osrm::exception(".geometry file must be specified");
     }
     AssertPathExists(path_iterator->second);
 
     path_iterator = paths.find("ramindex");
     if (path_iterator == paths.end() || path_iterator->second.string().empty())
     {
-        throw OSRMException(".ramindex file must be specified");
+        throw osrm::exception(".ramindex file must be specified");
     }
     AssertPathExists(path_iterator->second);
 
     path_iterator = paths.find("fileindex");
     if (path_iterator == paths.end() || path_iterator->second.string().empty())
     {
-        throw OSRMException(".fileindex file must be specified");
+        throw osrm::exception(".fileindex file must be specified");
     }
     AssertPathExists(path_iterator->second);
 
     path_iterator = paths.find("namesdata");
     if (path_iterator == paths.end() || path_iterator->second.string().empty())
     {
-        throw OSRMException(".names file must be specified");
+        throw osrm::exception(".names file must be specified");
     }
     AssertPathExists(path_iterator->second);
 
     path_iterator = paths.find("timestamp");
     if (path_iterator == paths.end() || path_iterator->second.string().empty())
     {
-        throw OSRMException(".timestamp file must be specified");
+        throw osrm::exception(".timestamp file must be specified");
     }
 
     return true;

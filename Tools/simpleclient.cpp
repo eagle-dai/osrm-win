@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2013, Project OSRM, Dennis Luxen, others
+Copyright (c) 2015, Project OSRM, Dennis Luxen, others
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -26,9 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "../Library/OSRM.h"
-#include "../Util/GitDescription.h"
+#include "../Util/git_sha.hpp"
 #include "../Util/ProgramOptions.h"
-#include "../Util/SimpleLogger.h"
+#include "../Util/simple_logger.hpp"
 
 #include <osrm/Reply.h>
 #include <osrm/RouteParameters.h>
@@ -66,22 +66,24 @@ int main(int argc, const char *argv[])
     {
         std::string ip_address;
         int ip_port, requested_thread_num;
-        bool use_shared_memory = false, trial = false;
+        bool use_shared_memory = false, trial_run = false;
         ServerPaths server_paths;
-        if (!GenerateServerProgramOptions(argc,
-                                          argv,
-                                          server_paths,
-                                          ip_address,
-                                          ip_port,
-                                          requested_thread_num,
-                                          use_shared_memory,
-                                          trial))
+
+        const unsigned init_result = GenerateServerProgramOptions(argc,
+                                                                  argv,
+                                                                  server_paths,
+                                                                  ip_address,
+                                                                  ip_port,
+                                                                  requested_thread_num,
+                                                                  use_shared_memory,
+                                                                  trial_run);
+
+        if (init_result == INIT_FAILED)
         {
             return 0;
         }
 
-        SimpleLogger().Write() << "starting up engines, " << g_GIT_DESCRIPTION << ", "
-                               << "compiled at " << __DATE__ << ", " __TIME__;
+        SimpleLogger().Write() << "starting up engines, " << g_GIT_DESCRIPTION;
 
         OSRM routing_machine(server_paths, use_shared_memory);
 
