@@ -1,3 +1,8 @@
+osrm-bin\
+osrm-backend/profiles/.stxxl.txt
+
+
+
 # VC files
 *.suo
 *.ncb
@@ -10,8 +15,8 @@ _UpgradeReport_Files/
 ipch/
 
 # VC build output directories
-Debug/
-Release/
+#Debug/
+#Release/
 Release-*/
 *.lib
 *.trc
