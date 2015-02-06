@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{052207ee-f72f-4db4-ab86-420013101ae9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\blocksort.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bzlib.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compress.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\crctable.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\decompress.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\huffman.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\randtable.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\libbz2.def">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+</Project>
