@@ -14,13 +14,6 @@ _UpgradeReport_Files/
 *.opensdf
 ipch/
 
-# VC build output directories
-#Debug/
-#Release/
-Release-*/
-*.lib
-*.trc
-
 # MS Office
 ~*.*
 
