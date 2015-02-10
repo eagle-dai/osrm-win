@@ -492,6 +492,9 @@ Prepare::SetupScriptingEnvironment(lua_State *lua_state,
 
     speed_profile.u_turn_penalty = 10 * lua_tointeger(lua_state, -1);
     speed_profile.has_turn_penalty_function = lua_function_exists(lua_state, "turn_function");
+#if NIC_CHANGE == 1
+    speed_profile.has_transition_penalty_function = lua_function_exists(lua_state, "transition_function");
+#endif
 
     return true;
 }

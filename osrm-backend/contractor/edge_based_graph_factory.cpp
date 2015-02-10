@@ -667,6 +667,12 @@ EdgeBasedGraphFactory::GenerateEdgeExpandedEdges(const std::string &original_edg
                 }
                 distance += turn_penalty;
 
+#if NIC_CHANGE == 1
+                const int transition_penalty = GetTrasitionPenalty(first_coordinate.node_id,
+                    m_node_info_list[v].node_id, third_coordinate.node_id, lua_state);
+                distance += turn_penalty;
+#endif
+
                 const bool edge_is_compressed = m_geometry_compressor.HasEntryForID(e1);
 
                 if (edge_is_compressed)
@@ -794,3 +800,21 @@ unsigned EdgeBasedGraphFactory::GetNumberOfEdgeBasedNodes() const
 {
     return m_number_of_edge_based_nodes;
 }
+
+#if NIC_CHANGE == 1
+int EdgeBasedGraphFactory::GetTrasitionPenalty(const NodeID from, const NodeID mid,
+    const NodeID to, lua_State *lua_state) const
+{
+    if (speed_profile.has_transition_penalty_function)
+    {
+        try
+        {
+            // call lua profile to compute transition penalty
+            return luabind::call_function<int>(lua_state, "transition_function",
+                from, mid, to);
+        }
+        catch (const luabind::error &er) { SimpleLogger().Write(logWARNING) << er.what(); }
+    }
+    return 0;
+}
+#endif

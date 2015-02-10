@@ -7,3 +7,4 @@ for /f %%a in ('dir /B /S *.osrm') do osrm-prepare %%a
 echo %TIME%
 
 cd ..
+pause

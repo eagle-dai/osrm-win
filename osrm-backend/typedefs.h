@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
+#define NIC_CHANGE  1
+
 using NodeID = unsigned int;
 using EdgeID = unsigned int;
 using EdgeWeight = int;

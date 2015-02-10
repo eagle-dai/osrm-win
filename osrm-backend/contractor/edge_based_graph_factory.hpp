@@ -78,6 +78,10 @@ class EdgeBasedGraphFactory
 
     int GetTurnPenalty(double angle, lua_State *lua_state) const;
 
+#if NIC_CHANGE == 1
+    int GetTrasitionPenalty(const NodeID from, const NodeID mid, const NodeID to, lua_State *lua_state) const;
+#endif
+
     unsigned GetNumberOfEdgeBasedNodes() const;
 
     struct SpeedProfileProperties
@@ -90,6 +94,9 @@ class EdgeBasedGraphFactory
         int traffic_signal_penalty;
         int u_turn_penalty;
         bool has_turn_penalty_function;
+#if NIC_CHANGE == 1
+        bool has_transition_penalty_function;
+#endif
     } speed_profile;
 
   private:
