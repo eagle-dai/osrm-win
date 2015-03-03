@@ -47,6 +47,7 @@ init: function() {
 
 // set language dependent labels
 setLabels: function() {
+	document.getElementById("open-editor").innerHTML = OSRM.loc("OPEN_EDITOR");
 	document.getElementById("open-josm").innerHTML = OSRM.loc("OPEN_JOSM");
 	document.getElementById("open-osmbugs").innerHTML = OSRM.loc("OPEN_OSMBUGS");
 	document.getElementById("gui-reset").innerHTML = OSRM.loc("GUI_RESET");
@@ -61,6 +62,7 @@ setLabels: function() {
 	document.getElementById("gui-input-target").title = OSRM.loc("GUI_END_TOOLTIP");
 	document.getElementById("legal-notice").innerHTML = OSRM.loc("GUI_LEGAL_NOTICE");
 	document.getElementById("gui-mapping-label").innerHTML = OSRM.loc("GUI_MAPPING_TOOLS");
+	document.getElementById('gui-external-tools-label').innerHTML = OSRM.loc("GUI_EXTERNAL_TOOLS");	
 	document.getElementById("gui-config-label").innerHTML = OSRM.loc("GUI_CONFIGURATION");
 	document.getElementById("gui-language-2-label").innerHTML = OSRM.loc("GUI_LANGUAGE")+":";
 	document.getElementById("gui-units-label").innerHTML = OSRM.loc("GUI_UNITS")+":";
@@ -131,8 +133,9 @@ getDistanceFormats: function() {
 
 // data timestamp routines
 queryDataTimestamp: function() {
-	OSRM.G.data_timestamp = "n/a";	
-	OSRM.JSONP.call( OSRM.G.active_routing_timestamp_url+"?jsonp=%jsonp", OSRM.GUI.setDataTimestamp, OSRM.JSONP.empty, OSRM.DEFAULTS.JSONP_TIMEOUT, 'data_timestamp');	
+	OSRM.G.data_timestamp = "n/a";
+	document.getElementById('gui-data-timestamp').innerHTML = OSRM.G.data_timestamp;
+	OSRM.JSONP.call( OSRM.G.active_routing_timestamp_url+"?jsonp=%jsonp", OSRM.GUI.setDataTimestamp, OSRM.JSONP.empty, OSRM.DEFAULTS.JSONP_TIMEOUT, 'data_timestamp');
 },
 setDataTimestamp: function(response) {
 	if(!response)

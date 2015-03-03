@@ -73,6 +73,14 @@ deactivateTooltip: function(id) {
 	// mark tooltip as no longer pending
 	tooltips[id]._pending = false;
 },
+//deactivate all pending tooltips
+deactivateTooltips: function() {
+	var tooltips = OSRM.GUI.tooltips;
+	
+	// mark tooltip as no longer pending
+	for( id in tooltips )
+		tooltips[id]._pending = false;
+},
 // show tooltip after timer expired
 _showTooltip: function(id) {
 	var tooltips = OSRM.GUI.tooltips;
@@ -109,10 +117,12 @@ exclusiveNotify: function( header, text, closable ){
 	document.getElementById('exclusive-notification-blanket').style.display = "block";
 	document.getElementById('exclusive-notification-label').innerHTML = header;
 	document.getElementById('exclusive-notification-box').innerHTML = text;
-	if( closable )
+	if( closable ) {
+		document.getElementById('exclusive-notification-toggle').style.display = "block";
 		document.getElementById('exclusive-notification-toggle').onclick = OSRM.GUI.exclusiveDenotify;
-	else
+	} else {
 		document.getElementById('exclusive-notification-toggle').style.display = "none";
+	}
 	OSRM.GUI.exclusiveResize();
 },
 exclusiveDenotify: function() {

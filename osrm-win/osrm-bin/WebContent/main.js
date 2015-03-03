@@ -91,9 +91,11 @@ OSRM.prefetchImages = function() {
 		              	{id:'zoom_in',							url:'images/zoom_in.png'},
 		              	{id:'zoom_in_active',					url:'images/zoom_in_active.png'},
 		              	{id:'zoom_in_hover',					url:'images/zoom_in_hover.png'},
+		              	{id:'zoom_in_inactive',					url:'images/zoom_in_inactive.png'},
 		              	{id:'zoom_out',							url:'images/zoom_out.png'},
 		              	{id:'zoom_out_active',					url:'images/zoom_out_active.png'},
-		              	{id:'zoom_out_hover',					url:'images/zoom_out_hover.png'},		              	
+		              	{id:'zoom_out_hover',					url:'images/zoom_out_hover.png'},
+		              	{id:'zoom_out_inactive',				url:'images/zoom_out_inactive.png'},
 		              	{id:'locations_user',					url:'images/locations_user.png'},
 		              	{id:'locations_user_active',			url:'images/locations_user_active.png'},
 		              	{id:'locations_user_hover',				url:'images/locations_user_hover.png'},
@@ -165,11 +167,13 @@ OSRM.prefetchCSSIcons = function() {
 	                	{ id:'#gui-printer',					image_id:'printer'},
 	                	{ id:'#gui-printer:hover',				image_id:'printer_hover'},
 	                	{ id:'#gui-printer:active',				image_id:'printer_active'},
-                	
+
+	                	{ id:'.gui-zoom-in-inactive',			image_id:'zoom_in_inactive'},	                	
 	                	{ id:'.gui-zoom-in',					image_id:'zoom_in'},
 	                	{ id:'.gui-zoom-in:hover',				image_id:'zoom_in_hover'},
 	                	{ id:'.gui-zoom-in:active',				image_id:'zoom_in_active'},
-	                	
+
+	                	{ id:'.gui-zoom-out-inactive',			image_id:'zoom_out_inactive'},	                	
 	                	{ id:'.gui-zoom-out',					image_id:'zoom_out'},
 	                	{ id:'.gui-zoom-out:hover',				image_id:'zoom_out_hover'},
 	                	{ id:'.gui-zoom-out:active',			image_id:'zoom_out_active'},
@@ -271,18 +275,27 @@ OSRM.parseParameters = function(){
 				return;
 			OSRM.GUI.setDistanceFormat(type);
 		}		
+//		else if(name_val[0] == 'loc') {
+//			var coordinates = unescape(name_val[1]).split(',');
+//			if(coordinates.length!=2 || !OSRM.Utils.isLatitude(coordinates[0]) || !OSRM.Utils.isLongitude(coordinates[1]) )
+//				return;
+//			params.positions = params.positions || [];
+//			params.positions.push ( new L.LatLng( coordinates[0], coordinates[1]) );
+//		}
+//		else if(name_val[0] == 'dest') {
+//			var coordinates = unescape(name_val[1]).split(',');
+//			if(coordinates.length!=2 || !OSRM.Utils.isLatitude(coordinates[0]) || !OSRM.Utils.isLongitude(coordinates[1]) )
+//				return;
+//			params.destinations = params.destinations || [];
+//			params.destinations.push ( new L.LatLng( coordinates[0], coordinates[1]) );
+//		}
 		else if(name_val[0] == 'loc') {
-			var coordinates = unescape(name_val[1]).split(',');
-			if(coordinates.length!=2 || !OSRM.Utils.isLatitude(coordinates[0]) || !OSRM.Utils.isLongitude(coordinates[1]) )
-				return;
-			params.positions = params.positions || [];
-			params.positions.push ( new L.LatLng( coordinates[0], coordinates[1]) );
+			params.locations = params.locations || [];
+			params.locations.push ( decodeURI(name_val[1]).replace(/<\/?[^>]+(>|$)/g ,"") );
 		}
 		else if(name_val[0] == 'dest') {
-			var coordinates = unescape(name_val[1]).split(',');
-			if(coordinates.length!=2 || !OSRM.Utils.isLatitude(coordinates[0]) || !OSRM.Utils.isLongitude(coordinates[1]) )
-				return;				
-			params.destination = new L.LatLng( coordinates[0], coordinates[1] );
+			params.destinations = params.dlocations || [];
+			params.destinations.push ( decodeURI(name_val[1]).replace(/<\/?[^>]+(>|$)/g ,"") );
 		}
 		else if(name_val[0] == 'destname') {
 			params.destination_name = decodeURI(name_val[1]).replace(/<\/?[^>]+(>|$)/g ,"");	// discard tags	
@@ -311,60 +324,120 @@ OSRM.parseParameters = function(){
 				return;
 			params.active_routing_engine = active_routing_engine;
 		}
+		else if(name_val[0] == 'ly') {
+			var active_tile_layer_hash = Number(name_val[1]);
+			for(var j=0; j<OSRM.DEFAULTS.TILE_SERVERS.length;j++) {
+				if( OSRM.Utils.getHash( OSRM.DEFAULTS.TILE_SERVERS[j].display_name ) == active_tile_layer_hash ) {
+					OSRM.G.map.layerControl.setActiveLayerByName( OSRM.DEFAULTS.TILE_SERVERS[j].display_name );
+					break;
+				}
+			}
+		}
+		else if(name_val[0] == 'notifications') {
+			if(name_val[1] == 'hide') {
+				OSRM.GUI.deactivateTooltips();
+			}
+		}
+		else if(name_val[0] == 'mainbox') {
+			if(name_val[1] == 'hide') {
+				OSRM.G.main_handle.$hideBox();
+				OSRM.G.map.zoomControl.show();
+			}
+		}		
 	}
 	
 	// stop if in maintenance mode
 	if( OSRM.GUI.inMaintenance() == true )
-		return;	
+		return;
+	
+	// set routing engine
+	OSRM.GUI.setRoutingEngine( params.active_routing_engine );
+	
+	// case 1: locations/destinations given (as strings)
+	if( params.locations || params.destinations ) {
+		var locations = params.destinations ? params.destinations : params.locations;
+		var callback = params.destinations ? "_showInitResults_Destinations" : "_showInitResults_Locations";
 		
-	// case 1: destination given
-	if( params.destination ) {
-		var index = OSRM.G.markers.setTarget( params.destination );
-		if( params.destination_name )
-			OSRM.G.markers.route[index].description = params.destination_name;	// name in GUI will be set when languages are loaded
-		else 
-			OSRM.Geocoder.updateAddress( OSRM.C.TARGET_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );
-		OSRM.G.markers.route[index].show();
-		OSRM.G.markers.route[index].centerView( params.zoom );
-		OSRM.G.initial_position_override = true;
+		OSRM.G.initial_positions = {};
+		var data = OSRM.G.initial_positions;
+		data.positions = [];
+		data.done = 0;
+		data.fail = false;
+		data.zoom = params.zoom;
+		data.center = params.center;
+		data.active_alternative = params.active_alternative;		
+		//data.engine = params.active_routing_engine;
+		data.name = params.destination_name;
+		for(var id=0; id<locations.length; id++) {
+			// prepare placeholder positions for coordinates
+			// (have to prepared before starting geocoder!)
+			data.positions.push( new L.LatLng(0,0) );
+		}		
+		for(var id=0; id<locations.length; id++) {
+			// geo coordinates given -> directly incorporate results
+			var query = locations[id]; 
+			if(query.match(/^\s*[-+]?[0-9]*\.?[0-9]+\s*[,;]\s*[-+]?[0-9]*\.?[0-9]+\s*$/)){
+				var coord = query.split(/[,;]/);
+				OSRM.Geocoder._showInitResults( [{lat:coord[0],lon:coord[1]} ], {id:id,callback:callback} );
+			} else {
+				OSRM.GUI.exclusiveNotify( OSRM.loc("NOTIFICATION_GEOCODERWAIT_HEADER"), OSRM.loc("NOTIFICATION_GEOCODERWAIT_BODY"), false );				
+				var call = OSRM.DEFAULTS.HOST_GEOCODER_URL + "?format=json&json_callback=%jsonp" + OSRM.DEFAULTS.GEOCODER_BOUNDS + "&accept-language="+OSRM.Localization.current_language+"&limit=1&q=" + query;
+				OSRM.JSONP.call( call, OSRM.Geocoder._showInitResults, OSRM.Geocoder._showInitResults, OSRM.DEFAULTS.JSONP_TIMEOUT, "init_geocoder_"+id, {id:id,callback:callback} );
+			}
+		}
 		return;
 	}
+		
+//	// case 1: destination given
+//	if( params.destinations ) {
+//		var index = OSRM.G.markers.setTarget( params.destinations[params.destinations.length-1] );
+//		if( params.destination_name )
+//			OSRM.G.markers.route[index].description = params.destination_name;	// name in GUI will be set when languages are loaded
+//		else 
+//			OSRM.Geocoder.updateAddress( OSRM.C.TARGET_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );
+//		OSRM.G.markers.route[index].show();
+//		OSRM.G.markers.route[index].centerView( params.zoom );
+//		OSRM.G.initial_position_override = true;
+//		for(var i=0; i<params.destinations.length-1;i++)
+//			OSRM.G.markers.addInitialVia( params.destinations[i] );
+//		return;
+//	}
 
-	// case 2: locations given
-	if( params.positions ) {
-		// draw via points
-		if( params.positions.length > 0 ) {
-			OSRM.G.markers.setSource( params.positions[0] );
-			OSRM.Geocoder.updateAddress( OSRM.C.SOURCE_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );
-		}
-		if( params.positions.length > 1 ) {
-			OSRM.G.markers.setTarget( params.positions[params.positions.length-1] );
-			OSRM.Geocoder.updateAddress( OSRM.C.TARGET_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );
-		}
-		for(var i=1; i<params.positions.length-1;i++)
-			OSRM.G.markers.setVia( i-1, params.positions[i] );
-		for(var i=0; i<OSRM.G.markers.route.length;i++)
-			OSRM.G.markers.route[i].show();
-		
-		// center on route (support for old links) / move to given view (new behaviour)
-		if( params.zoom == null || params.center == null ) {
-			var bounds = new L.LatLngBounds( params.positions );
-			OSRM.G.map.fitBoundsUI( bounds );
-		} else {
-			OSRM.G.map.setView(params.center, params.zoom);
-		}
-		
-		// set active alternative (if via points are set or alternative does not exists, fallback to shortest route)
-		OSRM.G.active_alternative = params.active_alternative || 0;
-		
-		// set routing server
-		OSRM.GUI.setRoutingEngine( params.active_routing_engine );
-			
-		// compute route
-		OSRM.Routing.getRoute({keepAlternative:true});
-		OSRM.G.initial_position_override = true;
-		return;
-	}
+//	// case 2: locations given
+//	if( params.positions ) {
+//		// draw via points
+//		if( params.positions.length > 0 ) {
+//			OSRM.G.markers.setSource( params.positions[0] );
+//			OSRM.Geocoder.updateAddress( OSRM.C.SOURCE_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );
+//		}
+//		if( params.positions.length > 1 ) {
+//			OSRM.G.markers.setTarget( params.positions[params.positions.length-1] );
+//			OSRM.Geocoder.updateAddress( OSRM.C.TARGET_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );
+//		}
+//		for(var i=1; i<params.positions.length-1;i++)
+//			OSRM.G.markers.setVia( i-1, params.positions[i] );
+//		for(var i=0; i<OSRM.G.markers.route.length;i++)
+//			OSRM.G.markers.route[i].show();
+//		
+//		// center on route (support for old links) / move to given view (new behaviour)
+//		if( params.zoom == null || params.center == null ) {
+//			var bounds = new L.LatLngBounds( params.positions );
+//			OSRM.G.map.fitBoundsUI( bounds );
+//		} else {
+//			OSRM.G.map.setView(params.center, params.zoom);
+//		}
+//		
+//		// set active alternative (if via points are set or alternative does not exists, fallback to shortest route)
+//		OSRM.G.active_alternative = params.active_alternative || 0;
+//		
+//		// set routing server
+//		OSRM.GUI.setRoutingEngine( params.active_routing_engine );
+//			
+//		// compute route
+//		OSRM.Routing.getRoute({keepAlternative:true});
+//		OSRM.G.initial_position_override = true;
+//		return;
+//	}
 	
 	// default case: do nothing	
 	return;

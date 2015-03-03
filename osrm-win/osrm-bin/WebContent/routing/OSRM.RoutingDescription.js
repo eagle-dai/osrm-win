@@ -48,23 +48,33 @@ onClickRouteDescription: function(lat, lng, desc) {
 	OSRM.G.markers.highlight.show();
 	OSRM.G.markers.highlight.centerView(OSRM.DEFAULTS.HIGHLIGHT_ZOOM_LEVEL);	
 
-	console.log( OSRM.G.markers.highlight.description );
 	if( OSRM.G.markers.highlight.description != null && document.getElementById("description-"+OSRM.G.markers.highlight.description) )
 		document.getElementById("description-"+OSRM.G.markers.highlight.description).className = "description-body-item";
 	OSRM.G.markers.highlight.description = desc;
 	document.getElementById("description-"+desc).className = "description-body-item description-body-item-selected";
 },
 onClickCreateShortcut: function(src){
-	src += '&z='+ OSRM.G.map.getZoom() + '&center=' + OSRM.G.map.getCenter().lat.toFixed(6) + ',' + OSRM.G.map.getCenter().lng.toFixed(6);
+	var pr = OSRM.C.PRECISION;
+	src += '&z='+ OSRM.G.map.getZoom() + '&center=' + OSRM.G.map.getCenter().lat.toFixed(pr) + ',' + OSRM.G.map.getCenter().lng.toFixed(pr);
 	src += '&alt='+OSRM.G.active_alternative;
 	src += '&df=' + OSRM.G.active_distance_format;
 	src += '&re=' + OSRM.G.active_routing_engine;
+	src += '&ly=' + OSRM.Utils.getHash( OSRM.G.map.layerControl.getActiveLayerName() );
 	
-	var source = OSRM.DEFAULTS.HOST_SHORTENER_URL + OSRM.DEFAULTS.SHORTENER_PARAMETERS.replace(/%url/, src);
-	// encodeURIComponent(src) instead of src might be required for some URL shortener services, but it won't work with others (e.g. ours)
+	// uncomment to not use link shorteners
+	if( OSRM.DEFAULTS.HOST_SHORTENER_URL == '' ) {
+		var response = {};
+		response.label = OSRM.loc("ROUTE_LINK");	
+		response[OSRM.DEFAULTS.SHORTENER_REPLY_PARAMETER] = src;
+		OSRM.RoutingDescription.showRouteLink( response );
+		return;	
+	} else {
+		var source = OSRM.DEFAULTS.HOST_SHORTENER_URL + OSRM.DEFAULTS.SHORTENER_PARAMETERS.replace(/%url/, src);
+		// using "encodeURIComponent(src)" instead of "src" required for some URL shortener services, but not functional for others (e.g. ours)
 	
-	OSRM.JSONP.call(source, OSRM.RoutingDescription.showRouteLink, OSRM.RoutingDescription.showRouteLink_TimeOut, OSRM.DEFAULTS.JSONP_TIMEOUT, 'shortener');
-	document.getElementById('route-link').innerHTML = '['+OSRM.loc("GENERATE_LINK_TO_ROUTE")+']';
+		OSRM.JSONP.call(source, OSRM.RoutingDescription.showRouteLink, OSRM.RoutingDescription.showRouteLink_TimeOut, OSRM.DEFAULTS.JSONP_TIMEOUT, 'shortener');
+		document.getElementById('route-link').innerHTML = '[<a class="text-link-inactive">'+OSRM.loc("GENERATE_LINK_TO_ROUTE")+'</a>]';
+	}
 },
 showRouteLink: function(response){
 	if(!response || !response[OSRM.DEFAULTS.SHORTENER_REPLY_PARAMETER]) {
@@ -73,12 +83,15 @@ showRouteLink: function(response){
 	}
 	
 	OSRM.G.active_shortlink = response[OSRM.DEFAULTS.SHORTENER_REPLY_PARAMETER];
+	var shortlink_label = response.label;
+	if( !shortlink_label )
+		shortlink_label = OSRM.G.active_shortlink.substring(7);
 	document.getElementById('route-link').innerHTML =
-		'[<a class="route-link" onClick="OSRM.RoutingDescription.showQRCode();">'+OSRM.loc("QR")+'</a>]' + ' ' +
-		'[<a class="route-link" href="' +OSRM.G.active_shortlink+ '">'+OSRM.G.active_shortlink.substring(7)+'</a>]';
+		'[<a class="text-link" onClick="OSRM.RoutingDescription.showQRCode();">'+OSRM.loc("QR")+'</a>]' + '&nbsp;' +
+		'[<a class="text-link" href="' +OSRM.G.active_shortlink+ '">'+shortlink_label+'</a>]';
 },
 showRouteLink_TimeOut: function(){
-	document.getElementById('route-link').innerHTML = '['+OSRM.loc("LINK_TO_ROUTE_TIMEOUT")+']';
+	document.getElementById('route-link').innerHTML = '[<a class="text-link-inactive">'+OSRM.loc("LINK_TO_ROUTE_TIMEOUT")+'</a>]';
 },
 showQRCode: function(response){
 	if( OSRM.G.qrcodewindow )
@@ -88,19 +101,21 @@ showQRCode: function(response){
 
 // handling of routing description
 show: function(response) {
+	var pr = OSRM.C.PRECISION;
+	
 	// activate GUI features that need a route
 	OSRM.GUI.activateRouteFeatures();
 	
 	// compute query string
 	var query_string = '?hl=' + OSRM.Localization.current_language;
 	for(var i=0; i<OSRM.G.markers.route.length; i++)
-		query_string += '&loc=' + OSRM.G.markers.route[i].getLat().toFixed(6) + ',' + OSRM.G.markers.route[i].getLng().toFixed(6); 
+		query_string += '&loc=' + OSRM.G.markers.route[i].getLat().toFixed(pr) + ',' + OSRM.G.markers.route[i].getLng().toFixed(pr); 
  						
 	// create link to the route
-	var route_link ='[<a class="route-link" onclick="OSRM.RoutingDescription.onClickCreateShortcut(\'' + OSRM.DEFAULTS.WEBSITE_URL + query_string + '\')">'+OSRM.loc("GET_LINK_TO_ROUTE")+'</a>]';
+	var route_link ='[<a class="text-link" onclick="OSRM.RoutingDescription.onClickCreateShortcut(\'' + OSRM.DEFAULTS.WEBSITE_URL + query_string + '\')">'+OSRM.loc("GET_LINK_TO_ROUTE")+'</a>]';
 
 	// create GPX link
-	var gpx_link = '[<a class="route-link" onClick="document.location.href=\'' + OSRM.G.active_routing_server_url + query_string + '&output=gpx\';">'+OSRM.loc("GPX_FILE")+'</a>]';
+	var gpx_link = '[<a class="text-link" onClick="document.location.href=\'' + OSRM.G.active_routing_server_url + query_string + '&output=gpx\';">'+OSRM.loc("GPX_FILE")+'</a>]';
 	
 	// check highlight marker to get id of corresponding description
 	// [works as changing language or metric does not remove the highlight marker!]	
@@ -126,13 +141,13 @@ show: function(response) {
 		body += '<td class="description-body-items">';
 		var pos = positions[response.route_instructions[i][3]];
 		body += '<div id="description-'+i+'" class="description-body-item '+(selected_description==i ? "description-body-item-selected": "")+'" ' +
-			'onclick="OSRM.RoutingDescription.onClickRouteDescription('+pos.lat.toFixed(6)+","+pos.lng.toFixed(6)+","+i+')" ' +
-			'onmouseover="OSRM.RoutingDescription.onMouseOverRouteDescription('+pos.lat.toFixed(6)+","+pos.lng.toFixed(6)+')" ' +
-			'onmouseout="OSRM.RoutingDescription.onMouseOutRouteDescription('+pos.lat.toFixed(6)+","+pos.lng.toFixed(6)+')">';
+			'onclick="OSRM.RoutingDescription.onClickRouteDescription('+pos.lat.toFixed(pr)+","+pos.lng.toFixed(pr)+","+i+')" ' +
+			'onmouseover="OSRM.RoutingDescription.onMouseOverRouteDescription('+pos.lat.toFixed(pr)+","+pos.lng.toFixed(pr)+')" ' +
+			'onmouseout="OSRM.RoutingDescription.onMouseOutRouteDescription('+pos.lat.toFixed(pr)+","+pos.lng.toFixed(pr)+')">';
 
 		// build route description
 		if( response.route_instructions[i][1] != "" )
-			body += OSRM.loc(OSRM.RoutingDescription._getDrivingInstruction(response.route_instructions[i][0])).replace(/\[(.*)\]/,"$1").replace(/%s/, response.route_instructions[i][1]).replace(/%d/, OSRM.loc(response.route_instructions[i][6]));
+			body += OSRM.loc(OSRM.RoutingDescription._getDrivingInstruction(response.route_instructions[i][0])).replace(/\[(.*)\]/,"$1").replace(/%s/, OSRM.RoutingDescription._getStreetName(response.route_instructions[i][1]) ).replace(/%d/, OSRM.loc(response.route_instructions[i][6]));
 		else
 			body += OSRM.loc(OSRM.RoutingDescription._getDrivingInstruction(response.route_instructions[i][0])).replace(/\[(.*)\]/,"").replace(/%d/, OSRM.loc(response.route_instructions[i][6]));
 
@@ -151,7 +166,7 @@ show: function(response) {
 	// create route name
 	var route_name = "(";
 	for(var j=0, sizej=response.route_name.length; j<sizej; j++)
-		route_name += ( j>0 && response.route_name[j] != "" && response.route_name[j-1] != "" ? " - " : "") + "<span style='white-space:nowrap;'>"+response.route_name[j]+ "</span>";
+		route_name += ( j>0 && response.route_name[j] != "" && response.route_name[j-1] != "" ? " - " : "") + "<span style='white-space:nowrap;'>" + OSRM.RoutingDescription._getStreetName(response.route_name[j]) + "</span>";
 	if( route_name == "(" )
 		route_name += " - ";
 	route_name += ")";
@@ -195,11 +210,12 @@ showNA: function( display_text ) {
 	
 	// compute query string
 	var query_string = '?hl=' + OSRM.Localization.current_language;
+	var pr = OSRM.C.PRECISION;
 	for(var i=0; i<OSRM.G.markers.route.length; i++)
-		query_string += '&loc=' + OSRM.G.markers.route[i].getLat().toFixed(6) + ',' + OSRM.G.markers.route[i].getLng().toFixed(6); 
+		query_string += '&loc=' + OSRM.G.markers.route[i].getLat().toFixed(pr) + ',' + OSRM.G.markers.route[i].getLng().toFixed(pr); 
  						
 	// create link to the route
-	var route_link ='[<a class="route-link" onclick="OSRM.RoutingDescription.onClickCreateShortcut(\'' + OSRM.DEFAULTS.WEBSITE_URL + query_string + '\')">'+OSRM.loc("GET_LINK_TO_ROUTE")+'</a>]';
+	var route_link ='[<a class="text-link" onclick="OSRM.RoutingDescription.onClickCreateShortcut(\'' + OSRM.DEFAULTS.WEBSITE_URL + query_string + '\')">'+OSRM.loc("GET_LINK_TO_ROUTE")+'</a>]';
 	
 	// build header
 	header = OSRM.RoutingDescription._buildHeader("N/A", "N/A", route_link, "");
@@ -221,11 +237,11 @@ _buildHeader: function(distance, duration, route_link, gpx_link, route_name) {
 		'<div class="left">' +
 		'<div class="full">' +
 		'<div class="row">' +
-		'<div class="left header-label">' + OSRM.loc("DISTANCE")+":" + '</div>' +
+		'<div class="left header-label nowrap">' + OSRM.loc("DISTANCE")+":" + '</div>' +
 		'<div class="left header-content stretch">' + distance + '</div>' +
 		'</div>' +
 		'<div class="row">' +
-		'<div class="left header-label">' + OSRM.loc("DURATION")+":" + '</div>' +
+		'<div class="left header-label nowrap">' + OSRM.loc("DURATION")+":" + '</div>' +
 		'<div class="left header-content stretch">' + duration + '</div>' +
 		'</div>' +
 		'</div>' +
@@ -271,6 +287,16 @@ _getDrivingInstruction: function(server_instruction_id) {
 	if( description == local_instruction_id)
 		return OSRM.loc("DIRECTION_0");
 	return description;
+},
+
+// retrieve street name
+_getStreetName: function(street) {
+	var name = street.match(/\{highway:(.*)\}/);
+	if( name )
+		name = OSRM.loc('HIGHWAY_'+name[1].toUpperCase(), 'HIGHWAY_DEFAULT');
+	else
+		name = street;
+	return name;
 }
 
 };

@@ -52,7 +52,7 @@ call: function(marker_id, query) {
 
 
 // helper function for clicks on geocoder search results
-_onclickResult: function(marker_id, lat, lon) {
+_onclickResult: function(marker_id, lat, lon, zoom) {
 	var index;
 	if( marker_id == OSRM.C.SOURCE_LABEL )
 		index = OSRM.G.markers.setSource( new L.LatLng(lat, lon) );
@@ -62,7 +62,7 @@ _onclickResult: function(marker_id, lat, lon) {
 		return;
 	
 	OSRM.G.markers.route[index].show();
-	OSRM.G.markers.route[index].centerView();	
+	OSRM.G.markers.route[index].centerView(zoom);	
 	if( OSRM.G.markers.route.length > 1 )
 		OSRM.Routing.getRoute();
 },
@@ -107,7 +107,10 @@ _showResults: function(response, parameters) {
 	var filtered_response = response;
 	
 	// show first result
-	OSRM.Geocoder._onclickResult(parameters.marker_id, filtered_response[0].lat, filtered_response[0].lon);
+	var zoom = null;
+	if( filtered_response[0].boundingbox != null )
+		zoom = OSRM.G.map.getBoundsZoom( [ [filtered_response[0].boundingbox[0], filtered_response[0].boundingbox[2]], [filtered_response[0].boundingbox[1], filtered_response[0].boundingbox[3]]], true );
+	OSRM.Geocoder._onclickResult(parameters.marker_id, filtered_response[0].lat, filtered_response[0].lon, zoom);
 	if( OSRM.G.markers.route.length > 1 )		// if a route is displayed, we don't need to show other possible geocoding results
 		return;	
 	
@@ -128,7 +131,11 @@ _showResults: function(response, parameters) {
 		html += '<td class="results-body-items">';
 
 		if(result.display_name){
-			html += '<div class="results-body-item" onclick="OSRM.Geocoder._onclickResult(\''+parameters.marker_id+'\', '+result.lat+', '+result.lon+');">'+result.display_name;
+			var zoom = "null";
+			if( result.boundingbox != null )
+				zoom = OSRM.G.map.getBoundsZoom( [ [result.boundingbox[0], result.boundingbox[2]], [result.boundingbox[1], result.boundingbox[3]]], true );
+			
+			html += '<div class="results-body-item" onclick="OSRM.Geocoder._onclickResult(\''+parameters.marker_id+'\', '+result.lat+', '+result.lon+', '+zoom+');">'+result.display_name;
 			// debug output to show osm_type, class, type			
 			// html += '<br/><span class="results-body-item-remark small-font">[osm_type: ' + result.osm_type + ', class: ' + result.class + ', type: ' + result.type + ']</span>';
 			html += '</div>';
@@ -217,10 +224,11 @@ _showResults_Timeout: function() {
 
 //update geo coordinates in input boxes
 updateLocation: function(marker_id) {
+	var pr = OSRM.C.PRECISION;
 	if (marker_id == OSRM.C.SOURCE_LABEL && OSRM.G.markers.hasSource()) {
-		document.getElementById("gui-input-source").value = OSRM.G.markers.route[0].getLat().toFixed(6) + ", " + OSRM.G.markers.route[0].getLng().toFixed(6);
+		document.getElementById("gui-input-source").value = OSRM.G.markers.route[0].getLat().toFixed(pr) + ", " + OSRM.G.markers.route[0].getLng().toFixed(pr);
 	} else if (marker_id == OSRM.C.TARGET_LABEL && OSRM.G.markers.hasTarget()) {
-		document.getElementById("gui-input-target").value = OSRM.G.markers.route[OSRM.G.markers.route.length-1].getLat().toFixed(6) + ", " + OSRM.G.markers.route[OSRM.G.markers.route.length-1].getLng().toFixed(6);		
+		document.getElementById("gui-input-target").value = OSRM.G.markers.route[OSRM.G.markers.route.length-1].getLat().toFixed(pr) + ", " + OSRM.G.markers.route[OSRM.G.markers.route.length-1].getLng().toFixed(pr);		
 	}
 },
 
@@ -248,8 +256,8 @@ updateAddress: function(marker_id, do_fallback_to_lat_lng) {
 		OSRM.Geocoder._showReverseResults( {address:{road:description} }, {marker_id:marker_id} );
 		return;
 	}
-	
-	var call = OSRM.DEFAULTS.HOST_REVERSE_GEOCODER_URL + "?format=json&json_callback=%jsonp" + "&accept-language="+OSRM.Localization.current_language + "&lat=" + lat.toFixed(6) + "&lon=" + lng.toFixed(6);
+	var pr = OSRM.C.PRECISION;
+	var call = OSRM.DEFAULTS.HOST_REVERSE_GEOCODER_URL + "?format=json&json_callback=%jsonp" + "&accept-language="+OSRM.Localization.current_language + "&lat=" + lat.toFixed(pr) + "&lon=" + lng.toFixed(pr);
 	OSRM.JSONP.call( call, OSRM.Geocoder._showReverseResults, OSRM.Geocoder._showReverseResults_Timeout, OSRM.DEFAULTS.JSONP_TIMEOUT, "reverse_geocoder_"+marker_id, {marker_id:marker_id, do_fallback: do_fallback_to_lat_lng} );
 },
 
@@ -306,6 +314,87 @@ _showReverseResults_Timeout: function(response, parameters) {
 		return;
 		
 	OSRM.Geocoder.updateLocation(parameters.marker_id);
+},
+
+
+// process geocoder response for initialization queries during URL parameter parsing
+_showInitResults: function(response, parameters) {
+	var data = OSRM.G.initial_positions;
+	
+	// process response
+	data.done++;
+	if(!response || response.length == 0)
+		data.fail = true;
+	else {
+		data.positions[parameters.id] = new L.LatLng(response[0].lat, response[0].lon);
+		if( data.zoom == null && response[0].boundingbox != null ) {
+			data.zoom = OSRM.G.map.getBoundsZoom( [ [response[0].boundingbox[0], response[0].boundingbox[2]], [response[0].boundingbox[1], response[0].boundingbox[3]]], true );
+		}
+	}
+	
+	// all queries finished?
+	if( data.done == data.positions.length ) {
+		if( data.fail == true ) {
+			OSRM.GUI.exclusiveNotify( OSRM.loc("NOTIFICATION_GEOCODERFAIL_HEADER"), OSRM.loc("NOTIFICATION_GEOCODERFAIL_BODY"), true );
+			return;			
+		} else {
+			OSRM.GUI.exclusiveDenotify();
+			OSRM.Geocoder[parameters.callback]();
+		}
+	}
+},
+_showInitResults_Destinations: function() {
+	var data = OSRM.G.initial_positions;
+	
+	// setup markers
+	var destinations = data.positions;
+	var index = OSRM.G.markers.setTarget( destinations[destinations.length-1] );
+
+	OSRM.G.markers.route[index].description = data.name;
+	OSRM.Geocoder.updateAddress( OSRM.C.TARGET_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );
+	
+	OSRM.G.markers.route[index].show();
+	OSRM.G.markers.route[index].centerView( data.zoom );
+	for(var i=0; i<destinations.length-1;i++)
+		OSRM.G.markers.addInitialVia( destinations[i] );
+	
+	// finish
+	OSRM.G.initial_position_override = true;
+	return;
+},
+_showInitResults_Locations: function() {
+	var data = OSRM.G.initial_positions;
+	
+	// draw via points
+	var positions = data.positions;
+	if( positions.length > 0 ) {
+		OSRM.G.markers.setSource( positions[0] );
+		OSRM.Geocoder.updateAddress( OSRM.C.SOURCE_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );
+	}
+	if( positions.length > 1 ) {
+		OSRM.G.markers.setTarget( positions[positions.length-1] );
+		OSRM.Geocoder.updateAddress( OSRM.C.TARGET_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );
+	}
+	for(var i=1; i<positions.length-1;i++)
+		OSRM.G.markers.setVia( i-1, positions[i] );
+	for(var i=0; i<OSRM.G.markers.route.length;i++)
+		OSRM.G.markers.route[i].show();
+	
+	// center on route (support for old links) / move to given view (new behaviour)
+	if( data.zoom == null || data.center == null ) {
+		var bounds = new L.LatLngBounds( positions );
+		OSRM.G.map.fitBoundsUI( bounds );
+	} else {
+		OSRM.G.map.setView(data.center, data.zoom);
+	}
+	
+	// set active alternative (if via points are set or alternative does not exists, fallback to shortest route)
+	OSRM.G.active_alternative = data.active_alternative || 0;
+	
+	// compute route
+	OSRM.Routing.getRoute({keepAlternative:true});
+	OSRM.G.initial_position_override = true;
+	return;	
 }
 
 };

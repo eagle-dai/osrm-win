@@ -46,6 +46,7 @@ init: function() {
 
 // process JSONP response of routing server
 timeoutRoute: function() {
+	OSRM.G.response = { via_points:[] }; 
 	OSRM.RoutingGeometry.showNA();
 	OSRM.RoutingNoNames.showNA();
 	OSRM.RoutingDescription.showNA( OSRM.loc("TIMED_OUT") );
@@ -168,8 +169,9 @@ _buildCall: function() {
 	if(OSRM.G.markers.checksum)
 		source += '&checksum=' + OSRM.G.markers.checksum;
 	var markers = OSRM.G.markers.route;
+	var pr = OSRM.C.PRECISION;
 	for(var i=0,size=markers.length; i<size; i++) {
-		source += '&loc='  + markers[i].getLat().toFixed(6) + ',' + markers[i].getLng().toFixed(6);
+		source += '&loc='  + markers[i].getLat().toFixed(pr) + ',' + markers[i].getLng().toFixed(pr);
 		if( markers[i].hint)
 			source += '&hint=' + markers[i].hint;
 	}

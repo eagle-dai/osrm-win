@@ -18,12 +18,13 @@ or see http://www.gnu.org/licenses/agpl.txt.
 // OSRM routing geometry
 // [renders routing geometry]
 
+OSRM.CONSTANTS.PRECISION = 6;
 
 OSRM.RoutingGeometry = {
 
 // show route geometry - if there is a route
 show: function(response) {
-	var geometry = OSRM.RoutingGeometry._decode(response.route_geometry, 6); // OSRM_WIN fix: 5 -> 6
+	var geometry = OSRM.RoutingGeometry._decode(response.route_geometry, OSRM.C.PRECISION );
 
 	OSRM.G.route.showRoute(geometry, OSRM.Route.ROUTE);
 },
@@ -32,7 +33,7 @@ show: function(response) {
 showNA: function() {
 	var positions = [];
 	for(var i=0, size=OSRM.G.markers.route.length; i<size; i++)
-			positions.push( OSRM.G.markers.route[i].getPosition() );
+		positions.push( OSRM.G.markers.route[i].getPosition() );
 
 	OSRM.G.route.showRoute(positions, OSRM.Route.NOROUTE);
 },

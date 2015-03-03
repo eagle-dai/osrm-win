@@ -52,7 +52,8 @@ toHumanTime: function(seconds){
    minutes = minutes%60;
    if(hours==0 && minutes==0){ return seconds + '&nbsp;' + 's'; }
    else if(hours==0){ return minutes + '&nbsp;' + 'min'; }
-   else{ return hours + '&nbsp;' + 'h' + '&nbsp;' + minutes + '&nbsp;' + 'min';}
+   else if(hours>0){ return hours + '&nbsp;' + 'h' + '&nbsp;' + minutes + '&nbsp;' + 'min';}
+   else {return "N/A";}
 },
 //human readable distance
 toHumanDistanceMeters: function(meters){
@@ -62,7 +63,8 @@ toHumanDistanceMeters: function(meters){
 	if(distance >= 100){ return (distance).toFixed(0)+'&nbsp;' + OSRM.Utils.kilometers; }
 	else if(distance >= 10){ return (distance).toFixed(1)+'&nbsp;' + OSRM.Utils.kilometers; }
 	else if(distance >= 0.1){ return (distance).toFixed(2)+'&nbsp;' + OSRM.Utils.kilometers; }
-	else{ return (distance*1000).toFixed(0)+'&nbsp;' + OSRM.Utils.meters; }		
+	else if(distance >= 0){ return (distance*1000).toFixed(0)+'&nbsp;' + OSRM.Utils.meters; }
+	else {return "N/A";}
 },
 toHumanDistanceMiles: function(meters){
 	var distance = parseInt(meters);
@@ -71,7 +73,8 @@ toHumanDistanceMiles: function(meters){
 	if(distance >= 100){ return (distance).toFixed(0)+'&nbsp;' + OSRM.Utils.miles; }
 	else if(distance >= 10){ return (distance).toFixed(1)+'&nbsp;' + OSRM.Utils.miles; }
 	else if(distance >= 0.1){ return (distance).toFixed(2)+'&nbsp;' + OSRM.Utils.miles; }
-	else{ return (distance*5280).toFixed(0)+'&nbsp;' + OSRM.Utils.feet; }
+	else if(distance >= 0){ return (distance*5280).toFixed(0)+'&nbsp;' + OSRM.Utils.feet; }
+	else {return "N/A";}
 },
 toHumanDistance: null,
 
@@ -93,6 +96,14 @@ isLongitude: function(value) {
 },
 isNumber: function(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
+},
+
+
+//[other routines]
+
+//hashing as in JAVA (thanks to lordvlad @ stackoverflow)
+getHash: function(s) {
+	return s.split("").reduce( function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a;}, 0);              
 }
 
 };

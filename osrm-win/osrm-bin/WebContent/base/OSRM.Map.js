@@ -37,14 +37,8 @@ init: function() {
 	var tile_servers = OSRM.DEFAULTS.TILE_SERVERS;
 	var base_maps = {};
 	for(var i=0, size=tile_servers.length; i<size; i++) {
-		if( tile_servers[i].bing == true ) {
-			tile_servers[i].options.postfix = tile_servers[i].attribution;
-			base_maps[ tile_servers[i].display_name ] = new L.BingLayer( tile_servers[i].apikey, tile_servers[i].options );
-			OSRM.G.localizable_maps.push( base_maps[ tile_servers[i].display_name ] );
-		} else {
-			tile_servers[i].options.attribution = tile_servers[i].attribution;
-			base_maps[ tile_servers[i].display_name ] = new L.TileLayer( tile_servers[i].url, tile_servers[i].options );
-		}
+		tile_servers[i].options.attribution = tile_servers[i].attribution;
+		base_maps[ tile_servers[i].display_name ] = new L.TileLayer( tile_servers[i].url, tile_servers[i].options );
 		L.Util.stamp( base_maps[ tile_servers[i].display_name ] );			// stamp tile servers so that their order is correct in layers control
 	}
 	
@@ -115,6 +109,11 @@ initPosition: function() {
 
 // map event handlers
 zoomed: function(e) {
+	// prevent redraw when zooming out less than 4 levels (no need to reduce route geometry data)
+	var delta_zoom = OSRM.G.route.getZoomLevel() - OSRM.G.map.getZoom(); 
+	if( delta_zoom >= 0 && delta_zoom <= 3 ) 
+		return;
+	// redraw routes
 	if(OSRM.G.dragging)
 		OSRM.Routing.getRoute_Dragging();
 	else
@@ -123,7 +122,9 @@ zoomed: function(e) {
 contextmenu: function(e) {;},
 mousemove: function(e) { OSRM.Via.drawDragMarker(e); },
 click: function(e) {
-	OSRM.GUI.deactivateTooltip( "CLICKING" );	
+	OSRM.GUI.deactivateTooltip( "CLICKING" );
+	if( e.originalEvent.shiftKey==true || e.originalEvent.metaKey==true || e.originalEvent.altKey==true )	// only create/remove markers on simple clicks
+		return;
 	if( !OSRM.G.markers.hasSource() ) {
 		var index = OSRM.G.markers.setSource( e.latlng );
 		OSRM.Geocoder.updateAddress( OSRM.C.SOURCE_LABEL, OSRM.C.DO_FALLBACK_TO_LAT_LNG );

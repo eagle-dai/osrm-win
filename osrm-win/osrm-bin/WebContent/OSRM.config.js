@@ -19,21 +19,22 @@ or see http://www.gnu.org/licenses/agpl.txt.
 // [has to be loaded directly after OSRM.base]
 
 OSRM.DEFAULTS = {
-	ROUTING_ENGINES: [
-		{	url: 'http://localhost:5000/viaroute',
-			timestamp: 'http://localhost:5000/timestamp',
-			metric: 0,
-			label: 'ENGINE_0',
-		}
-	],
+		ROUTING_ENGINES: [
+			{	url: 'http://router.project-osrm.org/viaroute',
+				timestamp: 'http://router.project-osrm.org/timestamp',
+				metric: 0,
+				label: 'ENGINE_0',
+			}
+		],
+
 	
 	WEBSITE_URL: document.URL.replace(/#*(\?.*|$)/i,""),					// truncates URL before first ?, and removes tailing #
 	HOST_GEOCODER_URL: 'http://nominatim.openstreetmap.org/search',
 	HOST_REVERSE_GEOCODER_URL: 'http://nominatim.openstreetmap.org/reverse',
-	HOST_SHORTENER_URL: 'http://map.project-osrm.org/shorten/',
+	HOST_SHORTENER_URL: 'http://map.project-osrm.org/shorten/',				// use '' to not use url shortener service
 	
 	SHORTENER_PARAMETERS: '%url&jsonp=%jsonp',
-	SHORTENER_REPLY_PARAMETER: 'ShortURL',	
+	SHORTENER_REPLY_PARAMETER: 'ShortURL',									// keep set, even if not using url shortener service!
 	
 	ROUTING_ENGINE: 0,
 	DISTANCE_FORMAT: 0,														// 0: km, 1: miles
@@ -41,6 +42,9 @@ OSRM.DEFAULTS = {
 	ZOOM_LEVEL: 14,
 	HIGHLIGHT_ZOOM_LEVEL: 16,
 	JSONP_TIMEOUT: 10000,
+	EDITOR_MIN_ZOOM_LEVEL: 16,
+	JOSM_MIN_ZOOM_LEVEL: 16,	
+	NOTES_MIN_ZOOM_LEVEL: 8,
 	
 	ONLOAD_ZOOM_LEVEL: 5,
 	ONLOAD_LATITUDE: 48.84,
@@ -54,10 +58,12 @@ OSRM.DEFAULTS = {
 	LANGUAGE_SUPPORTED: [ 
 		{encoding:"en", name:"English"},
 		{encoding:"bg", name:"Български"},
+		{encoding:"ca", name:"Català"},
 		{encoding:"cs", name:"Česky"},
 		{encoding:"de", name:"Deutsch"},
 		{encoding:"da", name:"Dansk"},
 		{encoding:"el", name:"Ελληνικά"},
+		{encoding:"eo", name:"Esperanto"},
 		{encoding:"es", name:"Español"},
 		{encoding:"fi", name:"Suomi"},
 		{encoding:"fr", name:"Français"},
@@ -78,6 +84,23 @@ OSRM.DEFAULTS = {
 	],
 		
 	TILE_SERVERS: [
+		{	display_name: 'Mapbox Terrain',
+			url:'http://{s}.tiles.mapbox.com/v3/dennisl.map-dfbkqsr2/{z}/{x}/{y}.png',
+			attribution:'Data © <a href="http://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors (ODbL), Imagery © <a href="http://mapbox.com/">MapBox</a>',
+			options:{maxZoom: 18}
+		},
+		{
+			display_name: 'Mapbox Labelled Satellite',
+			url:'http://{s}.tiles.mapbox.com/v3/dennisl.map-6g3jtnzm/{z}/{x}/{y}.png',
+			attribution:'Data © <a href="http://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors (ODbL), Imagery © <a href="http://mapbox.com/">MapBox</a>',
+			options:{maxZoom: 18}
+		},
+		{
+			display_name: 'Mapbox Satellite',
+			url:'http://{s}.tiles.mapbox.com/v3/dennisl.map-inp5al1s/{z}/{x}/{y}.png',
+			attribution:'Data © <a href="http://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors (ODbL), Imagery © <a href="http://mapbox.com/">MapBox</a>',
+			options:{maxZoom: 18}
+		},
 		{	display_name: 'osm.org',
 			url:'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 			attribution:'Data © <a href="http://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors (ODbL), Imagery © <a href="http://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors (CC-BY-SA)',
@@ -92,25 +115,6 @@ OSRM.DEFAULTS = {
 			url:'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
 			attribution:'Data © <a href="http://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors (ODbL), Imagery © <a href="http://www.mapquest.de/">MapQuest</a>',
 			options:{maxZoom: 18, subdomains: '1234'}
-		},
-		{	display_name: 'CloudMade',
-			url:'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png',
-			attribution:'Data © <a href="http://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors (ODbL), Imagery © <a href="http://cloudmade.com/">CloudMade</a>',
-			options:{maxZoom: 18}
-		},
-		{
-			display_name: 'Bing Road',
-			apikey:'AjCb2f6Azv_xt9c6pl_xok96bgAYrXQNctnG4o07sTj4iS9N68Za4B3pRJyeCjGr',	// please use your own apikey (http://msdn.microsoft.com/en-us/library/ff428642.aspx) 
-			options:{type:"Road", minZoom: 1},
-			attribution:'Data © <a href="http://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors (ODbL)',
-			bing:true,
-		},
-		{
-			display_name: 'Bing Aerial',
-			apikey:'AjCb2f6Azv_xt9c6pl_xok96bgAYrXQNctnG4o07sTj4iS9N68Za4B3pRJyeCjGr',	// please use your own apikey (http://msdn.microsoft.com/en-us/library/ff428642.aspx)
-			options:{type:"Aerial", minZoom: 1},
-			attribution:'Data © <a href="http://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors (ODbL)',
-			bing:true,
 		}
 	],
 	
